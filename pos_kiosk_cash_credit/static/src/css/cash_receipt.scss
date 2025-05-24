@@ -1,0 +1,35 @@
+.payment-screen {
+    padding: 20px;
+    text-align: center;
+    
+    h2 {
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+    }
+    
+    .payment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 300px;
+        margin: 0 auto;
+        
+        .btn-payment {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            
+            &.cash {
+                background-color: #28a745;
+                color: white;
+            }
+            
+            &.card {
+                background-color: #007bff;
+                color: white;
+            }
+        }
+    }
+}

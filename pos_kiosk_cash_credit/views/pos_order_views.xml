@@ -1,0 +1,29 @@
+<odoo>
+    <!-- Form View Extension -->
+    <record id="view_pos_pos_form_inherit" model="ir.ui.view">
+        <field name="name">pos.order.form.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_paid']" position="after">
+                <field name="is_cash" readonly="1" />
+                <field name="is_kiosk" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View Extension -->
+    <record id="view_pos_order_filter_inherit" model="ir.ui.view">
+        <field name="name">pos.order.search.inherit.cash.credit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[1]" position="after">
+                <filter name="kiosk_orders" string="Kiosk Orders" domain="[('is_kiosk','=',True)]"/>
+                <filter name="cash_payments" string="Cash Payments" domain="[('is_cash','=',True)]"/>
+                <filter name="card_payments" string="Card Payments" domain="[('is_cash','=',False),('is_kiosk','=',True)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
