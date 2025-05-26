@@ -1,161 +1,231 @@
-.payment-method-screen {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+/* File: pos_kiosk_cash_credit/static/src/css/payment_method.css */
+
+.payment-method-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
 }
 
-.screen-header {
+.payment-method-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-method-screen {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
     text-align: center;
-    margin-bottom: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .screen-header h1 {
     font-size: 2.5rem;
-    font-weight: bold;
+    color: #2c3e50;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .screen-header h2 {
     font-size: 1.5rem;
+    color: #7f8c8d;
+    margin-bottom: 40px;
     font-weight: normal;
-    opacity: 0.8;
 }
 
 .payment-options {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 500px;
-    margin: 0 auto;
-    flex-grow: 1;
+    gap: 30px;
     justify-content: center;
+    margin-bottom: 40px;
 }
 
 .payment-option {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: white;
+    border: 3px solid #e74c3c;
     border-radius: 15px;
+    padding: 30px 40px;
     cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 .payment-option:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: #e74c3c;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(231, 76, 60, 0.3);
 }
 
-.payment-option i {
+.payment-option.card-option {
+    border-color: #3498db;
+}
+
+.payment-option.card-option:hover {
+    background: #3498db;
+    box-shadow: 0 15px 30px rgba(52, 152, 219, 0.3);
+}
+
+.option-icon {
     font-size: 3rem;
-    min-width: 60px;
-}
-
-.cash-option i {
-    color: #4CAF50;
-}
-
-.card-option i {
-    color: #2196F3;
-}
-
-.option-text {
-    text-align: left;
+    margin-bottom: 10px;
 }
 
 .option-text h3 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
 .option-text p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 5px;
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 .option-text small {
-    font-size: 1rem;
-    opacity: 0.7;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    font-style: italic;
 }
 
 .screen-footer {
-    text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .btn-back {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: #95a5a6;
     color: white;
-    padding: 15px 25px;
+    border: none;
+    padding: 15px 30px;
     border-radius: 8px;
-    cursor: pointer;
     font-size: 1.1rem;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 .btn-back:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #7f8c8d;
 }
 
-.btn-back i {
-    margin-right: 8px;
+/* Success modal styles */
+.cash-success-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
 }
 
-/* Cash slip printing styles */
-.cash-slip {
-    width: 58mm;
-    font-family: 'Courier New', monospace;
+.success-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
     text-align: center;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 1.4;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-.slip-header h2 {
-    font-size: 14px;
-    margin-bottom: 5px;
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
 }
 
-.slip-header h1 {
-    font-size: 18px;
+.success-content h2 {
+    color: #27ae60;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.success-content h3 {
+    color: #7f8c8d;
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+}
+
+.order-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.order-number {
+    font-size: 2rem;
     font-weight: bold;
+    color: #2c3e50;
     margin-bottom: 15px;
-    border-bottom: 1px dashed #000;
-    padding-bottom: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #27ae60;
 }
 
-.slip-message {
-    margin-top: 15px;
-    font-size: 11px;
-    line-height: 1.3;
+.countdown {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #7f8c8d;
 }
 
-@media print {
-    body * {
-        visibility: hidden;
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .payment-options {
+        flex-direction: column;
+        align-items: center;
     }
     
-    .cash-slip, .cash-slip * {
-        visibility: visible;
+    .payment-option {
+        width: 100%;
+        max-width: 300px;
     }
     
-    .cash-slip {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 58mm !important;
-        margin: 0;
-        padding: 5mm;
+    .screen-header h1 {
+        font-size: 2rem;
+    }
+    
+    .screen-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .success-content {
+        padding: 20px;
+    }
+    
+    .success-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .order-number {
+        font-size: 1.5rem;
     }
 }
