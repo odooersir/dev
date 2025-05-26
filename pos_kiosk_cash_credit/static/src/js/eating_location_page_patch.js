@@ -7,21 +7,42 @@ import { EatingLocationPage } from "@pos_self_order/app/pages/eating_location_pa
 patch(EatingLocationPage.prototype, {
     
     selectLocation(location) {
-        // Store the selected location first
+        // Store the selected eating location
         this.selfOrder.currentOrder.eating_location = location;
         
-        // Show payment method selection directly
+        console.log('Eating location selected:', location);
+        
+        // Show payment method selection
         this.showPaymentMethodSelection();
     },
 
     showPaymentMethodSelection() {
-        // Remove any existing payment modal
+        // Remove any existing modal
+        this.removeExistingModal();
+
+        // Create payment method selection modal
+        const paymentModal = this.createPaymentModal();
+        
+        // Add event listeners
+        this.attachModalEventListeners(paymentModal);
+        
+        // Add to DOM
+        document.body.appendChild(paymentModal);
+        
+        // Add animation
+        setTimeout(() => {
+            paymentModal.classList.add('show');
+        }, 10);
+    },
+
+    removeExistingModal() {
         const existingModal = document.querySelector('.payment-method-modal');
         if (existingModal) {
             existingModal.remove();
         }
+    },
 
-        // Create a simple modal for payment method selection
+    createPaymentModal() {
         const paymentModal = document.createElement('div');
         paymentModal.className = 'payment-method-modal';
         paymentModal.innerHTML = `
@@ -60,46 +81,127 @@ patch(EatingLocationPage.prototype, {
                 </div>
             </div>
         `;
+        
+        return paymentModal;
+    },
 
-        // Add event listeners
-        const cashBtn = paymentModal.querySelector('[data-method="cash"]');
-        const cardBtn = paymentModal.querySelector('[data-method="card"]');
-        const backBtn = paymentModal.querySelector('.btn-back');
+    attachModalEventListeners(modal) {
+        const cashBtn = modal.querySelector('[data-method="cash"]');
+        const cardBtn = modal.querySelector('[data-method="card"]');
+        const backBtn = modal.querySelector('.btn-back');
+        const overlay = modal.querySelector('.payment-method-overlay');
 
-        cashBtn.addEventListener('click', () => {
+        // Cash payment selection
+        cashBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             this.selectPaymentMethod('cash');
         });
 
-        cardBtn.addEventListener('click', () => {
+        // Card payment selection
+        cardBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             this.selectPaymentMethod('card');
         });
 
-        backBtn.addEventListener('click', () => {
-            paymentModal.remove();
+        // Back button
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.closeModal(modal);
         });
 
-        // Add to DOM
-        document.body.appendChild(paymentModal);
+        // Click outside to close (optional)
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                this.closeModal(modal);
+            }
+        });
+
+        // Escape key to close
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal(modal);
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    },
+
+    closeModal(modal) {
+        if (modal && modal.parentNode) {
+            modal.classList.add('closing');
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.remove();
+                }
+            }, 300);
+        }
     },
 
     selectPaymentMethod(method) {
-        // Remove the modal
+        console.log('Payment method selected:', method);
+        
+        // Remove modal with animation
         const modal = document.querySelector('.payment-method-modal');
         if (modal) {
-            modal.remove();
+            this.closeModal(modal);
         }
 
-        // Store payment method in a simple way
+        // Store payment method globally and in order
         window.selectedPaymentMethod = method;
         
-        // Add a flag to the current order
         if (this.selfOrder.currentOrder) {
             this.selfOrder.currentOrder.payment_method = method;
             this.selfOrder.currentOrder.is_cash = (method === 'cash');
             this.selfOrder.currentOrder.is_kiosk = true;
         }
         
-        // Continue to product list
-        this.router.navigate('product_list');
+        // Continue to the next step based on the standard flow
+        // In pos_self_order, after eating location usually comes the confirmation
+        // or product list, depending on the configuration
+        
+        if (method === 'cash') {
+            // For cash, we can go directly to confirmation
+            // since we'll handle payment differently
+            this.proceedToConfirmation();
+        } else {
+            // For card, continue with normal flow
+            this.proceedToNextStep();
+        }
+    },
+
+    proceedToConfirmation() {
+        // Navigate directly to confirmation for cash orders
+        if (this.router) {
+            this.router.navigate('confirmation');
+        }
+    },
+
+    proceedToNextStep() {
+        // Continue with the normal flow for card payments
+        // This depends on your pos_self_order configuration
+        if (this.router) {
+            // Check if there are more products to add or go to confirmation
+            const hasProducts = this.selfOrder.currentOrder?.lines?.length > 0;
+            
+            if (hasProducts) {
+                this.router.navigate('confirmation');
+            } else {
+                this.router.navigate('product_list');
+            }
+        }
+    },
+
+    // Override the default navigation if needed
+    async nextPage() {
+        // If payment method is not selected, show selection
+        const paymentMethod = this.selfOrder.currentOrder?.payment_method || window.selectedPaymentMethod;
+        
+        if (!paymentMethod) {
+            // Payment method not selected yet, show selection modal
+            this.showPaymentMethodSelection();
+        } else {
+            // Payment method already selected, proceed normally
+            await super.nextPage();
+        }
     }
 });

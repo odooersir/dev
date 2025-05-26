@@ -1,0 +1,1 @@
+from . import pos_self_order_controller

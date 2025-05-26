@@ -3,7 +3,16 @@
     "version": "17.0.1.0.0",
     "category": "Point of Sale",
     "summary": "Add cash payment option to POS Kiosk",
-    "description": "Enable cash payments in self-service kiosk mode with proper order handling",
+    "description": """
+        Enable cash payments in self-service kiosk mode with proper order handling.
+        
+        Features:
+        - Payment method selection after eating location
+        - Cash orders: Print slip and wait for cashier payment
+        - Card orders: Use existing Smile & Pay integration
+        - Proper order management and tracking
+        - 58mm thermal printer support
+    """,
     "author": "Custom Development",
     "depends": ["pos_self_order", "point_of_sale"],
     "data": [
