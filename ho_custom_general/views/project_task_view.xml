@@ -1,0 +1,285 @@
+<odoo>
+    <data>
+        <record id="view_task_form2" model="ir.ui.view">
+            <field name="name">project.task.form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+
+                
+                 <xpath expr="//field[@name='project_id'][1]" position="attributes">
+                        <attribute name="readonly">1</attribute>
+
+                </xpath>
+
+                <xpath expr="//field[@name='user_ids']" position="after">
+                    <field name="partner_id" context="{'default_is_company':True}" domain="[('is_company', '=', True)]" readonly="1"/>
+                </xpath>
+
+     
+                <xpath expr="//field[@name='user_ids']" position="before">
+                  <!--  <field name="po_company_id" required="1" domain="[('is_company', '=', True)]"  />-->
+                    <field name="agent_id" required="1" domain="[('is_company', '=', False)]" readonly="1" />
+
+                </xpath>
+                
+                 <xpath expr="//field[@name='user_ids']" position="before">
+                    <field name="po_sequence"/>
+                      <field name="request_type"/>
+                     <field name="previous_request_type"/>
+                </xpath>
+
+                <xpath expr="//sheet/notebook" position="before" > 
+                    <group>
+                        <group>
+                            <field name="setting_date"/>
+                            <field name="sending_date"/>
+                            <field name="receive_date"/>
+                            <field name="end_reg_date"/>
+                            <field name="post_doc_date"/>
+                            <field name="pre_ad_date"/>
+                        </group>
+                        <group>
+                            <field name="fix_problem_date"/>
+                            <field name="system_sign_date"/>
+                            <field name="applicant_send_date"/>
+                            <field name="tracking_number"/>
+                            <field name="Corrective_number"/>
+                            <field name="Barcode_post"/>
+
+                        </group>
+                    </group>
+
+
+
+                    <group  name="company_info" string="Company Info">
+                        <group>
+                            <field name="company_name"/>
+                            <field name="company_address"/>
+                            <field name="company_city"/>
+                            <field name="register_number"/>
+                        </group>
+                        <group>
+                            <field name="company_register_type_id"/>
+                            <field name="national_identity"/>
+                            <field name="newspaper"/>
+                            <field name="file_number"/>
+                        </group>
+                    </group>
+
+
+                    <group  name="capital_share_info" string="Capital Share Info">
+                        <group>
+                            <field name="company_capital"/>
+                            <field name="share_number"/>
+                            <field name="share_value"/>
+                        </group>
+                        <group>
+                            <field name="share_type"/>
+                            <field name="shareholder_number"/>
+                        </group>
+                    </group>
+
+                     <group  name="board_member_info" string="Board Member Info">
+                        <group>
+                            <field name="board_number"/>
+                            <field name="board_end"/>
+                            <field name="board_start"/>
+                        </group>
+                        <group>
+                            <field name="signatory_papers"/>
+                            <field name="token_signature_holder"/>
+                        </group>
+                    </group>
+
+                    <group  name="assemblies_info" string="Assemblies Info">
+                        <group>
+                            <field name="last_ordinary_assembly"/>
+                            <field name="last_extension_inspector"/>
+                           
+                        </group>
+                        <group>
+                            <field name="approval_financial_statements"/>
+                         
+                        </group>
+                    </group>
+
+
+                </xpath>
+
+                 <xpath expr="//page[@name='description_page']" position="before">
+
+                             <page id="member_tab" string="Company Member" name="member_tab">
+                                <field name="company_member_ids"
+                                
+                                       mode="list,kanban"                                       
+                                    
+                                       >
+                                    <list editable="bottom" string="Company Member" >
+                                        <!-- Displayed fields -->
+                                        
+                                        <field name="company_member_id" domain="[('active', '!=', False)]"/>
+                                         <field name="position_id"/>
+
+                                        <field name="is_board_member"/>
+                                        <field name="is_inspector"/>
+
+                                         <field name="share_number" invisible="not is_board_member"/>
+                                         <field name="share_value" invisible="not is_board_member"/>
+                                         <field name="share_type" invisible="not is_board_member"/>
+                                    </list>
+                                    <!-- Form view to cover mobile use -->
+                                    <form>
+                                      <group>
+                                              <field name="company_member_id"  domain="[('active', '!=', False)]" />
+                                              <field name="position_id"/>
+
+                                               <field name="is_board_member"/>
+                                               <field name="is_inspector"/>
+
+                                              <field name="share_number" invisible="not is_board_member"/>
+                                               <field name="share_value" invisible="not is_board_member"/>
+                                               <field name="share_type" invisible="not is_board_member"/>
+                                       </group>
+                                    </form>
+                                </field>
+                              
+                            </page>
+                </xpath>
+
+                <xpath expr="//page[@name='sub_tasks_page']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                  <xpath expr="//page[@name='extra_info']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+
+            </field>
+        </record>
+ 
+        <record id="quick_create_task_form" model="ir.ui.view">
+            <field name="name">project.task.form.quick_create</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.quick_create_task_form"/>
+            <field name="arch" type="xml">
+
+ 
+                <xpath expr="//field[@name='user_ids']" position="before">
+                    <!--<field name="po_company_id" required="1" domain="[('is_company', '=', True)]"  />-->
+
+                    <field name="partner_id" domain="[('is_company', '=', True)]" context="{'default_is_company':True}"/>
+                    <field name="agent_id" required="1" domain="[('is_company', '=', False)]"  />
+
+    
+                </xpath>
+
+
+            </field>
+        </record>
+       
+  
+        <record id="view_task_kanban" model="ir.ui.view">
+            <field name="name">project.task.kanban</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="arch" type="xml"> 
+           
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                 <!--   <field name="po_company_id" required="1" domain="[('is_company', '=', True)]"  />-->
+                    <field name="agent_id" required="1" domain="[('is_company', '=', False)]"  />
+
+                     <field name="po_sequence"  readonly="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('is_company', '=', True)]</attribute>
+                    <attribute name="context">{'default_is_company':True}</attribute>
+
+                </xpath>
+                
+               
+         </field>
+       
+        </record>
+
+
+        <record id="project_task_view_tree" model="ir.ui.view">
+            <field name="name">project.task.view.list.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.project_task_view_tree_base"/>
+            <field name="arch" type="xml">
+          
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="po_sequence" readonly="1" />
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+        <!-- Task Request Type -->
+        <record id="task_request_type_view_form" model="ir.ui.view">
+            <field name="name">Task Request Type</field>
+            <field name="model">task.request.type</field>
+            <field name="arch" type="xml">
+                <form string="Task Request Type">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="task_request_type_view_list" model="ir.ui.view">
+            <field name="name">Task Request Type</field>
+            <field name="model">task.request.type</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Task Request Type" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="task_request_type_view_search" model="ir.ui.view">
+            <field name="name">task.request.type.view.search</field>
+            <field name="model">task.request.type</field>
+            <field name="arch" type="xml">
+                <search string="Search Task Request Type">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="task_request_type_action" model="ir.actions.act_window">
+            <field name="name">Task Request Type</field>
+            <field name="res_model">task.request.type</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="member_position_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Task Request Type
+              </p><p>
+                Specify Task Request Type.
+              </p>
+            </field>
+        </record>
+       <menuitem id="task_request_type_menu" name="Task Request Type" action="task_request_type_action" parent="project.menu_project_config"   sequence="4"/>
+
+
+
+
+        
+ </data>
+</odoo>

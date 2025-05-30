@@ -1,0 +1,989 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ho_custom_general
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e-20241007\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-12 07:53+0000\n"
+"PO-Revision-Date: 2025-01-12 07:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__active
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__active
+msgid "Active"
+msgstr "فعال"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.res_partner_activitysubject_action
+#: model:ir.model,name:ho_custom_general.model_res_partner_activitysubject
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__activity_subject_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__activity_subject_id
+#: model:ir.ui.menu,name:ho_custom_general.res_partner_activitysubject_menu
+#: model:ir.ui.menu,name:ho_custom_general.share_type_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_activitysubject_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_activitysubject_view_list
+msgid "Activity Subject"
+msgstr "موضوع فعالیت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__advanced_diploma
+msgid "Advanced Diploma"
+msgstr "فوق دیپلم"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__agent_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_sale_order__agent_id
+msgid "Agent"
+msgstr "رابط"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__project_project__project_type__establishment
+msgid "Announcement Of Establishment"
+msgstr "اگهی تاسیس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__project_project__project_type__registration
+msgid "Announcement Of Registration "
+msgstr "آگهی ثبت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__applicant_send_date
+msgid "Applicant Send Date"
+msgstr "تاریخ ارسال درخواست "
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__approval_financial_statements
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__approval_financial_statements
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__approval_financial_statements
+msgid "Approval Financial Statements"
+msgstr "تصویب صورتهای مالی"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.member_position_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_activitysubject_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companyregistertype_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companystate_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_knowingmethod_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_studyfield_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.share_type_view_search
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.task_request_type_view_search
+msgid "Archived"
+msgstr "بایگانی شده"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.action_account_ind_partner
+#: model:ir.ui.menu,name:ho_custom_general.partner_ind_menu
+msgid "Ashkhas Haghighi"
+msgstr "اشخاص حقیقی"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.action_account_company_partner
+#: model:ir.ui.menu,name:ho_custom_general.partner_company_menu
+msgid "Ashkhas Hoghoghi"
+msgstr "اشخاص حقوقی"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_task_form2
+msgid "Assemblies Info"
+msgstr "مجامع"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__bachelor
+msgid "Bachelor"
+msgstr "لیسانس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__Barcode_post
+msgid "Barcode Post"
+msgstr "شماره بارکد پستی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__birth_place
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__birth_place
+msgid "Birth Place"
+msgstr "مکان تولد"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__birth_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__birth_date
+msgid "Birthdate"
+msgstr "تاریخ تولد"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__board_end
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__board_end
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__board_end
+msgid "Board End"
+msgstr "پایان تاریخ هیئت مدیره"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_task_form2
+msgid "Board Member Info"
+msgstr "هیئت مدیره"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__board_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__board_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__board_number
+msgid "Board Number"
+msgstr "تعداد اعضاء هیئت مدیره "
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__board_start
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__board_start
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__board_start
+msgid "Board Start"
+msgstr "شروع هیئت مدیره"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+msgid "Business Info"
+msgstr "اطلاعات کسب و کار"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__business_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__business_name
+msgid "Business Name"
+msgstr "نام کسب و کار"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_task_form2
+msgid "Capital Share Info"
+msgstr "سرمایه و سهام"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_capital
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__company_capital
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__company_capital
+msgid "Capital of the Company"
+msgstr "سرمایه شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__change_date
+msgid "Change Date"
+msgstr "تاریخ تغییر"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__chang_list
+msgid "Change List"
+msgstr "لیست تغییرات"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+msgid "Communication Ways"
+msgstr "راه های ارتباطی"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_res_company
+msgid "Companies"
+msgstr "شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__po_company_id
+msgid "Company"
+msgstr "شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_address
+msgid "Company Address"
+msgstr "آدرس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_city
+msgid "Company City"
+msgstr "شهر"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_task_form2
+msgid "Company Info"
+msgstr "اطلاعات شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_member_ids
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__company_member_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__company_member_ids
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__company_member_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__company_member_ids
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_task_form2
+msgid "Company Member"
+msgstr "اعضای شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_name
+msgid "Company Name"
+msgstr "نام شرکت"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.res_partner_companyregistertype_action
+#: model:ir.ui.menu,name:ho_custom_general.res_partner_companyregistertype_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companyregistertype_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companyregistertype_view_list
+msgid "Company Register Type"
+msgstr "نوع ثبت شرکت"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.res_partner_companystate_action
+#: model:ir.model,name:ho_custom_general.model_res_partner_companystate
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__company_state_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__company_state_id
+#: model:ir.ui.menu,name:ho_custom_general.res_partner_companystate_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companystate_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companystate_view_list
+msgid "Company State"
+msgstr "وضعیت شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__company_register_type_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__company_register_type_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__company_register_type_id
+msgid "Company Type"
+msgstr "نوع شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__comprehensive_code
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__comprehensive_code
+msgid "Comprehensive Code"
+msgstr "کد فراگیر"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_res_partner
+msgid "Contact"
+msgstr "مخاطب"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__Corrective_number
+msgid "Corrective Number"
+msgstr "شماره اصلاحی"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_activitysubject_action
+msgid "Create an Activity Subject"
+msgstr "ایجاد موضوع فعالیت"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_companyregistertype_action
+msgid "Create an Company Register Type"
+msgstr "ایجاد نوع ثبت شرکت"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_companystate_action
+msgid "Create an Company State"
+msgstr "ایجاد وضعیت شرکن"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_knowingmethod_action
+msgid "Create an Knowing Method"
+msgstr "ایجاد نحوه آشنایی"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.member_position_action
+msgid "Create an Member Position"
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.partner_task_log_action
+msgid "Create an Partner Task Log"
+msgstr "ایجاد تاریخچه تغییرات"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.share_type_action
+msgid "Create an Share Type"
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_studyfield_action
+msgid "Create an Study Field"
+msgstr "ایجاد رشته تحصیلی"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.task_request_type_action
+msgid "Create an Task Request Type"
+msgstr "ایجاد نوع درخواست"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__create_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__create_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__partner_id
+msgid "Customer"
+msgstr "مشتری"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__diploma
+msgid "Diploma"
+msgstr "دیپلم"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__display_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__display_name
+msgid "Display Name"
+msgstr "نام نمایشی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__doctorate
+msgid "Doctorate"
+msgstr "دکترا"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__partner_task_log__state__1_done
+msgid "Done"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__education_degree
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__education_degree
+msgid "Education Degree"
+msgstr "مدرک تحصیلی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__end_reg_date
+msgid "End Registration Date"
+msgstr "تاریخ ثبت نهایی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__establishment_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__establishment_date
+msgid "Establishment Date"
+msgstr "تاریخ تاسیس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__father_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__father_name
+msgid "Father Name"
+msgstr "نام پدر"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__file_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__file_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__file_number
+msgid "File Number"
+msgstr "شماره پرونده"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__first_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__first_name
+msgid "First Name"
+msgstr "نام"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__fiscal_start
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__fiscal_start
+msgid "Fiscal Year Start"
+msgstr "شروع سال مالی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__fix_problem_date
+msgid "Fix Problem Date"
+msgstr "تاریخ رفع ایراد"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__goods_service_provided
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__goods_service_provided
+msgid "Goods Or Services to be Provided"
+msgstr "کالا یا خدماتی که قرار است ارائه شود"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__goods_service_required
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__goods_service_required
+msgid "Goods Or Services to be Required"
+msgstr "کالاها یا خدمات مورد نیاز"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__id
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__id
+msgid "ID"
+msgstr "شناسه"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__inspector_select
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__inspector_select
+msgid "Inspector Select"
+msgstr "انتخاب بازرس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__insurance_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__insurance_number
+msgid "Insurance Number"
+msgstr "شماره بیمه"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__internal_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__internal_number
+msgid "Internal Number"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__is_board_member
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__is_board_member
+msgid "Is Board Member"
+msgstr "هیئت مدیره"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__is_inspector
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__is_inspector
+msgid "Is Inspector"
+msgstr "بازرس"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.res_partner_knowingmethod_action
+#: model:ir.model,name:ho_custom_general.model_res_partner_knowingmethod
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__knowing_method_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__knowing_method_id
+#: model:ir.ui.menu,name:ho_custom_general.res_partner_knowingmethod_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_knowingmethod_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_knowingmethod_view_list
+msgid "Knowing Method"
+msgstr "نحوه آشنایی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__last_extension_inspector
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__last_extension_inspector
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__last_extension_inspector
+msgid "Last Extension Inspector"
+msgstr "آخرین تمدید بازرس"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__last_name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__last_name
+msgid "Last Name"
+msgstr "نام خانوادگی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__last_ordinary_assembly
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__last_ordinary_assembly
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__last_ordinary_assembly
+msgid "Last Ordinary Assembly"
+msgstr "تاریخ آخرین مجمع عادی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__write_uid
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__write_date
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__master
+msgid "Master"
+msgstr "فوق لیسانس"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.member_position_action
+#: model:ir.model,name:ho_custom_general.model_member_position
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__position_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__position_id
+#: model:ir.ui.menu,name:ho_custom_general.member_position_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.member_position_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.member_position_view_list
+msgid "Member Position"
+msgstr "سمت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__mobile2
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__mobile3
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__mobile2
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__mobile3
+msgid "Mobile"
+msgstr "موبایل"
+
+#. module: ho_custom_general
+#: model:ir.model.constraint,message:ho_custom_general.constraint_res_partner_mobile_uniq
+msgid "Mobile already exists!"
+msgstr "شماره تلفن همراه  تکراری است"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_member_position__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_activitysubject__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companyregistertype__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_companystate__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_knowingmethod__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_studyfield__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_share_type__name
+#: model:ir.model.fields,field_description:ho_custom_general.field_task_request_type__name
+msgid "Name"
+msgstr "نام"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__national_code
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__national_code
+msgid "National Code"
+msgstr "کد ملی"
+
+#. module: ho_custom_general
+#: model:ir.model.constraint,message:ho_custom_general.constraint_res_partner_national_code_uniq
+msgid "National Code already exists!"
+msgstr "کد ملی تکراری است"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_company__national_identity
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__national_identity
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__national_identity
+msgid "National ID"
+msgstr "شناسه ملی"
+
+#. module: ho_custom_general
+#: model:ir.model.constraint,message:ho_custom_general.constraint_res_partner_national_id_uniq
+msgid "National ID already exists!"
+msgstr "شناسه ملی تکراری است"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__national_identity
+msgid "National Identity"
+msgstr "شناسه ملی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__newspaper
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__newspaper
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__newspaper
+msgid "Newspaper"
+msgstr "روزنامه"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.partner_task_log_action
+#: model:ir.ui.menu,name:ho_custom_general.partner_task_log_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.partner_Task_Log_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.partner_task_log_view_list
+msgid "Partner Task Log"
+msgstr "تاریخچه تغییرات"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__passport_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__passport_number
+msgid "Passport Number"
+msgstr "شماره پاسپورت"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+msgid "Personal Info"
+msgstr "اطلاعات شخصی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__phone2
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__phone3
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__phone2
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__phone3
+msgid "Phone"
+msgstr "تلفن"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__position
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__position
+msgid "Position"
+msgstr "سمت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__position_end
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__position_end
+msgid "Position End"
+msgstr "تاریخ پایان سمت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__position_start
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__position_start
+msgid "Position Start"
+msgstr "تاریخ شروع سمت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields.selection,name:ho_custom_general.selection__res_partner__education_degree__post_doctorate
+msgid "Post Doctorate"
+msgstr "فوق دکترا"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__post_doc_date
+msgid "Post Document Date"
+msgstr "تاریخ پست مدارک "
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__po_sequence
+msgid "Pouyande Sequence"
+msgstr "دنباله آگهی ها"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__pre_ad_date
+msgid "Pre Ad Date"
+msgstr "تاریخ اعلام پیش آگهی "
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__presenter
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__presenter
+msgid "Presenter"
+msgstr "معرف"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__previous_request_type
+msgid "Previous Request Type"
+msgstr "نوع درخواست قبلی"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_project_project
+msgid "Project"
+msgstr "پروژه"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_project_task_member
+msgid "Project Task Member"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_project__project_type
+msgid "Project Type"
+msgstr "نوع پروژه"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__receive_date
+msgid "Receive Date"
+msgstr "تاریخ دریافت صورتجلسه از متقاضی"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.view_partner_form
+msgid "Register Info"
+msgstr "اطلاعات ثبتی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__register_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__register_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__register_number
+msgid "Register Number"
+msgstr "شماره ثبت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__request_type
+msgid "Request Type"
+msgstr "نوع درخواست"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_res_partner_member
+msgid "Res Partner Member"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_sale_order
+msgid "Sales Order"
+msgstr "سفارش فروش"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "سطر سفارش‌فروش"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.member_position_view_search
+msgid "Search Member Position"
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_activitysubject_view_search
+msgid "Search Partner Activity Subject"
+msgstr "جستجوی موضوع فعالیت های شرکت"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companyregistertype_view_search
+msgid "Search Partner Company Register Type"
+msgstr "جستجوی نوع ثبت شرکت"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_companystate_view_search
+msgid "Search Partner Company State"
+msgstr "جستجوی وضعیت شرکت"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_knowingmethod_view_search
+msgid "Search Partner Knowing Method"
+msgstr "جستجوی نحوه آشنایی"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.partner_task_log_view_search
+msgid "Search Partner Partner Task Log"
+msgstr "جستجوی تاریخچه تغییرات"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_studyfield_view_search
+msgid "Search Partner Study Field"
+msgstr "جستجوی رشته تحصیلی"
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.share_type_view_search
+msgid "Search Share Type"
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.task_request_type_view_search
+msgid "Search Task Request Type"
+msgstr "جستجوی نوع درخواست"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__sending_date
+msgid "Sending Date"
+msgstr "تاریخ ارسال صورتجلسه به متقاضی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__setting_date
+msgid "Setting Date"
+msgstr "تاریخ تنظیم صورتجلسه و ثبت موقت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__share_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__share_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__share_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__share_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__share_number
+msgid "Share Number"
+msgstr "تعداد سهام"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.share_type_action
+#: model:ir.model,name:ho_custom_general.model_share_type
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__share_type
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__share_type
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__share_type
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.share_type_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.share_type_view_list
+msgid "Share Type"
+msgstr "نوع سهام"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__share_value
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__share_value
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__share_value
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner_member__share_value
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__share_value
+msgid "Share Value"
+msgstr "ارزش ریالی هر سهم"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__shareholder_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__shareholder_number
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__shareholder_number
+msgid "Shareholder Number"
+msgstr "تعداد سهامدار"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__signatory_registers
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__signatory_registers
+msgid "Signatory of the Registers"
+msgstr "امضا کننده دفاتر ثبت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__signatory_papers
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__signatory_papers
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__signatory_papers
+msgid "Signatory of the papers"
+msgstr "امضا کننده اوراق"
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.partner_task_log_action
+msgid ""
+"Specify Partner Task Log to classify your contacts and draw up reports."
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.task_request_type_action
+msgid "Specify Task Request Type."
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.member_position_action
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_activitysubject_action
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_companyregistertype_action
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_companystate_action
+msgid ""
+"Specify company register type to classify your contacts and draw up reports."
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_knowingmethod_action
+msgid "Specify knowingmethod to classify your contacts and draw up reports."
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.share_type_action
+msgid "Specify share type to classify your contacts and draw up reports."
+msgstr ""
+
+#. module: ho_custom_general
+#: model_terms:ir.actions.act_window,help:ho_custom_general.res_partner_studyfield_action
+msgid "Specify studyfield to classify your contacts and draw up reports."
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__state
+msgid "State"
+msgstr "وضعیت"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.res_partner_studyfield_action
+#: model:ir.model,name:ho_custom_general.model_res_partner_studyfield
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__study_field_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__study_field_id
+#: model:ir.ui.menu,name:ho_custom_general.res_partner_studyfield_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_studyfield_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.res_partner_studyfield_view_list
+msgid "Study Field"
+msgstr "رشته تحصیلی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__system_sign_date
+msgid "System Sign Date"
+msgstr "تاریخ امضاء سیستمی"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_project_task
+#: model:ir.model.fields,field_description:ho_custom_general.field_partner_task_log__task_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task_member__task_id
+msgid "Task"
+msgstr "وظیفه"
+
+#. module: ho_custom_general
+#: model:ir.actions.act_window,name:ho_custom_general.task_request_type_action
+#: model:ir.model,name:ho_custom_general.model_task_request_type
+#: model:ir.ui.menu,name:ho_custom_general.task_request_type_menu
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.task_request_type_view_form
+#: model_terms:ir.ui.view,arch_db:ho_custom_general.task_request_type_view_list
+msgid "Task Request Type"
+msgstr "نوع درخواست"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__token_signature_holder
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__token_signature_holder
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__token_signature_holder
+msgid "Token Signature Holder"
+msgstr "دارنده توکن جهت امضاء "
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__tracking_number
+msgid "Tracking Number"
+msgstr "شماره پیگیری"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_project_task__write_partner
+msgid "Write Partner"
+msgstr ""
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__year_degree
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__year_degree
+msgid "Year Degree"
+msgstr "سال اخذ مدرک تحصیلی"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__citizen_id
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__citizen_id
+msgid "citizen"
+msgstr "تبعه کشور"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_res_partner_companyregistertype
+msgid "company Register Type"
+msgstr "نوع ثبت شرکت"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__instagram
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__instagram
+msgid "instagram"
+msgstr "اینستاگرام"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__linkedin
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__linkedin
+msgid "linkedin"
+msgstr "لینکدین"
+
+#. module: ho_custom_general
+#: model:ir.model,name:ho_custom_general.model_partner_task_log
+msgid "partner.task.log"
+msgstr "تاریخچه تغییرات"
+
+#. module: ho_custom_general
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_partner__telegram
+#: model:ir.model.fields,field_description:ho_custom_general.field_res_users__telegram
+msgid "telegram"
+msgstr "تلگرام"

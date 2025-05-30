@@ -1,0 +1,37 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_res_partner_studyfield_group_user","res_partner_studyfield group_user","model_res_partner_studyfield","base.group_user",1,0,0,0
+"access_res_partner_studyfield_group_system","res_partner_studyfield group_system","model_res_partner_studyfield","base.group_system",1,1,1,1
+
+"access_res_partner_knowingmethod_group_user","res_partner_knowingmethod group_user","model_res_partner_knowingmethod","base.group_user",1,0,0,0
+"access_res_partner_knowingmethod_group_system","res_partner_knowingmethod group_system","model_res_partner_knowingmethod","base.group_system",1,1,1,1
+
+"access_res_partner_companyregistertype_group_user","res_partner_companyregistertype group_user","model_res_partner_companyregistertype","base.group_user",1,0,0,0
+"access_res_partner_companyregistertype_group_system","res_partner_companyregistertype group_system","model_res_partner_companyregistertype","base.group_system",1,1,1,1
+
+"access_res_partner_companystate_group_user","res_partner_companystate group_user","model_res_partner_companystate","base.group_user",1,0,0,0
+"access_res_partner_companystate_group_system","res_partner_companystate group_system","model_res_partner_companystate","base.group_system",1,1,1,1
+
+"access_res_partner_activitysubject_group_user","res_partner_activitysubject group_user","model_res_partner_activitysubject","base.group_user",1,0,0,0
+"access_res_partner_activitysubject_group_system","res_partner_activitysubject group_system","model_res_partner_activitysubject","base.group_system",1,1,1,1
+
+"access_partner_task_log_group_user","res_partner_task_log group_user","model_partner_task_log","base.group_user",1,0,0,0
+"access_res_partner_task_log_group_system","res_partner_task_log group_system","model_partner_task_log","base.group_system",1,1,1,1
+
+
+"access_project_task_member_group_user","project_task_member group_user","model_project_task_member","base.group_user",1,0,0,0
+"access_project_task_member_group_system","project_task_member group_system","model_project_task_member","base.group_system",1,1,1,1
+
+"access_res_partner_member_group_user","res_partner_member group_user","model_res_partner_member","base.group_user",1,0,0,0
+"access_res_partner_member_group_system","res_partner_member group_system","model_res_partner_member","base.group_system",1,1,1,1
+
+
+"access_member_position_user","member_position group_user","model_member_position","base.group_user",1,0,0,0
+"access_member_position_group_system","member_position group_system","model_member_position","base.group_system",1,1,1,1
+
+
+"access_task_request_type_user","task_request_type group_user","model_task_request_type","base.group_user",1,0,0,0
+"access_task_request_type_group_system","task_request_type group_system","model_task_request_type","base.group_system",1,1,1,1
+
+
+"access_share_type","share_type group_user","model_share_type","base.group_user",1,0,0,0
+"access_share_type_group_system","share_type group_system","model_share_type","base.group_system",1,1,1,1

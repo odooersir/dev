@@ -1,0 +1,937 @@
+<odoo>
+    <data>
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+
+            
+                <xpath expr="//sheet/notebook" position="before" >
+
+                    <group  name="personal_info" string="Personal Info"  invisible="is_company">
+                                <group>
+                                    
+                                     <field name="first_name" invisible="is_company" />
+                                     <field name="last_name" invisible="is_company"/>
+                                      <field name="national_code" invisible="is_company" />
+                                    <field name="father_name" invisible="is_company" />
+
+                                    <field name="birth_place" invisible="is_company" />
+
+                                    <field name="study_field_id" invisible="is_company"  options="{'no_create': True}" />
+
+
+                                    <field name="education_degree" invisible="is_company" />
+
+                                    <field name="year_degree" invisible="is_company"/>
+
+                                    
+
+                                </group>
+                                <group>
+                                   
+
+
+                                    
+                                    <field name="citizen_id" invisible="is_company" />
+                                     <field name="passport_number" invisible="is_company" />
+                                      <field name="comprehensive_code" invisible="is_company" />
+                                     <field name="birth_date" invisible="is_company"/>
+
+                                    <field name="insurance_number" invisible="is_company" />
+
+
+
+                                </group>
+                              
+                    </group>
+
+                    <group  name="company_info" string="Company Info" invisible="not is_company">
+                                    <group>
+                                        
+
+                                        <field name="national_identity" invisible="not is_company" readonly="1"/>
+                                        <field name="register_number" invisible="not is_company" readonly="1"/>
+
+                                        <field name="company_register_type_id" invisible="not is_company" readonly="1"/>
+                                        <field name="file_number" invisible="not is_company"  readonly="1"/>
+
+                                          <field name="industry_id" invisible="not is_company"  options="{'no_create': True}" readonly="1"/>
+
+                                        <field name="goods_service_provided" invisible="not is_company"  readonly="1"/>
+                                        <field name="goods_service_required" invisible="not is_company"  readonly="1"/>
+
+                                            </group>
+                                    <group>
+                                         <field name="business_name" invisible="not is_company" readonly="1"/>
+                                          <field name="register_number" invisible="not is_company" readonly="1"/>
+                                           <field name="company_state_id" invisible="not is_company" readonly="1"/>
+                                           
+                                          
+                                           <field name="establishment_date" invisible="not is_company" readonly="1"/>
+
+
+                                         
+                                          <field name="activity_subject_id" invisible="not is_company" readonly="1" />
+
+                                           <field name="share_number" invisible="not is_company"  readonly="1"/>
+                                        <field name="share_value" invisible="not is_company"  readonly="1"/>
+
+
+
+
+                                    </group>
+
+                                    
+
+                    </group>
+
+                    
+                    <group  name="business_info" string="Business Info" invisible="is_company">
+
+                                    <group>
+                                        <field name="business_name" invisible="is_company" readonly="1"/>
+                                        <field name="file_number" invisible="is_company" readonly="1"/>
+                                        <field name="presenter" invisible="is_company"  readonly="1"/>
+
+                                        <field name="share_number" invisible="is_company"  readonly="1"/>
+                                        <field name="share_value" invisible="is_company"  readonly="1"/>
+
+                                        
+                                    </group>
+
+                                    <group>
+                                        <field name="industry_id" invisible="is_company"  options="{'no_create': True}" readonly="1"/>
+                                        <field name="activity_subject_id" invisible="is_company" readonly="1" />
+
+                                        <field name="goods_service_provided" invisible="is_company"  readonly="1"/>
+                                        <field name="goods_service_required" invisible="is_company"  readonly="1"/>
+
+                                        <field name="position" invisible="is_company"  readonly="1"/>
+                                        <field name="position_start" invisible="is_company"  readonly="1"/>
+                                        <field name="position_end" invisible="is_company"  readonly="1"/>
+
+
+                                    </group>
+
+
+                   </group>
+
+                   
+                 
+
+                   <group  name="register_info" string="Register Info" invisible="not is_company">
+
+                        <group>
+                                           
+                                    <field name="board_number" invisible="not is_company" readonly="1"/>
+                                    <field name="newspaper" invisible="not is_company" readonly="1"/>
+                                    <field name="board_start" invisible="not is_company" readonly="1"/>
+                                    <field name="board_end" invisible="not is_company" readonly="1"/>
+                                   <field name="company_capital" invisible="not is_company" readonly="1"/>
+
+                                    <field name="share_value" invisible="not is_company" readonly="1"/>
+
+                                   <field name="shareholder_number" invisible="not is_company" readonly="1"/>
+
+                                    <field name="share_number" invisible="not is_company" readonly="1"/>
+
+
+
+
+
+
+                            </group>
+                            
+                            <group>
+                                         <field name="fiscal_start" invisible="not is_company" readonly="1"/>
+                                          <field name="inspector_select" invisible="not is_company" readonly="1"/>
+                                           <field name="approval_financial_statements" invisible="not is_company" readonly="1"/>
+                                           <field name="signatory_registers" invisible="not is_company" readonly="1"/>
+                                            <field name="signatory_papers" invisible="not is_company" readonly="1"/>
+
+
+                                            <field name="token_signature_holder" readonly="1"/>
+                                            <field name="last_ordinary_assembly" readonly="1"/>
+                                            <field name="last_extension_inspector" readonly="1"/>
+                                            <field name="approval_financial_statements" readonly="1"/>
+
+
+                            </group>
+
+                    </group>
+
+                                         
+
+
+
+           
+                  
+                  
+             
+                   
+                   <group  name="communication_ways" string="Communication Ways" > 
+                                <group>
+
+                                       <!-- <field name="email" widget="email"/>-->
+                                        <field name="website"/>
+
+
+                                        <field name="telegram" />
+                                        <field name="instagram" />
+                                        <field name="linkedin" />
+                                        
+                                        <field name="knowing_method_id" />
+
+                                         
+                                    
+                                </group>
+
+                                <group>
+                                       
+                                        <field name="phone2" widget="phone"/>
+
+                                        <field name="phone3" widget="phone"/>
+
+                                       
+
+
+                                        <field name="mobile2" widget="phone"/>
+                                        <field name="mobile3" widget="phone"/>
+                                         <field name="internal_number"/>
+                                </group>
+
+
+                   </group>
+                
+   
+                </xpath>
+
+
+                 <xpath expr="//page[@name='internal_notes']"  position="before">
+                             <page id="member_tab" string="Company Member" name="member_tab" invisible="not is_company" >
+                                <field name="company_member_ids"
+                                
+                                       mode="list,kanban"                                       
+                                    
+                                       >
+                                    <list string="Company Member" delete="false" create="false" edit="false" no_open="1">
+                                        <!-- Displayed fields -->
+                                        
+                                        <field name="company_member_id" domain="[('active', '!=', False)]"/>
+                                         <field name="position_id"/>
+                                        
+                                        <field name="is_board_member"/>
+                                        <field name="is_inspector"/>
+
+                                         <field name="share_number" invisible="not is_board_member"/>
+                                         <field name="share_value"  invisible="not is_board_member"/>
+                                         <field name="share_type"  invisible="not is_board_member"/>
+                                    </list>
+                                    <!-- Form view to cover mobile use -->
+                                    <form>
+                                      <group>
+                                              <field name="company_member_id"  domain="[('active', '!=', False)]" />
+                                              <field name="position_id"/>
+
+                                              <field name="is_board_member"/>
+                                              <field name="is_inspector"/>
+
+                                              <field name="share_number" invisible="not is_board_member"/>
+                                               <field name="share_value" invisible="not is_board_member"/>
+                                               <field name="share_type" invisible="not is_board_member"/>
+                                       </group>
+                                    </form>
+                                </field>
+                              
+                            </page>
+                </xpath>
+
+
+            <!--
+                <field name="phone" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+
+
+                 <xpath expr="//field[@name='phone2']" position="before">
+                    <field name="phone" position="move"/>
+                </xpath>
+                -->
+        <!--    <field name="phone" widget="phone" position="replace"/>
+            <field name="mobile" widget="phone" position="replace"/>
+
+            <field name="email" position="replace"/>
+            <field name="website" position="replace"/> -->
+
+            
+
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+          
+                <xpath expr="//page[@name='accounting']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                 <xpath expr="//page[@name='contact_addresses']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+
+
+            </field>
+        </record>
+
+
+
+
+
+       <!-- Study Field -->
+        <record id="res_partner_studyfield_view_form" model="ir.ui.view">
+            <field name="name">Study Field</field>
+            <field name="model">res.partner.studyfield</field>
+            <field name="arch" type="xml">
+                <form string="Study Field">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_studyfield_view_list" model="ir.ui.view">
+            <field name="name">Study Field</field>
+            <field name="model">res.partner.studyfield</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Study Field" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_partner_studyfield_view_search" model="ir.ui.view">
+            <field name="name">res.partner.studyfield.view.search</field>
+            <field name="model">res.partner.studyfield</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Study Field">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="res_partner_studyfield_action" model="ir.actions.act_window">
+            <field name="name">Study Field</field>
+            <field name="res_model">res.partner.studyfield</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="res_partner_studyfield_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Study Field
+              </p><p>
+                Specify studyfield to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="res_partner_studyfield_menu" name="Study Field" action="res_partner_studyfield_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+
+        <!-- Knowing Method -->
+        <record id="res_partner_knowingmethod_view_form" model="ir.ui.view">
+            <field name="name">Knowing Method</field>
+            <field name="model">res.partner.knowingmethod</field>
+            <field name="arch" type="xml">
+                <form string="Knowing Method">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_knowingmethod_view_list" model="ir.ui.view">
+            <field name="name">Knowing Method</field>
+            <field name="model">res.partner.knowingmethod</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Knowing Method" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_partner_knowingmethod_view_search" model="ir.ui.view">
+            <field name="name">res.partner.knowingmethod.view.search</field>
+            <field name="model">res.partner.knowingmethod</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Knowing Method">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="res_partner_knowingmethod_action" model="ir.actions.act_window">
+            <field name="name">Knowing Method</field>
+            <field name="res_model">res.partner.knowingmethod</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="res_partner_knowingmethod_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Knowing Method
+              </p><p>
+                Specify knowingmethod to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="res_partner_knowingmethod_menu" name="Knowing Method" action="res_partner_knowingmethod_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+       <!-- Company Register Type -->
+        <record id="res_partner_companyregistertype_view_form" model="ir.ui.view">
+            <field name="name">Company Register Type</field>
+            <field name="model">res.partner.companyregistertype</field>
+            <field name="arch" type="xml">
+                <form string="Company Register Type">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_companyregistertype_view_list" model="ir.ui.view">
+            <field name="name">Company Register Type</field>
+            <field name="model">res.partner.companyregistertype</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Company Register Type" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_partner_companyregistertype_view_search" model="ir.ui.view">
+            <field name="name">res.partner.companyregistertype.view.search</field>
+            <field name="model">res.partner.companyregistertype</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Company Register Type">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="res_partner_companyregistertype_action" model="ir.actions.act_window">
+            <field name="name">Company Register Type</field>
+            <field name="res_model">res.partner.companyregistertype</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="res_partner_companyregistertype_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Company Register Type
+              </p><p>
+                Specify company register type to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="res_partner_companyregistertype_menu" name="Company Register Type" action="res_partner_companyregistertype_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+       <!-- Company State -->
+        <record id="res_partner_companystate_view_form" model="ir.ui.view">
+            <field name="name">Company State</field>
+            <field name="model">res.partner.companystate</field>
+            <field name="arch" type="xml">
+                <form string="Company State">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_companystate_view_list" model="ir.ui.view">
+            <field name="name">Company State</field>
+            <field name="model">res.partner.companystate</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Company State" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_partner_companystate_view_search" model="ir.ui.view">
+            <field name="name">res.partner.companystate.view.search</field>
+            <field name="model">res.partner.companystate</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Company State">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="res_partner_companystate_action" model="ir.actions.act_window">
+            <field name="name">Company State</field>
+            <field name="res_model">res.partner.companystate</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="res_partner_companystate_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Company State
+              </p><p>
+                Specify company register type to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="res_partner_companystate_menu" name="Company State" action="res_partner_companystate_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+<!-- Activity Subject -->
+        <record id="res_partner_activitysubject_view_form" model="ir.ui.view">
+            <field name="name">Activity Subject</field>
+            <field name="model">res.partner.activitysubject</field>
+            <field name="arch" type="xml">
+                <form string="Activity Subject">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_partner_activitysubject_view_list" model="ir.ui.view">
+            <field name="name">Activity Subject</field>
+            <field name="model">res.partner.activitysubject</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Activity Subject" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_partner_activitysubject_view_search" model="ir.ui.view">
+            <field name="name">res.partner.activitysubject.view.search</field>
+            <field name="model">res.partner.activitysubject</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Activity Subject">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="res_partner_activitysubject_action" model="ir.actions.act_window">
+            <field name="name">Activity Subject</field>
+            <field name="res_model">res.partner.activitysubject</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="res_partner_activitysubject_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Activity Subject
+              </p><p>
+                Specify company register type to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="res_partner_activitysubject_menu" name="Activity Subject" action="res_partner_activitysubject_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+<!-- Member Position -->
+        <record id="member_position_view_form" model="ir.ui.view">
+            <field name="name">Member Position</field>
+            <field name="model">member.position</field>
+            <field name="arch" type="xml">
+                <form string="Member Position">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="member_position_view_list" model="ir.ui.view">
+            <field name="name">Member Position</field>
+            <field name="model">member.position</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Member Position" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="member_position_view_search" model="ir.ui.view">
+            <field name="name">member.position.view.search</field>
+            <field name="model">member.position</field>
+            <field name="arch" type="xml">
+                <search string="Search Member Position">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="member_position_action" model="ir.actions.act_window">
+            <field name="name">Member Position</field>
+            <field name="res_model">member.position</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="member_position_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Member Position
+              </p><p>
+                Specify company register type to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="member_position_menu" name="Member Position" action="member_position_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+ <!-- Partner Task Log -->
+        <record id="partner_Task_Log_view_form" model="ir.ui.view">
+            <field name="name">Partner Task Log</field>
+            <field name="model">partner.task.log</field>
+            <field name="arch" type="xml">
+                <form string="Partner Task Log" edit="0" delete="0" create="0">
+                    <sheet>
+                        <group col="4">
+                             <field name="partner_id"/>
+                              <field name="task_id"/>
+                              <field name="change_date"/>
+                              <field name="state"/>
+                             <field name="chang_list"/>
+
+                                                          
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_task_log_view_list" model="ir.ui.view">
+            <field name="name">Partner Task Log</field>
+            <field name="model">partner.task.log</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Partner Task Log" edit="0" delete="0" create="0">
+                              <field name="partner_id"/>
+                              <field name="task_id"/>
+                              <field name="change_date"/>
+                              <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="partner_task_log_view_search" model="ir.ui.view">
+            <field name="name">partner.task.log.view.search</field>
+            <field name="model">partner.task.log</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner Partner Task Log">
+                        <field name="partner_id"/>
+                        <field name="task_id"/>
+                        <field name="change_date"/>
+                        <field name="state"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="partner_task_log_action" model="ir.actions.act_window">
+            <field name="name">Partner Task Log</field>
+            <field name="res_model">partner.task.log</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="partner_task_log_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Partner Task Log
+              </p><p>
+                Specify Partner Task Log to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="partner_task_log_menu" name="Partner Task Log" action="partner_task_log_action" parent="contacts.menu_contacts"   sequence="5"/>
+
+
+
+    <!-- Share Type -->
+        <record id="share_type_view_form" model="ir.ui.view">
+            <field name="name">Share Type</field>
+            <field name="model">share.type</field>
+            <field name="arch" type="xml">
+                <form string="Share Type">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                           
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="share_type_view_list" model="ir.ui.view">
+            <field name="name">Share Type</field>
+            <field name="model">share.type</field>
+            <field eval="6" name="priority"/>
+            <field name="arch" type="xml">
+                <list string="Share Type" editable="bottom">
+                    <field name="name"/>
+                    <field name="active" column_invisible="True"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="share_type_view_search" model="ir.ui.view">
+            <field name="name">share.type.view.search</field>
+            <field name="model">share.type</field>
+            <field name="arch" type="xml">
+                <search string="Search Share Type">
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="share_type_action" model="ir.actions.act_window">
+            <field name="name">Share Type</field>
+            <field name="res_model">share.type</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="share_type_view_search"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create an Share Type
+              </p><p>
+                Specify share type to classify your contacts and draw up reports.
+              </p>
+            </field>
+        </record>
+       <menuitem id="share_type_menu" name="Activity Subject" action="share_type_action" parent="contacts.res_partner_menu_config"   sequence="4"/>
+
+
+
+       
+         <record id="view_res_partner_ind_tree" model="ir.ui.view">
+            <field name="name">res.partner.ind.list</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <list>
+                   
+                    <field name="name"/> 
+                    <field name="national_code"/>                   
+                    <field name="email"/>                    
+                    <field name="phone"/>                       
+                    <field name="mobile"/>
+                    <field name="street"/>                        
+                    <field name="city"/>                            
+                    <field name="state_id"  column_invisible="True"/>
+                    <field name="zip"/>
+                   
+
+
+                </list>
+            </field>
+        </record>
+
+       
+
+
+        
+        <record id="res_partner_ind_view_search" model="ir.ui.view">
+            <field name="name">res.partner.search.ind</field>
+            <field name="model">res.partner</field>
+               
+            <field name="arch" type="xml">
+                    <search string="Search Partner">
+                        <field name="name" filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('ref', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+                      
+                       <field name="national_code"/>
+                        <field name="comprehensive_code"/>
+                        <field name="mobile"/>
+                        <field name="first_name"/>
+                        <field name="last_name"/>
+
+
+                        <field name="parent_id" domain="[('is_company', '=', True)]" operator="child_of"/>
+                        <field name="email" filter_domain="[('email', 'ilike', self)]"/>
+                        <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
+                        <field name="category_id" string="Tag" operator="child_of"/>
+                        <field name="user_id"/>
+                      
+                        <separator/>
+                        <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                        <separator/>
+                        <group expand="0" name="group_by" string="Group By">
+                            <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}"/>
+                            <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>
+                            <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                        </group>
+                       
+                    </search>
+            </field>
+
+
+        </record>
+
+
+        <record id="action_account_ind_partner" model="ir.actions.act_window">
+            <field name="name">Ashkhas Haghighi</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list,kanban,form,graph,activity</field>
+            <field name= "domain">[('is_company', '=', False)]</field>
+            
+            <field name="search_view_id" ref="res_partner_ind_view_search"/>
+
+            <field name="context">{
+                'default_is_company': False,
+                'search_is_company_filter': False,
+          
+            }</field>
+            <field name="view_id" ref="view_res_partner_ind_tree"/>
+           </record>
+
+        <menuitem id="partner_ind_menu" name="Ashkhas Haghighi" action="action_account_ind_partner" parent="contacts.menu_contacts"   sequence="1"/>
+
+
+
+
+
+
+<!--
+     ////////////////////////////  -->
+
+          
+        <record id="res_partner_company_view_search" model="ir.ui.view">
+            <field name="name">res.partner.search.ind</field>
+            <field name="model">res.partner</field>
+               
+            <field name="arch" type="xml">
+                    <search string="Search Partner">
+                        <field name="name" filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('ref', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+                      
+                        <field name="business_name"/>
+                        <field name="national_identity"/>
+                       
+                       <field name="register_number"/>
+                        <field name="phone"/>
+                       
+
+
+                         <field name="parent_id" domain="[('is_company', '=', True)]" operator="child_of"/>
+                        <field name="email" filter_domain="[('email', 'ilike', self)]"/>
+                        <field name="phone" filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
+                        <field name="category_id" string="Tag" operator="child_of"/>
+                        <field name="user_id"/>
+                       <!-- <separator/>
+                        <filter string="Individuals" name="type_person" domain="[('is_company', '=', False)]"/>
+                        <filter string="Companies" name="type_company" domain="[('is_company', '=', True)]"/>-->
+                        <separator/>
+                        <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                        <separator/>
+                        <group expand="0" name="group_by" string="Group By">
+                            <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}"/>
+                            <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>
+                            <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                        </group>
+                       
+                    </search>
+            </field>
+
+
+        </record>
+
+
+       <record id="view_res_partner_company_tree" model="ir.ui.view">
+            <field name="name">res.partner.company.list</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <list>
+                   
+                    <field name="name"/> 
+                    <field name="national_identity"/>                   
+                    <field name="email"/>                    
+                    <field name="phone"/>                       
+                    <field name="mobile"/>
+                    <field name="street"/>                        
+                    <field name="city"/>                            
+                    <field name="state_id"  column_invisible="True"/>
+                    <field name="zip"/>
+                   
+
+
+                </list>
+            </field>
+        </record>
+
+        <record id="action_account_company_partner" model="ir.actions.act_window">
+            <field name="name">Ashkhas Hoghoghi</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list,kanban,form,graph,activity</field>
+            <field name= "domain">[('is_company', '=', True)]</field>
+            
+            <field name="search_view_id" ref="res_partner_company_view_search"/>
+
+            <field name="context">{
+                'default_is_company': True,
+                'search_is_company_filter': True,
+          
+            }</field>
+            <field name="view_id" ref="view_res_partner_company_tree"/>
+           </record>
+
+        <menuitem id="partner_company_menu" name="Ashkhas Hoghoghi" action="action_account_company_partner" parent="contacts.menu_contacts"   sequence="1"/>
+
+
+
+
+
+
+
+
+
+    </data>
+</odoo>
