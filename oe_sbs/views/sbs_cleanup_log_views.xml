@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_sbs_cleanup_log_tree" model="ir.ui.view">
+        <field name="name">sbs.cleanup.log.tree</field>
+        <field name="model">sbs.cleanup.log</field>
+        <field name="arch" type="xml">
+            <list string="Cleanup Logs" create="false" edit="false" delete="false">
+                <field name="cleanup_date"/>
+                <field name="supplier_name"/>
+                <field name="deleted_import_number"/>
+                <field name="new_import_number"/>
+                <field name="deleted_count"/>
+                <field name="overlap_percentage"/>
+                <field name="threshold_used"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_sbs_cleanup_log_form" model="ir.ui.view">
+        <field name="name">sbs.cleanup.log.form</field>
+        <field name="model">sbs.cleanup.log</field>
+        <field name="arch" type="xml">
+            <form string="Cleanup Log" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="cleanup_date"/>
+                            <field name="supplier_name"/>
+                            <field name="deleted_import_number"/>
+                            <field name="new_import_number"/>
+                        </group>
+                        <group>
+                            <field name="deleted_count"/>
+                            <field name="overlap_percentage"/>
+                            <field name="threshold_used"/>
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="deletion_reason" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_sbs_cleanup_log_search" model="ir.ui.view">
+        <field name="name">sbs.cleanup.log.search</field>
+        <field name="model">sbs.cleanup.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Cleanup Logs">
+                <field name="supplier_name"/>
+                <field name="deleted_import_number"/>
+                <field name="new_import_number"/>
+                <filter string="Last 7 Days" name="last_week"
+                        domain="[('cleanup_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 30 Days" name="last_month"
+                        domain="[('cleanup_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_name'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'cleanup_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_sbs_cleanup_log" model="ir.actions.act_window">
+        <field name="name">Cleanup Logs</field>
+        <field name="res_model">sbs.cleanup.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_last_month': 1}</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_sbs_cleanup_log"
+              name="Cleanup Logs"
+              parent="oe_sbs.menu_sbs_root"
+              action="action_sbs_cleanup_log"
+            groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"
+
+              sequence="50"/>
+</odoo>

@@ -1,0 +1,14 @@
+<odoo>
+    <data noupdate="1">
+        
+        <record id="seq_sbs_import" model="ir.sequence">
+            <field name="name">SBS Import Sequence</field>
+            <field name="code">sbs.import.sequence</field>
+           <!-- <field name="prefix">IMP/</field>
+            <field name="padding">5</field>-->
+            <field name="company_id" eval="False"/>
+        </record>
+    
+        
+    </data>
+</odoo>

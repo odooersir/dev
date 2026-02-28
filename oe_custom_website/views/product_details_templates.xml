@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+
+    <!-- ================================================================
+         MARKETPLACE OFFERS SECTION (used inside product page)
+         ================================================================ -->
+ <template id="marketplace_offers_section" name="Marketplace Offers Section">
+        <t t-set="mp_data" t-value="product.get_marketplace_offers()"/>
+        <t t-if="mp_data and mp_data.get('offers')">
+
+            <div class="mp-offers-box my-3" id="marketplace-offers">
+
+                <!-- Header -->
+                <div class="mp-offers-header d-flex align-items-center gap-2 mb-2">
+                    <i class="fa fa-tag text-primary" style="font-size:13px;"/>
+                    <span class="fw-semibold text-muted" style="font-size:13px;">Offers</span>
+                    <span class="badge bg-light text-secondary border ms-1"
+                          style="font-size:11px;"
+                          t-esc="mp_data['count']"/>
+                </div>
+
+                <!-- Offers list -->
+                <div class="mp-offers-list">
+                    <t t-foreach="mp_data['offers']" t-as="offer">
+
+                        <div t-attf-class="mp-offer-row px-3 py-2 #{ 'mp-offer-best' if offer['id'] == mp_data.get('cheapest_id') else '' }"
+                             t-att-data-offer-id="offer['id']"
+                             t-att-data-import-number="offer['import_number']"
+                             t-att-data-product-id="product.product_variant_id.id"
+                             t-att-data-product-template-id="product.id"
+                             t-att-data-target-mov="offer['mov']"
+                             t-att-data-target-moq="offer['moq']">
+
+                            <!-- ردیف ۱: نام فروشنده + badges + قیمت -->
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <i class="fa fa-store text-secondary" style="font-size:11px;"/>
+                                    <span  style="font-size:12px;">Price List: </span>
+                                    <span class="fw-semibold" style="font-size:13px;" t-out="'#' + str(offer['import_number'])"/>
+                                    <t t-if="offer['id'] == mp_data.get('cheapest_id')">
+                                        <span class="badge bg-success text-white"
+                                              style="font-size:10px; padding:2px 6px;">
+                                            Best Price
+                                        </span>
+                                    </t>
+
+                                    <!--<t t-if="offer['import_number']">
+                                        <span class="badge bg-light text-muted border"
+                                              style="font-size:10px; font-family:monospace;"
+                                              t-esc="offer['import_number']"/>
+                                    </t>-->
+                                </div>
+
+                                <!-- قیمت -->
+                                <div class="mp-price fw-bold text-primary" style="font-size:15px;">
+                                    <span t-esc="offer['selling_price']"
+                                          t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                </div>
+                            </div>
+
+                            <!-- ردیف ۲: Lead Time -->
+                            <t t-if="offer['lead_time']">
+                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                    <i class="fa fa-clock-o text-muted" style="font-size:11px;"/>
+                                    <span class="text-muted" style="font-size:11px;">Lead Time:</span>
+                                    <span style="font-size:11px;" t-esc="offer['lead_time']"/>
+                                </div>
+                            </t>
+
+                            <!-- ردیف ۳: Incoterms -->
+                            <t t-if="offer['incoterms']">
+                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                    <i class="fa fa-ship text-muted" style="font-size:11px;"/>
+                                    <span class="text-muted" style="font-size:11px;">Incoterms:</span>
+                                    <span style="font-size:11px;" t-esc="offer['incoterms']"/>
+                                </div>
+                            </t>
+
+                            <!-- ردیف ۴: T1/T2 -->
+                            <t t-if="offer['t1_t2']">
+                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                    <i class="fa fa-globe text-muted" style="font-size:11px;"/>
+                                    <span class="text-muted" style="font-size:11px;">T1/T2:</span>
+                                    <span style="font-size:11px;" t-esc="offer['t1_t2']"/>
+                                </div>
+                            </t>
+
+                            <!-- ردیف ۵: MOV progress bar -->
+                            <t t-if="offer['mov'] > 0 or offer['moq'] > 0">
+                                <div class="mov-progress-wrapper mt-2 mb-1">
+
+                                    <t t-if="offer['mov'] > 0">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="text-muted" style="font-size:11px;">
+                                                MOV: $<t t-esc="'%.2f' % offer['mov']"/>
+                                            </span>
+                                            <!-- FIX: class تغییر کرد از mov-status-text به mov-progress-label -->
+                                            <span class="mov-progress-label text-muted"
+                                                  style="font-size:11px;">$0.00 in cart</span>
+                                        </div>
+                                        <div class="mov-progress-bar-track">
+                                            <div class="mov-progress-bar-fill" style="width:0%"/>
+                                        </div>
+                                    </t>
+
+                                    <t t-if="offer['moq'] > 0">
+                                        <div class="d-flex align-items-center gap-1 mt-1">
+                                            <i class="fa fa-circle text-warning"
+                                               style="font-size:9px;"/>
+                                            <span class="text-muted" style="font-size:11px;">
+                                                MOQ: <t t-esc="offer['moq']"/> units
+                                            </span>
+                                            <!-- FIX: class تغییر کرد از moq-status-text به moq-status-label -->
+                                            <span class="moq-status-label text-muted"
+                                                  style="font-size:11px;"> — not met</span>
+                                        </div>
+                                    </t>
+
+                                </div>
+                            </t>
+                            <!-- FIX: </div> اضافه که اینجا بود حذف شد -->
+
+                            <!-- ردیف آخر: qty + Add to Cart -->
+                            <div class="addc d-flex align-items-center gap-2 mt-2">
+                                <div class="input-group input-group-sm mp-qty-group" style="width:110px;">
+                                    <button class="btn btn-outline-secondary mp-qty-minus"
+                                            type="button">−</button>
+                                    <input type="number"
+                                           class="form-control text-center mp-qty-input"
+                                           value="1" min="1" max="999"/>
+                                    <button class="btn btn-outline-secondary mp-qty-plus"
+                                            type="button">+</button>
+                                </div>
+                                <button class="btn btn-primary btn-sm mp-add-to-cart flex-grow-1"
+                                        type="button">
+                                    <i class="fa fa-cart-plus me-1"/>
+                                    Add to Cart
+                                </button>
+                                <span class="mp-in-cart-badge badge bg-info ms-2" style="display:none;"/>
+                            </div>
+
+                        </div><!-- /mp-offer-row -->
+
+                    </t><!-- /t-foreach -->
+                </div><!-- /mp-offers-list -->
+            </div><!-- /mp-offers-box -->
+
+        </t>
+    </template>
+        
+    <!-- ========================================================================
+         PRODUCT DETAIL PAGE MODIFICATIONS
+         ======================================================================== -->
+    
+    <template id="product_bilingual_name" inherit_id="website_sale.product_title">
+        <xpath expr="//h1[@t-field='product.name']" position="replace">
+            <h1 t-attf-class="h3 {{'mb-3' if not product.description_ecommerce and not is_view_active('website_sale.product_comment') else ''}}">
+                
+                <!-- نام به زبان فعلی -->
+                <span
+                    t-esc="product.with_context(lang=request.lang.code).name"
+                    t-att-style="'direction:rtl; display:block;' if request.lang.direction == 'rtl' else 'direction:ltr; display:block;'"
+                />
+                
+                <!-- اگر زبان RTL بود (عربی یا فارسی) → نام انگلیسی هم نمایش بده -->
+                <t t-if="request.lang.direction == 'rtl'">
+                    <span
+                        class="product-name-en"
+                        style="direction:ltr; display:block; font-size:70%; color:#6c757d; margin-top:4px;"
+                        t-esc="product.with_context(lang='en_US').name"
+                    />
+                </t>
+                
+            </h1>
+        </xpath>
+    </template>
+    
+    
+    
+    
+    <!--  حذف قیمت از صفحه جزئیات محصول - XPath Layer -->
+    <template id="custom_product_page"   inherit_id="website_sale.product"   name="Product Detail Page">
+        
+        <!-- حذف بخش قیمت که در داخل form قرار دارد -->
+        <xpath expr="//div[hasclass('o_wsale_product_details_content_section_price')]" position="replace">
+
+            <!--  ADD BARCODE - After Product Name (Priority 10) -->
+
+            <div class="product_barcode mt-2" t-if="product.barcode" style="font-size: 14px; color: #666;">
+                <strong>Barcode:</strong> <span t-field="product.barcode"/>
+            </div>
+
+        </xpath> 
+
+     <xpath expr="//div[hasclass('o_wsale_product_details_content_section')]" position="inside">
+           <t t-set="offers_data" t-value="product.get_marketplace_offers()"/>
+            <t t-if="offers_data['count'] > 0">
+                <t t-call="oe_custom_website.marketplace_offers_section"/>
+            </t>
+    </xpath>
+
+      <!-- Replace default CTA wrapper with marketplace offers -->
+     <!--   <xpath expr="//div[@id='o_wsale_cta_wrapper']" position="replace">
+            <t t-call="oe_custom_website.marketplace_offers_section"/>
+        </xpath>-->
+
+   <!--- <xpath expr="//div[@t-attf-class='o_wsale_product_details_content_section_attributes']" position="replace"/>
+-->
+    </template>
+
+
+
+
+
+
+    <!-- 3️⃣ OVERRIDE PRODUCT IMAGE DISPLAY - SINGLE IMAGE CASE -->
+    <template id="custom_shop_product_image_single" 
+              inherit_id="website_sale.shop_product_image" 
+              name="Custom Single Product Image - External URL"
+              priority="99">
+        
+   
+   <xpath expr="//div[hasclass('position-relative')][hasclass('d-inline-flex')]" position="replace">
+        
+        
+
+        <div t-elif="len(product_images) == 1 and website.product_page_image_layout != 'grid'"
+            class="position-relative d-inline-flex overflow-hidden m-auto h-100 w-100"
+        >
+                <t t-if="product_image.image_url">
+                    <img 
+                        t-att-src="product_image.image_url"
+                        class="o_product_detail_img_wrapper d-flex align-items-start justify-content-center h-100 w-100 oe_unmovable product_detail_img"
+                        style="object-fit: contain;"
+                        t-att-alt="product_image.name"
+                        loading="lazy"
+                    />
+                </t>
+                <!-- Fallback to static external image if no image_url -->
+                <t t-else="">
+                    <img 
+                        src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg"
+                        class="o_product_detail_img_wrapper d-flex align-items-start justify-content-center h-100 w-100 oe_unmovable product_detail_img"
+                        style="object-fit: contain;"
+                        alt="Product Image"
+                        loading="lazy"
+                    />
+                </t>
+        </div>
+        <div t-if="len(product_images) > 1">
+                <!-- همیشه از URL استفاده کن -->
+                <img 
+                    t-att-src="product_image.image_url"
+                    t-att-class="image_classes + ' o_product_detail_img_wrapper oe_unmovable product_detail_img'"
+                    t-attf-style="{{
+                        image_natural_index and ('--o-wsale-grid-product-img-natural-order: ' + str(image_natural_index)) or false
+                    }}; object-fit: contain; max-height: 600px;"
+                    t-att-alt="product_image.name"
+                    loading="lazy"
+                />
+        </div>
+
+        </xpath>
+        
+        
+       
+        
+    </template>
+
+
+    <template id="custom_carousel_product_indicators" 
+              inherit_id="website_sale.carousel_product_indicators" 
+              name="Use External Image URL in Carousel"
+              priority="99">
+        
+        <xpath expr="//div[@t-field='product_image.image_128']" position="replace">
+            <t t-if="product_image.image_url">
+                <!-- Use external URL for first image -->
+                <img 
+                    t-att-src="product_image.image_url"
+                    class="object-fit-cover w-100 h-100"
+                    t-att-alt="product_image.name"
+                />
+            </t>
+            <t t-else="">
+                <!-- Use Odoo default images -->
+              
+
+                    <img 
+                        src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg"
+                         class="object-fit-cover w-100 h-100"/>
+                
+
+            </t>
+        </xpath>
+  </template>
+
+    
+
+
+
+   
+
+
+</odoo>

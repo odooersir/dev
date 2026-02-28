@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+
+    <t t-name="oe_sbs.ControlPanel" t-inherit="documents.ControlPanel"  t-inherit-mode="extension">
+
+
+        <xpath expr="//*[hasclass('o_documents_export')]" position="after">
+
+            <button  t-if="() => env.user.has_group('oe_sbs.group_sbs_send')" class="dropdown-item w-100"      
+                    t-on-click="() => this.onSendToSBS()"
+                    >
+                    
+                    <i class="fa fa-fw fa-upload me-1"/>
+
+                    <span class="d-inline-block">Export to SBS</span>
+            </button>
+
+
+            <button  t-if="() => env.user.has_group('oe_sbs.group_sbs_send')" class="dropdown-item w-100"      
+                    t-on-click="() => this.onDeleteFromSBS()"
+                    >
+                    
+                    <i class="fa fa-fw fa-upload me-1"/>
+
+                    <span class="d-inline-block">Delete From SBS</span>
+            </button>
+
+        </xpath>
+
+    </t>
+
+</templates>
+
+
+
+
+

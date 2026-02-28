@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ========================================================================
+         SHOP PAGE - PRODUCT CARD MODIFICATIONS
+         ======================================================================== -->
+
+    <!-- 1. Remove price from product card -->
+    <template id="custom_products_item_remove_price" 
+              inherit_id="website_sale.products_item" 
+              name="Remove Price from Product Card">
+        <xpath expr="//div[hasclass('product_price')]" position="replace"/>
+    </template>
+
+    <!-- 2. Add barcode to product card -->
+    <template id="custom_products_item_add_barcode" 
+              inherit_id="website_sale.products_item" 
+              name="Add Barcode to Product Card">
+        <xpath expr="//h2[hasclass('o_wsale_products_item_title')]" position="after">
+            <div t-if="product.barcode" class="text-muted small mt-1 font-monospace o_product_barcode">
+                <i class="fa fa-barcode me-1"/>
+                <span t-field="product.barcode"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 3. External image for product card -->
+     <!-- 1️⃣ استفاده از تصویر خارجی (image_url) برای PRIMARY و SECONDARY -->
+    <template id="custom_products_item_external_images" 
+              inherit_id="website_sale.products_item" 
+              name="External Image URL for Product Card"
+              priority="12">
+        
+        <!-- تصویر اصلی (Primary Image) -->
+        <xpath expr="//span[hasclass('oe_product_image_img_wrapper_primary')]" position="replace">
+            <span class="oe_product_image_img_wrapper oe_product_image_img_wrapper_primary d-flex h-100 justify-content-center align-items-center">
+                <!-- اگر image_url وجود داشت، از آن استفاده کن -->
+                <t t-if="primary_image_holder.image_url">
+                    <img 
+                        t-att-src="primary_image_holder.image_url" 
+                        t-att-alt="product.name"
+                        class="oe_product_image_img h-100 w-100"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+                <!-- وگرنه از تصویر داخلی استفاده کن -->
+                <t t-else="">
+                     <img 
+                        src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg" 
+                        alt="Default Product Image"
+                        class="oe_product_image_img h-100 w-100"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+            </span>
+        </xpath>
+
+        <!-- تصویر ثانویه (Secondary Image) -->
+        <xpath expr="//span[hasclass('oe_product_image_img_wrapper_secondary')]" position="replace">
+            <span
+                t-if="secondary_image_holder"
+                class="oe_product_image_img_wrapper oe_product_image_img_wrapper_secondary h-100 justify-content-center align-items-center"
+            >
+                <!-- اگر secondary هم image_url داشت -->
+                <t t-if="secondary_image_holder.image_url">
+                    <img 
+                        t-att-src="secondary_image_holder.image_url" 
+                        t-att-alt="product.name"
+                        class="oe_product_image_img_secondary h-100 w-100"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+                <!-- وگرنه از تصویر داخلی استفاده کن -->
+                <t t-else="">
+                    <img 
+                        src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg" 
+                        alt="Default Product Image"
+                        class="oe_product_image_img h-100 w-100"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+            </span>
+        </xpath>
+    </template>
+
+
+
+    <!-- ================================================================
+             CART PAGE — نام تامین‌کننده زیر نام محصول
+             inherit از cart_lines چون ساختار Odoo 19 دیگر table ندارد
+             ================================================================ -->
+        <template id="marketplace_cart_supplier"
+                  inherit_id="website_sale.cart_lines"
+                  name="Marketplace Seller in Cart">
+
+            <xpath expr="//t[@t-call='website_sale.cart_line_description_following_lines']"
+                   position="after">
+                <t t-if="line.sbs_data_id">
+                    <div class="mp-cart-seller mt-1 mb-1">
+                        <small class="text-muted d-inline-flex align-items-center gap-1">
+                            <i class="fa fa-store" style="font-size:10px;"/>
+                            <span style="font-size:11px;">
+                                Sold by:
+                                <strong t-esc="line.snapshot_seller_name or line.sbs_data_id.supplier_id.name"/>
+                            </span>
+                        </small>
+                    </div>
+                </t>
+            </xpath>
+
+        </template>
+
+    
+</odoo>

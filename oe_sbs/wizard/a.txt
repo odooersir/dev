@@ -1,0 +1,489 @@
+  
+    def action_import__(self):
+        self.ensure_one()
+        if not self.from_doc and not self.file:
+            raise UserError(_('Please upload a file first.'))
+
+        if self.from_doc and not self.document_id:
+            raise UserError(_('Please Select a file first.'))
+
+        try:
+            imported_count = 0
+            validation_errors = []
+            temp_records = []
+
+            if not self.from_doc:
+                # حالت آپلود مستقیم فایل اکسل
+                file_content = base64.b64decode(self.file)
+            else:
+                if not self.document_id:
+                    raise UserError(_('Please Select a file first.'))
+
+                mimetype = self.document_id.mimetype
+                if mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    # حالت: فایل اکسل داخل Document
+                    file_content = base64.b64decode(self.document_id.datas)
+
+                elif mimetype == 'application/o-spreadsheet':
+                   
+         
+                    file_content = self.document_id.export_final_xlsx()
+
+
+
+
+                else:
+                    raise UserError(_('Unsupported document type: %s') % mimetype)
+
+
+
+
+            print ("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+            workbook = load_workbook(filename=BytesIO(file_content), data_only=True)
+            print ("FGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
+
+            # انتخاب شیت
+            sheet_name = None
+            for name in workbook.sheetnames:
+                if name.strip().lower() == "climax":
+                    sheet_name = name
+                    break
+
+            if sheet_name:
+                sheet = workbook[sheet_name]
+            else:
+                sheet = workbook.active  # پیش‌فرض: شیت اول
+
+            # هدرها
+            header = [str(cell.value).strip().lower() if cell.value else '' for cell in sheet[1]]
+
+            print (header)
+
+            
+            
+            #has_end_date = 'end date' in header
+            #has_offer_validity =  'offer validity'  in header
+
+            # بررسی ستون‌های الزامی
+            required_columns = ['import date', 'description', 'supplier unit price', 'supplier name']
+
+            missing_columns = [col for col in required_columns if col not in header]
+
+            # بررسی اینکه حداقل یکی از ean یا barcode وجود داشته باشه
+            if 'ean' not in header and 'barcode' not in header:
+                missing_columns.append('ean or barcode')
+
+            # بررسی اینکه حداقل یکی از end date یا offer validity وجود داشته باشه
+            if 'end date' not in header and 'offer validity' not in header:
+                missing_columns.append('end date or offer validity')
+
+            if missing_columns:
+                raise UserError(_('Missing required columns: %s') % ", ".join(missing_columns))
+
+            column_mapping = {
+                'unit/case': 'case_size',
+                'case/layer': 'layer',
+                'case/pallet': 'pallet',
+                'case size': 'case_size',
+                'layer': 'layer',
+                'pallet': 'pallet',
+                'note': 'note',
+                'coo': 'coo',
+                'lead time': 'lead_time',
+                'moq': 'moq',
+                'mov':'mov',
+                'available qty':'availabale_qty',
+                'incoterms':'incoterms',
+                't1/t2':'t1_t2',
+                'payment terms':'payment_term'
+
+
+            }
+
+            SBSData = self.env['sbs.data']
+            existing_file = SBSData.with_context(prefetch_fields=False).search([('excel_filename', '=', self.file_name)])
+            if existing_file:
+                print (self.file_name)
+                raise UserError(_('File Already Exist!'))
+
+            valid_currency_ids = self.env['res.currency'].search([]).ids
+
+            for row_index, row in enumerate(sheet.iter_rows(min_row=2), start=2):
+                row_data = {header[idx]: cell for idx, cell in enumerate(row)}
+
+                print (row_data)
+
+                if not any(cell.value for cell in row):
+                    continue  # رد کردن ردیف کاملاً خالی
+
+                record_vals = {'excel_filename': self.file_name}
+                row_errors = []
+
+                # import date
+                import_date_cell = row_data.get('import date')
+                try:
+                    if import_date_cell and import_date_cell.value:
+                        if isinstance(import_date_cell.value, datetime):
+                            date_obj = import_date_cell.value
+                        else:
+                            date_obj = datetime.strptime(str(import_date_cell.value), '%d/%m/%Y')
+
+                        # چک تاریخ آینده
+                        if date_obj.date() > datetime.today().date():
+                            row_errors.append("Import date cannot be in the future")
+                        else:
+                            record_vals['import_date'] = date_obj.isoformat()
+                    else:
+                        row_errors.append("Invalid import date (expected DD/MM/YYYY)")
+                except Exception:
+                    row_errors.append("Invalid import date (expected DD/MM/YYYY)")
+
+
+
+                # EAN / Barcode
+                ean_cell = row_data.get('ean') or row_data.get('barcode')
+
+
+                ean_val = str(ean_cell.value).strip() if ean_cell and ean_cell.value else ''
+                if not ean_val or not ean_val.isdigit():
+                    row_errors.append("Invalid or missing EAN (barcode)")
+                else:
+                    record_vals['ean'] = ean_val
+
+                # Product name
+                desc_cell = row_data.get('description')
+                if not desc_cell or not desc_cell.value:
+                    row_errors.append("Missing product name")
+                else:
+                    #record_vals['product_name'] = str(desc_cell.value).strip().title()
+                    #desc = str(desc_cell.value).strip()
+                    #desc_ascii = self._safe_unidecode(desc)   # ä → a, ö → o, ü → u, é → e, ñ → n, ...
+                    #record_vals['product_name'] = desc_ascii.title()
+
+                    desc = str(desc_cell.value).strip()
+                    desc_ascii = unidecode(desc)   # ä → a, ö → o, ü → u, é → e, ñ → n, ...
+                    record_vals['product_name'] =  desc_ascii.title()
+
+                # Supplier name
+                supplier_cell = row_data.get('supplier name')
+                if not supplier_cell or not supplier_cell.value:
+                    row_errors.append("Missing supplier name")
+                else:
+                    record_vals['supplier_name'] = str(supplier_cell.value).strip().title()
+
+                # Price and currency
+                price_cell = row_data.get('supplier unit price')
+                try:
+                    price_value, currency_id = self._parse_accounting_number(price_cell)
+                    if not currency_id or currency_id not in valid_currency_ids:
+                        row_errors.append("Invalid price or currency")
+                    
+                    if price_value is None or price_value == 0:
+                        row_errors.append("Invalid price or currency")
+                    
+                    record_vals['supplier_unit_price'] = abs(price_value)
+                    record_vals['currency_id'] = currency_id
+                except Exception:
+                    row_errors.append("Invalid price or currency")
+
+                
+           
+
+                # End date (offer validity)
+                end_date_cell = row_data.get('end date') or row_data.get('offer validity')
+
+
+                if end_date_cell and end_date_cell.value:
+                    try:
+                        if isinstance(end_date_cell.value, datetime):
+                            record_vals['end_date'] = end_date_cell.value.isoformat()
+                        else:
+                            date_obj = datetime.strptime(str(end_date_cell.value), '%d/%m/%Y')
+                            record_vals['end_date'] = date_obj.isoformat()
+                    except Exception:
+                        row_errors.append(f"Row {row_index}: Invalid offer validity format")
+                else:
+                    row_errors.append(f"Row {row_index}: Invalid offer validity format")
+
+                today = date.today()
+                if 'end_date' in record_vals and record_vals['end_date']:
+                    end_date1 = datetime.strptime(record_vals['end_date'], '%Y-%m-%dT%H:%M:%S').date()
+                    if end_date1 < today:
+                        row_errors.append(f"Row {row_index}: Offer validity date is expired")
+                    if 'import_date' in record_vals and record_vals['import_date']:
+                        import_date1 = datetime.strptime(record_vals['import_date'], '%Y-%m-%dT%H:%M:%S').date()
+                        if end_date1 <= import_date1:
+                            row_errors.append(f"Row {row_index}: Offer validity is earlier than import date")
+
+                
+                
+                if  'end_date' in record_vals and record_vals['end_date']:
+                    end_date1 = datetime.strptime(record_vals['end_date'], '%Y-%m-%dT%H:%M:%S').date()                 
+                    record_vals['is_expired'] = bool(end_date1 < today)
+                
+                
+         
+
+                # MOQ & MOV
+                moq_val = row_data.get('moq').value if row_data.get('moq') else None
+                mov_val = row_data.get('mov').value if row_data.get('mov') else None
+                if not moq_val and not mov_val:
+                    row_errors.append(f"Row {row_index}: At least one of MOQ or MOV must have value")
+
+                if moq_val and isinstance(moq_val, str) and re.search(r'[€$£]', moq_val):
+                    row_errors.append(f"Row {row_index}: MOQ must not contain currency")
+
+                if mov_val:
+                    if isinstance(mov_val, str):
+                        mov_cleaned = re.sub(r'[^\d.,]', '', mov_val)
+                        mov_currency = re.findall(r'[€$£]', mov_val)
+                        record_vals['mov'] = mov_cleaned.strip()
+                        if mov_currency:
+                            mov_symbol = mov_currency[0]
+                            cur_symbol = '$' if record_vals['currency_id'] == self.env.ref('base.USD').id else \
+                                         '€' if record_vals['currency_id'] == self.env.ref('base.EUR').id else \
+                                         '£' if record_vals['currency_id'] == self.env.ref('base.GBP').id else None
+                            if mov_symbol != cur_symbol:
+                                row_errors.append(f"Row {row_index}: MOV currency does not match supplier unit price currency")
+
+                # MOQ & MOV
+                # MOQ & MOV
+                moq_val = row_data.get('moq').value if row_data.get('moq') else None
+                mov_val = row_data.get('mov').value if row_data.get('mov') else None
+
+                # حداقل یکی از MOQ یا MOV باید مقدار داشته باشد
+                if not moq_val and not mov_val:
+                    row_errors.append(f"Row {row_index}: At least one of MOQ or MOV must have value")
+
+                # MOQ نباید شامل ارز باشد
+                if moq_val and isinstance(moq_val, str) and re.search(r'[€$£]', moq_val):
+                    row_errors.append(f"Row {row_index}: MOQ must not contain currency")
+
+                # MOV اگر مقدار دارد باید ارز داشته باشد
+                if mov_val:
+                    mov_raw = str(mov_val).strip()
+                    # 1) پیدا کردن اولین نماد ارز قابل قبول
+                    m = re.search(r'[€$£]', mov_raw)
+                    if not m:
+                        row_errors.append(f"Row {row_index}: MOV must contain a currency symbol (€, $ or £)")
+                    else:
+                        mov_symbol = m.group(0)
+
+                        # 2) حذف تمام نمادهای ارز و فاصله‌ها از بدنه و حذف کاراکترهای غیرمجاز
+                        body = re.sub(r'[€$£\s]', '', mov_raw)            # برداشتن هر نماد ارز و اسپیس
+                        body = re.sub(r'[^0-9\.,kK]', '', body)           # فقط اعداد، نقطه، ویرگول، k یا K را نگه دار
+                        body = body.replace('K', 'k')                     # K => k
+
+                        # 3) اطمینان از اینکه 'k' حداکثر یکبار و در انتها باشد
+                        if body.count('k') > 1:
+                            row_errors.append(f"Row {row_index}: MOV contains multiple 'k' characters")
+                        else:
+                            if 'k' in body and not body.endswith('k'):
+                                # اگر k وسط رشته بود، آن را حذف و به انتها منتقل می‌کنیم (خودکار اصلاح)
+                                body = re.sub(r'k', '', body) + 'k'
+
+                            # 4) حداقل یک عدد وجود داشته باشد
+                            if not re.search(r'\d', body):
+                                row_errors.append(f"Row {row_index}: MOV must contain at least one digit")
+                            else:
+                                # 5) نرمال‌سازی نهایی: نماد در ابتدا، سپس مقدار (مثال: €1.2k یا $1,200)
+                                mov_normalized = f"{mov_symbol}{body}"
+
+                                # ذخیرهٔ MOV به فرم نرمال‌شده (شامل نماد و عدد و احتمالاً k)
+                                record_vals['mov'] = mov_normalized
+
+                                # 6) بررسی تطابق نماد با currency_id
+                                cur_symbol = None
+                                # تلاش برای گرفتن نماد از رکورد currency (امن‌تر)
+                                cur = False
+                                try:
+                                    cur = self.env['res.currency'].browse(record_vals.get('currency_id') or False)
+                                except Exception:
+                                    cur = False
+                                if cur and cur.exists() and cur.symbol in ('$', '€', '£'):
+                                    cur_symbol = cur.symbol
+                                else:
+                                    # fallback امن با env.ref (بدون بالا انداختن Exception)
+                                    try:
+                                        cur_symbol = ('$' if record_vals.get('currency_id') == (self.env.ref('base.USD').id) else
+                                                    '€' if record_vals.get('currency_id') == (self.env.ref('base.EUR').id) else
+                                                    '£' if record_vals.get('currency_id') == (self.env.ref('base.GBP').id) else None)
+                                    except Exception:
+                                        cur_symbol = None
+
+                                if cur_symbol and mov_symbol != cur_symbol:
+                                    row_errors.append(f"Row {row_index}: MOV currency ({mov_symbol}) does not match supplier unit price currency ({cur_symbol})")
+
+
+                # Available QTY
+     
+                avail_cell = row_data.get('available qty')
+                if avail_cell and avail_cell.value not in (None, ""):
+                    try:
+                        # مقدار واقعی سلول
+                        cell_value = str(avail_cell.value).strip()
+                        number_format = str(avail_cell.number_format)
+
+                        # بررسی وجود نمادهای ارزی در فرمت یا مقدار
+                        if any(symbol in number_format for symbol in ["$", "€", "£"]) or \
+                        any(symbol in cell_value for symbol in ["$", "€", "£"]):
+                            row_errors.append(f"Row {row_index}: Available QTY must not contain currency symbols")
+                        else:
+                            # بررسی اینکه واقعا فقط عدد باشه
+                            record_vals['availabale_qty'] = float(cell_value)
+
+                    except ValueError:
+                        row_errors.append(f"Row {row_index}: Available QTY must be numeric")
+
+
+
+                # T1-T2
+                t1t2_cell = row_data.get('t1/t2')
+                if t1t2_cell and t1t2_cell.value:
+                    tval = str(t1t2_cell.value).strip().upper()
+                    if tval not in ["T1", "T2"]:
+                        row_errors.append(f"Row {row_index}: T1-T2 must be empty or T1/T2")
+                    else:
+                        record_vals['t1_t2'] = tval
+
+
+
+
+
+
+
+
+                
+                
+                # Cache configuration values
+                ICP = self.env['ir.config_parameter'].sudo()
+                margin = float(ICP.get_param('oe_sbs.default_profit_margin', '8')) / 100
+                min_margin = float(ICP.get_param('oe_sbs.min_profit_margin', '7')) / 100
+
+                # Cache base USD currency
+                usd_currency = self.env.ref('base.USD')
+
+                
+
+                frmc=False
+                if 'currency_id' in record_vals:
+                    frmc= self.env['res.currency'].search([('id', '=',  record_vals['currency_id'])])
+                
+                if frmc:
+                    converted_price=0
+                    if frmc == usd_currency:
+                        converted_price = record_vals['supplier_unit_price']
+                    else:
+                        converted_price = usd_currency._convert(
+                            record_vals['supplier_unit_price'],
+                            frmc,
+                            self.env.company,
+                            today
+                        )
+            
+                    record_vals['converted_price']=converted_price
+                    record_vals['selling_price']= converted_price * (1 + margin)
+                    record_vals['selling_price_2']=record_vals['supplier_unit_price'] * (1 + margin)
+                    record_vals['min_sell']=record_vals['supplier_unit_price']* (1 + min_margin)
+
+
+            
+
+                #imported_records._compute_selling_prices()
+            
+
+
+                # Optional fields
+                for excel_field, odoo_field in column_mapping.items():
+                    if excel_field in required_columns:
+                        continue
+                   # print (excel_field)
+                    #print (odoo_field)
+                    cell = row_data.get(excel_field)
+                 
+                    print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+                    n=row_data.get('note')
+                    print (n)
+                    print (n.value)
+
+                    #print (cell)
+                    #print (cell.value)
+                    
+                    if cell and cell.value:
+                        #print (cell.value)
+                        if odoo_field in ['case_size', 'layer', 'pallet']:
+                            try:
+                                record_vals[odoo_field] = int(float(cell.value))
+                            except:
+                                record_vals[odoo_field] = 0
+                        else:
+                            record_vals[odoo_field] = str(cell.value).strip()
+
+                if row_errors:
+                    validation_errors.append(f"Row {row_index}: " + "; ".join(row_errors))
+                else:
+                    temp_records.append(record_vals)
+
+            # اگر حتی یک خطا وجود داشت، هیچ رکوردی ثبت نشود
+            if validation_errors:
+                if self.from_rpc:
+                    return {"status": "no", "result_error":  '\n'.join(validation_errors)}
+                
+                self.write({
+                    'total_imported': 0,
+                    'result_error': '\n'.join(validation_errors),
+                    'show_results': True,
+                })
+                return {
+                    'name': _('Import Results'),
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'sbs.import.wizard',
+                    'view_mode': 'form',
+                    'res_id': self.id,
+                    'view_id': self.env.ref('oe_sbs.view_import_wizard_results').id,
+                    'target': 'new',
+                    'context': self.env.context,
+                }
+
+            # ثبت رکوردها
+            import_number = self.env['ir.sequence'].next_by_code('sbs.import.sequence') or _('New')
+            for rec in temp_records:
+                rec['import_number'] = import_number
+                SBSData.create(rec)
+                imported_count += 1
+
+            self.write({
+                'import_number': import_number,
+                'total_imported': imported_count,
+                'result_error': '',
+                'show_results': True
+            })
+
+            #if imported_count > 0:
+                #imported_records = SBSData.search([('import_number', '=', import_number)])
+                #imported_records._compute_selling_prices()
+
+            print ("rankkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+            # print (self.env['ir.config_parameter'].sudo().get_param('oe_sbs.auto_rank'))
+            if ICP.get_param('oe_sbs.auto_rank') == 'True' and imported_count > 0:
+                print ("rankkkk2222222222222222222222222222222222222222222222222222222222222222222")
+
+                self.env['sbs.data'].action_rank_products()
+
+            if self.from_rpc:
+                return {"status": "ok",  'import_number': import_number,'total_imported': imported_count}
+
+            return {
+                'name': _('Import Results'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'sbs.import.wizard',
+                'view_mode': 'form',
+                'res_id': self.id,
+                'view_id': self.env.ref('oe_sbs.view_import_wizard_results').id,
+                'target': 'new',
+                'context': self.env.context,
+            }
+
+        except Exception as e:
+            raise UserError(_('Error importing file: %s') % str(e))
+

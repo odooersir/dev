@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+   <menuitem 
+    id="menu_sbs_root" 
+    name="Smart Business System" 
+    sequence="10"
+    action="action_blank_sbs_root"
+    web_icon="oe_sbs,static/description/icon.png"/>
+    
+    <!-- Import Submenu -->
+ <!--   <menuitem 
+        id="menu_sbs_import" 
+        name="Import" 
+        parent="menu_sbs_root" 
+        sequence="10"/>
+    
+   <menuitem 
+        id="menu_sbs_import_data" 
+        name="Import Data" 
+        parent="menu_sbs_import" 
+        action="action_import_wizard"
+        sequence="10"/>
+    -->
+    <!-- Data Management -->
+    <menuitem 
+        id="menu_sbs_data" 
+        name="SBS Data" 
+        parent="menu_sbs_root" 
+        sequence="20"/>
+    
+    
+    <menuitem id="menu_sbs_admin"
+          name="SBS Admin"
+          parent="menu_sbs_data"
+          action="action_sbs_data_admin"
+          groups="oe_sbs.group_sbs_admin"/>
+
+
+    <menuitem id="menu_sbs_sales"
+          name="SBS Sales"
+          parent="menu_sbs_data"
+          action="action_sbs_data_sales"
+          groups="oe_sbs.group_sbs_sales,oe_sbs.group_sbs_admin"/>
+
+    <menuitem id="menu_sbs_purchase"
+          name="SBS Purchase"
+          parent="menu_sbs_data"
+          action="action_sbs_data_purchase"
+          groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"/>
+
+    
+    <!-- Configuration -->
+    <menuitem 
+        id="menu_sbs_configuration" 
+        name="Configuration" 
+        parent="menu_sbs_root" 
+        sequence="40"
+        groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"/>
+    
+    <menuitem 
+        id="menu_sbs_currency_rates" 
+        name="Currency Rates" 
+        parent="menu_sbs_configuration" 
+        action="action_currency"
+        sequence="10"/>
+    
+    <menuitem 
+        id="menu_sbs_settings" 
+        name="SBS Settings" 
+        parent="menu_sbs_configuration" 
+        action="action_sbs_settings"
+        sequence="20"/>
+
+
+
+    <!-- Compute -->
+    <menuitem 
+        id="menu_sbs_compute" 
+        name="Compute" 
+        parent="menu_sbs_root" 
+        sequence="40"
+        groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"/>
+
+
+        <menuitem 
+        id="menu_sbs_product_rank" 
+        name="Rank Products" 
+        parent="menu_sbs_compute" 
+        action="action_rank_products"
+        sequence="30"/>
+
+        <menuitem 
+        id="menu_sbs_exp_ean" 
+        name="Re-Compute Expire Date" 
+        parent="menu_sbs_compute" 
+        action="action_exp_ean"
+        sequence="40"/>
+
+        <menuitem 
+        id="menu_sbs_prices" 
+        name="Re-Compute Selling Price" 
+        parent="menu_sbs_compute" 
+        action="action_prices"
+        sequence="50"/>
+
+
+        <menuitem 
+        id="menu_sbs_product" 
+        name="Compute Product ID" 
+        parent="menu_sbs_compute" 
+        action="action_products"
+        sequence="50"/>
+
+
+        <menuitem 
+        id="menu_sbs_supplier" 
+        name="Compute Supplier ID" 
+        parent="menu_sbs_compute" 
+        action="action_suppliers"
+        sequence="50"/>
+
+
+
+        <!-- Action to open wizard from menu -->
+  <!--  <menuitem 
+        id="menu_import_wizard" 
+        name="Import Excel" 
+        parent="menu_sbs_import" 
+        action="action_import_wizard"
+        sequence="10"/>-->
+
+
+
+</odoo>

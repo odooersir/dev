@@ -1,0 +1,483 @@
+<odoo>
+   
+    <record id="view_sbs_data_tree_admin" model="ir.ui.view">
+        <field name="name">sbs.data.tree</field>
+        <field name="model">sbs.data</field>
+        <field name="arch" type="xml">
+            <list  decoration-danger="is_expired" create="0">
+                <header>
+                    <button name="oe_sbs.action_import_wizard" string="Import Data" type="action" class="btn-primary" display="always" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                <!--    <button name="action_rank_products" string="Rank Products"   type="object" class="btn-secondary" display="always"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                    <button name="compute_expired_ean" string="Compute Expired EAN" type="object" class="btn-secondary" display="always"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                    <button name="compute_selling_prices" string="Compute Prices" type="object" class="btn-secondary" display="always" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>-->
+               <!-- <button name="open_import_from_document_wizard"  string="Import from Document"  type="object"    class="btn-primary" display="always"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase" />
+                -->
+                </header>
+               
+                <field name="create_date" optional="hide"/>
+
+                <field name="import_number"/>
+
+        
+                 
+
+                <field name="import_date"/>
+                <field name="no_of_ranks"/>
+                <field name="rank"/>
+                <field name="ean" width="200px"/>
+                <field name="product_name" optional="hide"/>
+                <field name="product_id" widget="many2one" />
+
+                <field name="brand_id" widget="many2one"/>
+
+                <field name="selling_price" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_sales" optional="hide"/>
+                <field name="min_sell"/>
+                <field name="selling_price_2" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_sales"/>
+
+
+                
+                <field name="case_size"/>
+                <field name="layer"/>
+                <field name="pallet"/>
+
+
+
+                <field name="supplier_unit_price" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                <field name="currency_id"/>
+                <field name="converted_price" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                <field name="converted_rate" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+
+                <field name="supplier_name"   groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase" optional="hide"/>
+                <field name="supplier_code" optional="hide"/>
+                <field name="supplier_id" widget="many2one" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+
+
+
+                <field name="coo"/>
+
+                <field name="end_date"/>
+                
+                <field name="note"/>
+
+
+
+
+                <field name="lead_time"/>
+                <field name="moq"/>
+                <field name="mov"/>
+                <field name="availabale_qty"/>
+                <field name="incoterms"/>
+                <field name="t1_t2"/>
+                <field name="payment_term"/>
+
+                <field name="excel_filename" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                
+                <field name="document_id" widget="many2one" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                
+               
+
+
+
+
+                
+
+        <button name="action_open_spreadsheet"  type="object"   class="btn-link o_form_uri"  string="Open"
+                  invisible="spreadsheet_url==False" width="50px" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+                <field name="is_expired"  optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+            </list>
+        </field>
+    </record>
+
+    <record id="view_sbs_data_tree_sales" model="ir.ui.view">
+            <field name="name">sbs.data.tree.sales</field>
+            <field name="model">sbs.data</field>
+            <field name="arch" type="xml">
+                <list  decoration-danger="is_expired" create="0">
+                    <header>
+                    </header>
+                     <field name="create_date" optional="hide"/>
+                     <field name="import_number"/>
+                    <field name="import_date"/>
+                    <field name="no_of_ranks"/>
+                    <field name="rank"/>
+                    <field name="ean" width="200px"/>
+                    <field name="product_name"/>
+                    <field name="product_id" widget="many2one" />
+
+                    <field name="supplier_code"   optional="hide"/>
+
+
+                    <field name="selling_price" optional="hide"/>
+                    <field name="min_sell"/>
+                    <field name="selling_price_2"/>
+
+                    
+                    <field name="case_size"/>
+                    <field name="layer"/>
+                    <field name="pallet"/>
+
+                  
+                     <field name="currency_id"/>
+                    
+                    <field name="coo"/>
+
+                    <field name="end_date"/>
+                    
+                    <field name="note"/>
+
+                   
+
+                                        <field name="lead_time"/>
+                <field name="moq"/>
+                <field name="mov"/>
+                <field name="availabale_qty"/>
+                <field name="incoterms"/>
+                <field name="t1_t2"/>
+                <field name="payment_term"/>
+                                
+
+                </list>
+            </field>
+    </record>
+
+ <record id="view_sbs_data_tree_purchase" model="ir.ui.view">
+        <field name="name">sbs.data.tree.purchase</field>
+        <field name="model">sbs.data</field>
+        <field name="arch" type="xml">
+            <list  decoration-danger="is_expired" create="0">
+                <header>
+                    <button name="oe_sbs.action_import_wizard" string="Import Data" type="action" class="btn-primary" display="always" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+               <!--     <button name="action_rank_products" string="Rank Products"   type="object" class="btn-secondary" display="always"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                    <button name="compute_expired_ean" string="Compute Expired EAN" type="object" class="btn-secondary" display="always"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                    <button name="compute_selling_prices" string="Compute Prices" type="object" class="btn-secondary" display="always" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>-->
+
+                </header>
+                <field name="create_date" optional="hide"/>
+
+                 <field name="import_number"/>
+                <field name="import_date"/>
+                <field name="no_of_ranks"/>
+                <field name="rank"/>
+                <field name="ean" width="200px"/>
+                <field name="product_name" optional="hide"/>
+                <field name="product_id" widget="many2one" />
+
+                <field name="brand_id" widget="many2one"/>
+
+                
+                <field name="case_size"/>
+                <field name="layer"/>
+                <field name="pallet"/>
+
+
+
+                <field name="supplier_unit_price" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                <field name="currency_id"/>
+                <field name="converted_price" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                <field name="converted_rate" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+
+                <field name="supplier_name"   groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase" optional="hide"/>
+                <field name="supplier_code"   optional="hide"/>
+                <field name="supplier_id" widget="many2one" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+
+
+
+                <field name="coo"/>
+                <field name="end_date"/>
+                
+                <field name="note"/>
+
+
+               
+
+                <field name="lead_time"/>
+                <field name="moq"/>
+                <field name="mov"/>
+                <field name="availabale_qty"/>
+                <field name="incoterms"/>
+                <field name="t1_t2"/>
+                <field name="payment_term"/>
+   
+                <field name="excel_filename" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+                <field name="document_id" widget="many2one" optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+                    
+
+
+
+
+                <button name="action_open_spreadsheet"  type="object"   class="btn-link o_form_uri"  string="Open"
+                  invisible="spreadsheet_url==False" width="50px" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+
+                <field name="is_expired"  optional="hide" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+
+            </list>
+        </field>
+    </record>
+
+
+
+
+
+    <record id="view_sbs_data_form" model="ir.ui.view">
+        <field name="name">sbs.data.form</field>
+        <field name="model">sbs.data</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+
+                         <field name="import_number"/>
+
+                        <field name="import_date"/>
+                        <field name="end_date"/>
+                        <field name="ean"/>
+                        <field name="product_name"/>
+                        <field name="case_size"/>
+                        <field name="layer"/>
+                        <field name="pallet"/>
+                        <field name="supplier_name" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                        <field name="supplier_code"   optional="hide"/>
+                        <field name="supplier_id"   groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+                    </group>
+                    <group>
+                        <field name="supplier_unit_price" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                        <field name="currency_id"/>
+                        <field name="converted_price" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                        <field name="converted_rate"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+
+                        <field name="selling_price"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_sales" optional="hide"/>
+                        <field name="selling_price_2" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_sales"/>
+                    </group>
+                    <group>
+                        <field name="rank"/>
+                        <field name="no_of_ranks"/>
+                        <field name="excel_filename" readonly="1"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase"/>
+                        <field name="note"/>
+                        <field name="lead_time"/>
+                        <field name="moq"/>
+                        <field name="mov"/>
+                        <field name="availabale_qty"/>
+                        <field name="incoterms"/>
+                        <field name="t1_t2"/>
+                        <field name="payment_term"/>
+                        <field name="coo"/>
+                         <field name="is_expired"  groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_purchase" />
+                        
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+     <!-- Search View -->
+    <record id="view_sbs_data_search" model="ir.ui.view">
+        <field name="name">sbs.data.search</field>
+        <field name="model">sbs.data</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Basic search fields -->
+                <field name="ean" string="Barcode"/>
+                <field name="product_name" string="Product Name"/>
+                <field name="supplier_name" string="Supplier Name"/>
+                <field name="supplier_code" string="Supplier Code"/>
+
+                <field name="excel_filename" string="Excel File"/>
+                <field name="import_number" string="Import Number"/>
+                
+                <!-- Filters -->
+                <!--
+                <filter string="Current Import" name="current_import" domain="[('import_number','=',context.get('default_import_number'))]"/>
+                <filter string="Imported Today" name="today" domain="[('import_date','=',current_date)]"/>
+                -->
+                 <!-- No default search field -->
+                <filter string="Not Expired" name="ean" domain="[('is_expired','=',False)]"/>
+                <filter string="Expired" name="ean" domain="[('is_expired','=',True)]"/>
+
+                <!--<filter string="Search by EAN" name="ean" domain="[('ean', 'ilike', self)]"/>
+                <filter string="Search by Product" name="product" domain="[('product_name', 'ilike', self)]"/>-->
+                <!-- Group By options -->
+                <group>
+                    <filter string="Excel File" name="group_by_file" context="{'group_by':'excel_filename'}"/>
+                    <filter string="Import Number" name="group_by_import" context="{'group_by':'import_number'}"/>
+                    <filter string="Supplier" name="group_by_supplier" context="{'group_by':'supplier_name'}"/>
+                    <filter string="Import Date" name="group_by_date" context="{'group_by':'import_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_sbs_data_search_sales" model="ir.ui.view">
+        <field name="name">sbs.data.search.sales</field>
+        <field name="model">sbs.data</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- فقط فیلدهایی که فروشنده‌ها می‌تونن ببینند -->
+                <field name="ean" string="Barcode"/>
+                <field name="product_name" string="Product Name"/>
+                <field name="import_number" string="Import Number"/>
+                <field name="supplier_code" string="Supplier Code"/>
+
+
+                <filter string="Not Expired" name="ean" domain="[('is_expired','=',False)]"/>
+                <filter string="Expired" name="ean" domain="[('is_expired','=',True)]"/>
+
+
+                
+                <!-- Group By محدود -->
+                <group>
+                    <filter string="Import Number" name="group_by_import" context="{'group_by':'import_number'}"/>
+                    <filter string="Import Date" name="group_by_date" context="{'group_by':'import_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_sbs_data_admin" model="ir.actions.act_window">
+        <field name="name">SBS Data</field>
+        <field name="res_model">sbs.data</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_sbs_data_search"/>
+        <field name="limit">250</field>
+        <field name="context">{}</field>
+    <!--     <field name="groups_id" eval="[(4, ref('oe_sbs.group_sbs_admin'))]"/> -->
+        <field name="view_id" ref="view_sbs_data_tree_admin"/>
+
+
+    </record>
+
+   
+
+    <record id="action_sbs_data_sales" model="ir.actions.act_window">
+        <field name="name">SBS Data (Sales)</field>
+        <field name="res_model">sbs.data</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_sbs_data_search_sales"/>
+        <field name="context">{}</field>
+      <!--  <field name="domain">[('is_expired','=',False)]</field>-->
+        <field name="view_id" ref="view_sbs_data_tree_sales"/>
+    <!--    <field name="groups_id" eval="[(4, ref('oe_sbs.group_sbs_sales'))]"/> -->
+        <field name="limit">250</field>
+    </record>
+
+
+
+
+    <record id="action_sbs_data_purchase" model="ir.actions.act_window">
+        <field name="name">SBS Data (Purchase)</field>
+        <field name="res_model">sbs.data</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_sbs_data_search"/>
+        <field name="context">{}</field>
+        <field name="view_id" ref="view_sbs_data_tree_purchase"/>
+       <!-- <field name="groups_id" eval="[(4, ref('oe_sbs.group_sbs_purchase'))]"/> -->
+        <field name="limit">250</field>
+    </record>
+
+
+
+
+<record id="action_blank_sbs_root" model="ir.actions.client">
+    <field name="name">Blank Root</field>
+    <field name="tag">sbs.blank.dashboard</field>
+</record>
+
+
+
+
+
+    
+    <record id="action_rank_products" model="ir.actions.server">
+        <field name="name">Rank Products</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="binding_model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.action_rank_products()
+        </field>
+    </record>
+    
+ <record id="action_exp_ean" model="ir.actions.server">
+        <field name="name">Compute Expired Barcode</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="binding_model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.compute_expired_ean()
+        </field>
+    </record>
+
+
+    <record id="action_prices" model="ir.actions.server">
+        <field name="name">Compute Prices</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="binding_model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.compute_selling_prices()
+        </field>
+    </record>
+
+
+    <record id="action_products" model="ir.actions.server">
+        <field name="name">Compute Products</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="binding_model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.update_products_from_ean()
+        </field>
+    </record>
+
+
+     <record id="action_suppliers" model="ir.actions.server">
+        <field name="name">Compute Suppliers</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="binding_model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.update_suppliers_from_code()
+        </field>
+    </record>
+
+<!-- Currency Action (points to native Odoo currencies) -->
+<record id="action_currency" model="ir.actions.act_window">
+    <field name="name">Currencies</field>
+    <field name="res_model">res.currency</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">No currencies found. Let's create one!</p>
+    </field>
+</record>
+
+<!-- Settings Action -->
+<record id="action_sbs_settings" model="ir.actions.act_window">
+    <field name="name">SBS Settings</field>
+    <field name="res_model">res.config.settings</field>
+    <field name="view_mode">form</field>
+    <field name="context">{'module' : 'oe_sbs'}</field>
+</record>
+
+
+
+
+</odoo>

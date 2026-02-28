@@ -1,0 +1,136 @@
+/*
+.text-truncate {
+  overflow: visible;
+  text-overflow: initial;
+  white-space: collapse;
+}*/
+
+th[data-name="ean"] {
+  
+   min-width: 110px !important;
+ 
+}
+
+th[data-name="product_name"] {
+  
+    min-width: 400px !important;;
+}
+td[name="product_name"] {
+  
+    min-width: 400px !important;;
+}
+
+
+th[data-name="note"] {
+  
+   /* width: auto !important;*/
+    min-width: 300px !important;
+    text-overflow: ellipsis !important;
+}
+
+td[name="note"] {
+  
+  white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+
+th[data-name="supplier_name"] {
+  
+    min-width: 120px !important;
+    text-align: center !important;
+}
+
+
+th[data-name="currency_id"]
+{
+  
+     /* width: 70px !important;*/
+     text-align: center !important;
+}
+
+th[data-name="import_number"]
+{
+  
+    text-align: center !important;
+}
+
+
+th[data-name="selling_price"] ,
+th[data-name="case_size"],
+th[data-name="layer"],
+th[data-name="pallet"],
+th[data-name="selling_price_2"],
+th[data-name="supplier_unit_price"],
+th[data-name="no_of_ranks"],
+th[data-name="rank"],
+th[data-name="min_sell"],
+th[data-name="converted_price"],
+th[data-name="coo"],
+th[data-name="lead_time"],
+th[data-name="moq"],
+th[data-name="mov"],
+th[data-name="availabale_qty"],
+th[data-name="incoterms"],
+th[data-name="t1_t2"],
+th[data-name="payment_term"],
+th[data-name="end_date"],
+th[data-name="ean"],
+th[data-name="Supplier Code"]
+
+
+{
+  
+   /* width: 60px !important;*/
+    text-align: center !important;
+}
+
+td[name="case_size"],
+td[name="layer"],
+td[name="pallet"],
+td[name="selling_price"],
+td[name="selling_price_2"],
+td[name="supplier_unit_price"],
+td[name="no_of_ranks"],
+td[name="rank"],
+td[name="currency_id"],
+td[name="supplier_name"],
+td[name="import_number"],
+td[name="min_sell"],
+td[name="converted_price"],
+td[name="coo"],
+td[name="converted_price"],
+td[name="lead_time"],
+td[name="moq"],
+td[name="mov"],
+td[name="availabale_qty"],
+td[name="incoterms"],
+td[name="t1_t2"],
+td[name="payment_term"],
+td[name="end_date"],
+td[name="ean"],
+td[data-name="Supplier Code"]
+
+{
+     
+    text-align: center !important;
+}
+
+.o_list_number_th
+{
+     
+    text-align: center !important;
+}
+
+
+.o_searchview_facet .o_facet_value {
+  max-height: 30px !important;
+  overflow: auto !important;
+}
+
+
+.o_field_image_url {
+
+     width: 130px !important;
+
+}

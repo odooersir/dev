@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_sbs" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.sbs</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="SBS" string="Smart Buying System" name="oe_sbs" groups="base.group_user">
+                    <block title="Profit Margins" id="sbs_profit_margins">
+                        <setting string="Default Profit Margin (%)" 
+                                 help="Applied to Selling Price (8% by default)"
+                                 id="sbs_default_profit_margin">
+                            <field name="sbs_default_profit_margin"/>
+                        </setting>
+                        
+                        <setting string="Min Profit Margin (%)" 
+                                 help="Applied to Selling Price  (7% by default)"
+                                 id="sbs_min_profit_margin">
+                            <field name="sbs_min_profit_margin"/>
+                        </setting>
+                    </block>
+                    
+                    <block title="General Settings" id="sbs_general_settings">
+                        <setting string="Default Currency" 
+                                 help="Base currency for all conversions"
+                                 id="sbs_base_currency">
+                            <field name="company_currency_id" readonly="1"/>
+                        </setting>
+                        
+                        <setting string="Auto Rank After Import" 
+                                 help="Automatically rank products after importing data"
+                                 id="sbs_auto_rank">
+                            <field name="sbs_auto_rank"/>
+                        </setting>
+                    </block>
+
+  
+                 <block title="Auto Cleanup Settings" id="sbs_cleanup_settings">
+                        <setting string="Enable Auto Cleanup" 
+                                 help="Automatically delete old import lists with high barcode overlap"
+                                 id="sbs_auto_cleanup">
+                            <field name="sbs_auto_cleanup_old_lists"/>
+                        </setting>
+                        
+                        <setting string="Overlap Threshold - Large Lists" 
+                                 help="For lists with ≥100 items (Default: 50%)"
+                                 id="sbs_threshold_large"
+                                 invisible="sbs_auto_cleanup_old_lists == False">
+                            <field name="sbs_overlap_threshold_large" 
+                                   class="oe_inline"
+                                   required="sbs_auto_cleanup_old_lists == True"/>
+                            <span>%</span>
+                        </setting>
+                        
+                        <setting string="Overlap Threshold - Medium Lists" 
+                                 help="For lists with 50-99 items (Default: 45%)"
+                                 id="sbs_threshold_medium"
+                                 invisible="sbs_auto_cleanup_old_lists == False">
+                            <field name="sbs_overlap_threshold_medium" 
+                                   class="oe_inline"
+                                   required="sbs_auto_cleanup_old_lists == True"/>
+                            <span>%</span>
+                        </setting>
+                        
+                        <setting string="Overlap Threshold - Small Lists" 
+                                 help="For lists with 20-49 items (Default: 40%)"
+                                 id="sbs_threshold_small"
+                                 invisible="sbs_auto_cleanup_old_lists == False">
+                            <field name="sbs_overlap_threshold_small" 
+                                   class="oe_inline"
+                                   required="sbs_auto_cleanup_old_lists == True"/>
+                            <span>%</span>
+                        </setting>
+                        
+                        <setting string="Overlap Threshold - Tiny Lists" 
+                                 help="For lists with &lt;20 items (Default: 35%)"
+                                 id="sbs_threshold_tiny"
+                                 invisible="sbs_auto_cleanup_old_lists == False">
+                            <field name="sbs_overlap_threshold_tiny" 
+                                   class="oe_inline"
+                                   required="sbs_auto_cleanup_old_lists == True"/>
+                            <span>%</span>
+                        </setting>
+                        
+                        <div class="text-muted" 
+                             invisible="sbs_auto_cleanup_old_lists == False">
+                            <i class="fa fa-info-circle"/> 
+                            Old lists from the same supplier will be automatically deleted if barcode overlap exceeds the threshold.
+                            All deletions are logged in Cleanup Logs menu.
+                        </div>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

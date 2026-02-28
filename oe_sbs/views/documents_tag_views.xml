@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="tag_view_form" model="ir.ui.view">
+        <field name="name">documents.tag.form</field>
+        <field name="model">documents.tag</field>
+        <field name="inherit_id" ref="documents.tag_view_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//field[@name='color']" position="after">
+                        <field name="state" />
+                </xpath>
+        </field>
+
+    </record>
+
+
+</odoo>

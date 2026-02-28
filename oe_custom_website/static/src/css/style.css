@@ -1,0 +1,110 @@
+/* oe_custom_website/static/src/css/style.css */
+
+/* ─── Hide default Odoo shop buttons ──────────────────────── */
+#o_wsale_cta_wrapper {
+    display: none !important;
+}
+.o_wsale_product_action_row {
+    display: none !important;
+}
+
+/* ─── Marketplace Offers Box ──────────────────────────────── */
+.mp-offers-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    max-width: 560px;
+}
+
+.mp-offers-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px 14px;
+}
+
+/* ─── هر ردیف offer ───────────────────────────────────────── */
+.mp-offer-row {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background .15s;
+}
+.mp-offer-row:last-child {
+    border-bottom: none;
+}
+.mp-offer-row:hover {
+    background: #f8fbff;
+}
+
+/* Best price row */
+.mp-offer-best {
+    background: #f0fdf4;
+}
+.mp-offer-best:hover {
+    background: #e6faf0;
+}
+
+/* ─── Meta rows (lead time / incoterms / t1t2) ────────────── */
+.mp-meta-row {
+    line-height: 1.4;
+}
+
+/* ─── Price ───────────────────────────────────────────────── */
+.mp-price {
+    white-space: nowrap;
+}
+
+/* ─── Qty input group ─────────────────────────────────────── */
+.mp-qty-group {
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.mp-qty-input {
+    max-width: 38px;
+    min-width: 0;
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+/* hide spin buttons on number input */
+.mp-qty-input::-webkit-outer-spin-button,
+.mp-qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.mp-qty-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* ─── MOV Progress Bar ────────────────────────────────────── */
+.mov-progress-bar-track {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mov-progress-bar-fill {
+    height: 100%;
+    background: #0d6efd;
+    border-radius: 3px;
+    transition: width .5s ease, background .3s ease;
+    width: 0%;
+}
+
+.mov-progress-bar-fill.met {
+    background: #198754;
+}
+
+/* ─── MOQ status icon ─────────────────────────────────────── */
+.moq-status-icon {
+    transition: color .3s ease;
+}
+
+/* ─── Add to Cart button ──────────────────────────────────── */
+.mp-add-to-cart {
+    white-space: nowrap;
+    min-width: 100px;
+}

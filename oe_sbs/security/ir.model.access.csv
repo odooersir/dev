@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_sbs_data_admin,sbs.data.admin,model_sbs_data,oe_sbs.group_sbs_admin,1,1,1,1
+access_sbs_import_wizard_admin,sbs.import.wizard.admin,model_sbs_import_wizard,oe_sbs.group_sbs_admin,1,1,1,1
+
+access_sbs_data_purchase,sbs.data.purchase,model_sbs_data,group_sbs_purchase,1,1,1,1
+access_sbs_import_wizard_purchase,sbs.import.wizard.purchase,model_sbs_import_wizard,group_sbs_purchase,1,1,1,1
+
+access_sbs_data_sale,sbs.data.sale,model_sbs_data,oe_sbs.group_sbs_sales,1,0,0,0
+access_sbs_import_wizard_sale,sbs.import.wizard.sale,model_sbs_import_wizard,oe_sbs.group_sbs_sales,1,0,0,0
+
+access_sbs_cleanup_log_user,sbs.cleanup.log.user,model_sbs_cleanup_log,oe_sbs.group_sbs_purchase,1,1,1,1
+access_sbs_cleanup_log_manager,sbs.cleanup.log.manager,model_sbs_cleanup_log,oe_sbs.group_sbs_admin,1,1,1,1
+
+
+
+

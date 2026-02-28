@@ -1,0 +1,25 @@
+<odoo>
+
+    <record id="group_sbs_admin" model="res.groups">
+        <field name="name">SBS Admin</field>
+    </record>
+
+    <record id="group_sbs_sales" model="res.groups">
+        <field name="name">SBS Sales</field>
+    </record>
+
+    <record id="group_sbs_purchase" model="res.groups">
+        <field name="name">SBS Purchase</field>
+    </record>
+
+    <record id="group_sbs_send" model="res.groups">
+        <field name="name">SBS Send</field>
+    </record>
+
+    <record id="group_tag_editor" model="res.groups">
+        <field name="name">Tag Editor</field>
+    </record>
+
+
+
+</odoo>
