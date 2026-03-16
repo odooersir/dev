@@ -12,13 +12,15 @@
         - Configurable profit margins (8% default + customizable)
         - Complete import history tracking
     """,
-    'author': 'odooers ir',
+    'author': 'Odooers IR',
     'website': 'https://odooers.ir',
     'category': 'Purchasing',
     'depends': [
         'base',
         'account',
-        'oe_custom_general'
+        'oe_custom_general',
+        'uom'
+
     ],
     'external_dependencies': {
         'python': ['openpyxl'],

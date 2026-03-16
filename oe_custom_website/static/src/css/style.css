@@ -1,5 +1,9 @@
 /* oe_custom_website/static/src/css/style.css */
 
+.o_wsale_product_page_variants {
+     display: none !important;
+}
+
 /* ─── Hide default Odoo shop buttons ──────────────────────── */
 #o_wsale_cta_wrapper {
     display: none !important;

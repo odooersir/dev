@@ -4,155 +4,222 @@
     
 
     <!-- ================================================================
-         MARKETPLACE OFFERS SECTION (used inside product page)
-         ================================================================ -->
+        MARKETPLACE OFFERS SECTION (used inside product page)
+    ================================================================ -->
  <template id="marketplace_offers_section" name="Marketplace Offers Section">
-        <t t-set="mp_data" t-value="product.get_marketplace_offers()"/>
-        <t t-if="mp_data and mp_data.get('offers')">
+    <t t-set="mp_data" t-value="product.get_marketplace_offers()"/>
+    <t t-if="mp_data and mp_data.get('offers')">
 
-            <div class="mp-offers-box my-3" id="marketplace-offers">
+        <div class="mp-offers-box my-3" id="marketplace-offers"
+             t-att-data-whatsapp="mp_data.get('whatsapp_number', '')">
 
-                <!-- Header -->
-                <div class="mp-offers-header d-flex align-items-center gap-2 mb-2">
-                    <i class="fa fa-tag text-primary" style="font-size:13px;"/>
-                    <span class="fw-semibold text-muted" style="font-size:13px;">Offers</span>
-                    <span class="badge bg-light text-secondary border ms-1"
-                          style="font-size:11px;"
-                          t-esc="mp_data['count']"/>
-                </div>
+            <!-- Header -->
+            <div class="mp-offers-header d-flex align-items-center gap-2 mb-2">
+                <i class="fa fa-tag text-primary" style="font-size:13px;"/>
+                <span class="fw-semibold text-muted" style="font-size:13px;">Offers</span>
+                <span class="badge bg-light text-secondary border ms-1"
+                    style="font-size:11px;"
+                    t-esc="mp_data['count']"/>
+            </div>
 
-                <!-- Offers list -->
-                <div class="mp-offers-list">
-                    <t t-foreach="mp_data['offers']" t-as="offer">
+            <!-- Offers list -->
+            <div class="mp-offers-list">
+                <t t-foreach="mp_data['offers']" t-as="offer">
 
-                        <div t-attf-class="mp-offer-row px-3 py-2 #{ 'mp-offer-best' if offer['id'] == mp_data.get('cheapest_id') else '' }"
-                             t-att-data-offer-id="offer['id']"
-                             t-att-data-import-number="offer['import_number']"
-                             t-att-data-product-id="product.product_variant_id.id"
-                             t-att-data-product-template-id="product.id"
-                             t-att-data-target-mov="offer['mov']"
-                             t-att-data-target-moq="offer['moq']">
+                    <div t-attf-class="mp-offer-row px-3 py-2
+                            #{ 'mp-offer-best' if offer['id'] == mp_data.get('cheapest_id') else '' }
+                            #{ 'mp-offer-expired' if offer.get('is_expired') else '' }"
+                        t-att-data-offer-id="offer['id']"
+                        t-att-data-import-number="offer['import_number']"
+                        t-att-data-product-id="product.product_variant_id.id"
+                        t-att-data-product-template-id="product.id"
+                        t-att-data-target-mov="offer['mov']"
+                        t-att-data-target-moq="offer['moq']"
+                        t-att-data-case-size="offer['case_size']"
+                        t-att-data-is-expired="'1' if offer.get('is_expired') else '0'">
 
-                            <!-- ردیف ۱: نام فروشنده + badges + قیمت -->
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <i class="fa fa-store text-secondary" style="font-size:11px;"/>
-                                    <span  style="font-size:12px;">Price List: </span>
-                                    <span class="fw-semibold" style="font-size:13px;" t-out="'#' + str(offer['import_number'])"/>
-                                    <t t-if="offer['id'] == mp_data.get('cheapest_id')">
-                                        <span class="badge bg-success text-white"
-                                              style="font-size:10px; padding:2px 6px;">
-                                            Best Price
+                        <!-- ردیف ۱: نام فروشنده + badges + قیمت -->
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <i class="fa fa-store text-secondary" style="font-size:11px;"/>
+                                <span style="font-size:12px;">Price List: </span>
+                                <span class="fw-semibold" style="font-size:13px;"
+                                      t-out="'#' + str(offer['import_number'])"/>
+
+                                <!-- Best Price Badge — فقط برای active -->
+                                <t t-if="offer['id'] == mp_data.get('cheapest_id') and not offer.get('is_expired')">
+                                    <span class="badge bg-success text-white"
+                                        style="font-size:10px; padding:2px 6px;">
+                                        Best Price
+                                    </span>
+                                </t>
+
+                                <!-- Expired Badge -->
+                                <t t-if="offer.get('is_expired')">
+                                    <span class="badge bg-warning text-dark"
+                                        style="font-size:10px; padding:2px 6px;">
+                                        <i class="fa fa-clock-o me-1"/>
+                                        Expired
+                                    </span>
+                                </t>
+                            </div>
+
+                            <!-- قیمت -->
+                            <div class="d-flex flex-column align-items-end">
+                                <t t-if="offer['case_size'] > 1">
+                                    <div class="mp-price fw-bold text-primary" style="font-size:15px;">
+                                        <span t-esc="offer['bundle_price']"
+                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                        <span class="text-muted fw-normal" style="font-size:11px;">
+                                            / <t t-esc="offer['uom_name']"/>
                                         </span>
-                                    </t>
-
-                                    <!--<t t-if="offer['import_number']">
-                                        <span class="badge bg-light text-muted border"
-                                              style="font-size:10px; font-family:monospace;"
-                                              t-esc="offer['import_number']"/>
-                                    </t>-->
-                                </div>
-
-                                <!-- قیمت -->
-                                <div class="mp-price fw-bold text-primary" style="font-size:15px;">
-                                    <span t-esc="offer['selling_price']"
-                                          t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
-                                </div>
+                                    </div>
+                                    <span class="text-muted" style="font-size:10px;">
+                                        <span t-esc="offer['selling_price']"
+                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                        / unit
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <div class="mp-price fw-bold text-primary" style="font-size:15px;">
+                                        <span t-esc="offer['selling_price']"
+                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                    </div>
+                                </t>
                             </div>
+                        </div>
 
-                            <!-- ردیف ۲: Lead Time -->
-                            <t t-if="offer['lead_time']">
-                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
-                                    <i class="fa fa-clock-o text-muted" style="font-size:11px;"/>
-                                    <span class="text-muted" style="font-size:11px;">Lead Time:</span>
-                                    <span style="font-size:11px;" t-esc="offer['lead_time']"/>
+                        <!-- ردیف ۲: Lead Time -->
+                        <t t-if="offer['lead_time']">
+                            <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                <i class="fa fa-clock-o text-muted" style="font-size:11px;"/>
+                                <span class="text-muted" style="font-size:11px;">Lead Time:</span>
+                                <span style="font-size:11px;" t-esc="offer['lead_time']"/>
+                            </div>
+                        </t>
+
+                        <!-- ردیف ۳: Incoterms -->
+                        <t t-if="offer['incoterms']">
+                            <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                <i class="fa fa-ship text-muted" style="font-size:11px;"/>
+                                <span class="text-muted" style="font-size:11px;">Incoterms:</span>
+                                <span style="font-size:11px;" t-esc="offer['incoterms']"/>
+                            </div>
+                        </t>
+
+                        <!-- ردیف ۴: T1/T2 -->
+                        <t t-if="offer['t1_t2']">
+                            <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                <i class="fa fa-globe text-muted" style="font-size:11px;"/>
+                                <span class="text-muted" style="font-size:11px;">T1/T2:</span>
+                                <span style="font-size:11px;" t-esc="offer['t1_t2']"/>
+                            </div>
+                        </t>
+
+                        <!-- ردیف ۵: MOV progress bar — فقط برای offer های active -->
+                        <t t-if="not offer.get('is_expired') and (offer['mov'] > 0 or offer['moq'] > 0)">
+                            <div class="mov-progress-wrapper mt-2 mb-1">
+
+                                <t t-if="offer['mov'] > 0">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted" style="font-size:11px;">
+                                            MOV: $<t t-esc="'%.2f' % offer['mov']"/>
+                                        </span>
+                                        <span class="mov-progress-label text-muted"
+                                            style="font-size:11px;">$0.00 in cart</span>
+                                    </div>
+                                    <div class="mov-progress-bar-track">
+                                        <div class="mov-progress-bar-fill" style="width:0%"/>
+                                    </div>
+                                </t>
+
+                                <t t-if="offer['moq'] > 0">
+                                    <div class="d-flex align-items-center gap-1 mt-1">
+                                        <i class="fa fa-circle text-warning" style="font-size:9px;"/>
+                                        <span class="text-muted" style="font-size:11px;">
+                                            MOQ: <t t-esc="offer['moq']"/> units
+                                        </span>
+                                        <span class="moq-status-label text-muted"
+                                            style="font-size:11px;"> — not met</span>
+                                    </div>
+                                </t>
+
+                            </div>
+                        </t>
+
+                        <!-- ردیف آخر: دکمه‌های عملیاتی -->
+                        <div class="addc d-flex align-items-center gap-2 mt-2">
+
+                            <!-- ─── حالت ACTIVE: qty input + Add to Cart ─── -->
+                            <t t-if="not offer.get('is_expired')">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <div class="input-group input-group-sm mp-qty-group" style="width:120px;">
+                                        <button class="btn btn-outline-secondary mp-qty-minus" type="button">-</button>
+                                        <input type="number" class="form-control text-center mp-qty-input"
+                                               value="1" min="1" step="1" max="9999"/>
+                                        <button class="btn btn-outline-secondary mp-qty-plus" type="button">+</button>
+                                    </div>
+                                    <small class="text-muted" style="font-size:10px;">
+                                        <t t-if="offer['case_size'] > 1">
+                                            <t t-esc="offer['uom_name']"/>
+                                        </t>
+                                        <t t-else="">Unit</t>
+                                    </small>
                                 </div>
-                            </t>
 
-                            <!-- ردیف ۳: Incoterms -->
-                            <t t-if="offer['incoterms']">
-                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
-                                    <i class="fa fa-ship text-muted" style="font-size:11px;"/>
-                                    <span class="text-muted" style="font-size:11px;">Incoterms:</span>
-                                    <span style="font-size:11px;" t-esc="offer['incoterms']"/>
+                                <div class="d-flex flex-column flex-grow-1 gap-1">
+                                    <button class="btn btn-primary btn-sm mp-add-to-cart" type="button"
+                                            t-att-data-case-size="offer['case_size']"
+                                            t-att-data-uom-id="offer['uom_id']"
+                                            t-att-data-bundle-price="offer['selling_price'] * (offer['case_size'] or 1)">
+                                        <i class="fa fa-cart-plus me-1"/>
+                                        Add to Cart
+                                    </button>
+                                    <small class="mp-total-preview text-muted text-center" style="font-size:10px;">
+                                        Total: <span class="mp-total-value">-</span>
+                                    </small>
                                 </div>
-                            </t>
 
-                            <!-- ردیف ۴: T1/T2 -->
-                            <t t-if="offer['t1_t2']">
-                                <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
-                                    <i class="fa fa-globe text-muted" style="font-size:11px;"/>
-                                    <span class="text-muted" style="font-size:11px;">T1/T2:</span>
-                                    <span style="font-size:11px;" t-esc="offer['t1_t2']"/>
-                                </div>
-                            </t>
-
-                            <!-- ردیف ۵: MOV progress bar -->
-                            <t t-if="offer['mov'] > 0 or offer['moq'] > 0">
-                                <div class="mov-progress-wrapper mt-2 mb-1">
-
-                                    <t t-if="offer['mov'] > 0">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="text-muted" style="font-size:11px;">
-                                                MOV: $<t t-esc="'%.2f' % offer['mov']"/>
-                                            </span>
-                                            <!-- FIX: class تغییر کرد از mov-status-text به mov-progress-label -->
-                                            <span class="mov-progress-label text-muted"
-                                                  style="font-size:11px;">$0.00 in cart</span>
-                                        </div>
-                                        <div class="mov-progress-bar-track">
-                                            <div class="mov-progress-bar-fill" style="width:0%"/>
-                                        </div>
-                                    </t>
-
-                                    <t t-if="offer['moq'] > 0">
-                                        <div class="d-flex align-items-center gap-1 mt-1">
-                                            <i class="fa fa-circle text-warning"
-                                               style="font-size:9px;"/>
-                                            <span class="text-muted" style="font-size:11px;">
-                                                MOQ: <t t-esc="offer['moq']"/> units
-                                            </span>
-                                            <!-- FIX: class تغییر کرد از moq-status-text به moq-status-label -->
-                                            <span class="moq-status-label text-muted"
-                                                  style="font-size:11px;"> — not met</span>
-                                        </div>
-                                    </t>
-
-                                </div>
-                            </t>
-                            <!-- FIX: </div> اضافه که اینجا بود حذف شد -->
-
-                            <!-- ردیف آخر: qty + Add to Cart -->
-                            <div class="addc d-flex align-items-center gap-2 mt-2">
-                                <div class="input-group input-group-sm mp-qty-group" style="width:110px;">
-                                    <button class="btn btn-outline-secondary mp-qty-minus"
-                                            type="button">−</button>
-                                    <input type="number"
-                                           class="form-control text-center mp-qty-input"
-                                           value="1" min="1" max="999"/>
-                                    <button class="btn btn-outline-secondary mp-qty-plus"
-                                            type="button">+</button>
-                                </div>
-                                <button class="btn btn-primary btn-sm mp-add-to-cart flex-grow-1"
-                                        type="button">
-                                    <i class="fa fa-cart-plus me-1"/>
-                                    Add to Cart
-                                </button>
+                                <!-- Badge: تعداد بسته -->
                                 <span class="mp-in-cart-badge badge bg-info ms-2" style="display:none;"/>
-                            </div>
+                                <span class="mp-in-cart-units d-block text-muted small mt-1" style="display:none;"/>
+                            </t>
 
-                        </div><!-- /mp-offer-row -->
+                            <!-- ─── حالت EXPIRED: Contact Us (WhatsApp) ─── -->
+                            <t t-else="">
+                                <div class="d-flex flex-column flex-grow-1 gap-1">
+                                    <div class="alert alert-warning py-1 px-2 mb-1" style="font-size:11px;">
+                                        <i class="fa fa-info-circle me-1"/>
+                                        This offer has expired. Contact us for availability.
+                                    </div>
+                                    <a class="btn btn-success btn-sm mp-whatsapp-contact"
+                                       href="#"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       t-att-data-import-number="offer['import_number']"
+                                       t-att-data-product-name="product.name">
+                                        <i class="fa fa-whatsapp me-1"/>
+                                        Contact Us
+                                    </a>
+                                </div>
+                            </t>
 
-                    </t><!-- /t-foreach -->
-                </div><!-- /mp-offers-list -->
-            </div><!-- /mp-offers-box -->
+                        </div><!-- /addc -->
 
-        </t>
-    </template>
+                    </div><!-- /mp-offer-row -->
+
+                </t><!-- /t-foreach -->
+            </div><!-- /mp-offers-list -->
+        </div><!-- /mp-offers-box -->
+
+    </t>
+</template>
+
+
         
     <!-- ========================================================================
-         PRODUCT DETAIL PAGE MODIFICATIONS
-         ======================================================================== -->
+    PRODUCT DETAIL PAGE MODIFICATIONS
+    ======================================================================== -->
     
     <template id="product_bilingual_name" inherit_id="website_sale.product_title">
         <xpath expr="//h1[@t-field='product.name']" position="replace">

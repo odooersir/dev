@@ -90,29 +90,188 @@
 
 
     <!-- ================================================================
-             CART PAGE — نام تامین‌کننده زیر نام محصول
-             inherit از cart_lines چون ساختار Odoo 19 دیگر table ندارد
-             ================================================================ -->
-        <template id="marketplace_cart_supplier"
-                  inherit_id="website_sale.cart_lines"
-                  name="Marketplace Seller in Cart">
+    CART PAGE — نام تامین‌کننده زیر نام محصول
+    inherit از cart_lines چون ساختار Odoo 19 دیگر table ندارد
+    ================================================================ -->
+      
+    <template id="marketplace_cart_supplier"
+          inherit_id="website_sale.cart_lines"
+          name="Marketplace Seller in Cart">
 
-            <xpath expr="//t[@t-call='website_sale.cart_line_description_following_lines']"
-                   position="after">
-                <t t-if="line.sbs_data_id">
-                    <div class="mp-cart-seller mt-1 mb-1">
-                        <small class="text-muted d-inline-flex align-items-center gap-1">
-                            <i class="fa fa-store" style="font-size:10px;"/>
-                            <span style="font-size:11px;">
-                                Sold by:
-                                <strong t-esc="line.snapshot_seller_name or line.sbs_data_id.supplier_id.name"/>
-                            </span>
-                        </small>
-                    </div>
+        <xpath expr="//t[@t-call='website_sale.cart_line_description_following_lines']"
+            position="after">
+            <t t-if="line.sbs_data_id">
+                <div class="mp-cart-seller mt-1 mb-1">
+                    <small class="text-muted d-inline-flex align-items-center gap-1">
+                        <i class="fa fa-store" style="font-size:10px;"/>
+                        <span style="font-size:11px;">
+                            Sold by:
+                            <strong t-esc="line.snapshot_import_number or line.sbs_data_id.import_number"/>
+                        </span>
+                    </small>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_cart_product_image')]" position="replace">
+            <div class="o_cart_product_image">
+                <t t-call="website_sale.cart_line_product_link">
+                    <t t-if="line.product_id.image_url or line.product_template_id.image_url">
+                        <img
+                            t-att-src="line.product_id.image_url or line.product_template_id.image_url"
+                            t-att-alt="line.name_short"
+                            class="img border rounded"
+                            loading="lazy"
+                            style="object-fit: contain; width: 128px; height: 128px;"
+                        />
+                    </t>
+                    <t t-else="">
+                        <img
+                            src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg"
+                            alt="Default Product Image"
+                            class="img border rounded"
+                            loading="lazy"
+                            style="object-fit: contain; width: 128px; height: 128px;"
+                        />
+                    </t>
                 </t>
-            </xpath>
+            </div>
+        </xpath>
 
-        </template>
+         <xpath expr="//div[@id='cart_products']" position="before">
+            <t t-if="mp_mov_violations">
+                <div class="mp-mov-violations-wrapper mb-4">
+ 
+                    <!-- Header -->
+                    <div class="alert alert-warning border-warning d-flex align-items-start gap-3 mb-0 rounded-bottom-0"
+                         role="alert"
+                         style="border-bottom: 0 !important;">
+                        <i class="fa fa-exclamation-triangle fa-lg text-warning mt-1 flex-shrink-0"/>
+                        <div>
+                            <strong style="font-size:14px;">
+                                Minimum Order Value Not Reached
+                            </strong>
+                            <p class="mb-0 text-muted" style="font-size:13px;">
+                                Please add more items to the following price lists to proceed to checkout.
+                            </p>
+                        </div>
+                    </div>
+ 
+                    <!-- Per-violation cards -->
+                    <div class="border border-warning rounded-bottom overflow-hidden">
+                        <t t-foreach="mp_mov_violations" t-as="viol">
+ 
+                            <!-- ✅ محاسبه درصد به صورت جداگانه در t-set -->
+                            <t t-set="mov_pct"
+                               t-value="int(min((viol['current_value'] / viol['mov']) * 100, 100)) if viol['mov'] > 0 else 0"/>
+ 
+                            <div t-attf-class="px-3 py-3 bg-white
+                                    #{'border-bottom border-warning-subtle' if not viol_last else ''}">
+ 
+                                <!-- Import number + % badge -->
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa fa-tag text-secondary" style="font-size:12px;"/>
+                                        <span class="text-muted" style="font-size:12px;">Price List:</span>
+                                        <strong style="font-size:13px;">
+                                            #<t t-esc="viol['import_number']"/>
+                                        </strong>
+                                    </div>
+                                    <!-- ✅ نمایش درصد بدون format string -->
+                                    <span class="badge bg-warning text-dark" style="font-size:11px;">
+                                        <t t-esc="mov_pct"/>% of MOV
+                                    </span>
+                                </div>
+ 
+                                <!-- Progress bar -->
+                                <!-- ✅ width هم از متغیر mov_pct استفاده می‌کند -->
+                                <div class="progress mb-2" style="height:8px; border-radius:4px;">
+                                    <div
+                                        class="progress-bar bg-warning"
+                                        role="progressbar"
+                                        t-attf-style="width: #{mov_pct}%;"
+                                        t-att-aria-valuenow="viol['current_value']"
+                                        aria-valuemin="0"
+                                        t-att-aria-valuemax="viol['mov']"
+                                    />
+                                </div>
+ 
+                                <!-- Values + remaining -->
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <div class="d-flex gap-3 flex-wrap">
+                                        <span style="font-size:12px; color:#6c757d;">
+                                            Current:
+                                            <strong class="text-dark">
+                                                $<t t-esc="'%.2f' % viol['current_value']"/>
+                                            </strong>
+                                        </span>
+                                        <span style="font-size:12px; color:#6c757d;">
+                                            Required:
+                                            <strong class="text-dark">
+                                                $<t t-esc="'%.2f' % viol['mov']"/>
+                                            </strong>
+                                        </span>
+                                    </div>
+                                    <span class="text-danger fw-semibold" style="font-size:12px;">
+                                        <i class="fa fa-plus-circle me-1"/>
+                                        $<t t-esc="'%.2f' % viol['remaining']"/> more needed
+                                    </span>
+                                </div>
+ 
+                            </div>
+                        </t>
+                    </div>
+ 
+                </div>
+            </t>
+        </xpath>
+
+    </template>
+
+
+    <!-- ================================================================
+    ================================================================ -->
+    <template id="custom_cart_summary"
+            inherit_id="website_sale.cart_summary_content"
+            name="Costom Cart Summary"
+            priority="12">
+
+        <xpath expr="//div[hasclass('o_cart_product_image')]" position="replace">
+            <div class="o_cart_product_image position-relative">
+                <t t-if="line.product_id.image_url or line.product_template_id.image_url">
+                    <img
+                        t-att-src="line.product_id.image_url or line.product_template_id.image_url"
+                        t-att-alt="line.name_short"
+                        class="img rounded"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+                <t t-else="">
+                    <img
+                        src="https://img.cliimax.io/awr3dxEq__0MAeCuu3w82ONS97QFbUkUlhTUBrgQdGk/plain/local:///climax1/product.template/789671/789671.jpg"
+                        alt="Default Product Image"
+                        class="img rounded"
+                        loading="lazy"
+                        style="object-fit: contain;"
+                    />
+                </t>
+                <span class="o_cart_item_count badge bg-secondary position-absolute top-0 start-100 translate-middle">
+                    <t t-out="int(line.product_uom_qty)" />
+                    <i
+                        t-if="line._get_shop_warning(clear=False)"
+                        class="fa fa-warning"
+                        role="img"
+                        t-att-title="line._get_shop_warning()"
+                        aria-label="Warning"
+                    />
+                </span>
+            </div>
+        </xpath>
+
+    </template>
+
+
 
     
 </odoo>

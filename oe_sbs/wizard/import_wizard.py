@@ -9,8 +9,10 @@ from unidecode import unidecode
 import json
 import io
 import zipfile
-
 import re
+import logging
+_logger = logging.getLogger(__name__)
+
 
 
 class ImportDataWizard(models.TransientModel):
@@ -121,8 +123,6 @@ class ImportDataWizard(models.TransientModel):
 
         except Exception:
             return 0.0, False
-
-
    
     def get_final_spreadsheet_xlsx(self, document):
         """
@@ -199,9 +199,7 @@ class ImportDataWizard(models.TransientModel):
         print ("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
         xlsx_bytes = self.env['spreadsheet.mixin']._zip_xslx_files(files_list)
         return xlsx_bytes
-  
-  
-   
+     
     def excel_date_to_str(self, value):
         try:
             # مطمئن بشیم عدد هست (نه رشته)
@@ -218,6 +216,97 @@ class ImportDataWizard(models.TransientModel):
             return date_obj.strftime("%d/%m/%Y")
         except Exception:
             return value
+
+    def _get_or_create_uom(self, case_size):
+        """
+        Find or create a UOM based on case_size.
+        Compatible with Odoo 19 tree-based UOM structure.
+        """
+        UoM = self.env['uom.uom']
+
+        try:
+            unit_uom = self.env.ref('uom.product_uom_unit')
+        except ValueError:
+            unit_uom = UoM.search([
+                ('relative_uom_id', '=', False),
+                ('relative_factor', '=', 1.0),
+            ], limit=1)
+
+        if not unit_uom:
+            _logger.warning("[SBS UOM] Base Unit of Measure not found.")
+            return False
+
+        # case_size <= 1: برگشت واحد پایه
+        if not case_size or int(case_size) <= 1:
+            return unit_uom
+
+        case_size_float = float(int(case_size))
+
+        # جستجوی UOM موجود
+        uom = UoM.search([
+            ('relative_uom_id', '=', unit_uom.id),
+            ('relative_factor', '=', case_size_float),
+        ], limit=1)
+
+        # ساخت UOM جدید در صورت نبود
+        if not uom:
+            try:
+                uom = UoM.sudo().create({
+                    'name': f'Pack of {int(case_size)}',
+                    'relative_uom_id': unit_uom.id,
+                    'relative_factor': case_size_float,
+                })
+                _logger.info(
+                    "[SBS UOM] New UOM created: '%s' (id=%s, factor=%s)",
+                    uom.name, uom.id, case_size_float
+                )
+            except Exception as e:
+                _logger.warning("[SBS UOM] Failed to create UOM: %s", e)
+                return unit_uom
+
+        return uom
+
+
+    def _sync_uom_to_product(self, product_tmpl, uom):
+        """
+        Add the UOM to product.template.uom_ids (Many2many field).
+
+        uom_ids = fields.Many2many('uom.uom', string='Packagings',
+            domain="[('id', '!=', uom_id)]")
+        """
+        if not product_tmpl or not uom:
+            return
+
+        # اگر همان uom_id پیش‌فرض محصول است → skip
+        if product_tmpl.uom_id.id == uom.id:
+            _logger.debug(
+                "[SBS UOM] UOM '%s' is the default UOM of product '%s' — skipping",
+                uom.name, product_tmpl.name
+            )
+            return
+
+        # اگر قبلاً در uom_ids وجود دارد → skip
+        if uom in product_tmpl.uom_ids:
+            _logger.debug(
+                "[SBS UOM] UOM '%s' already in uom_ids of product '%s' — skipping",
+                uom.name, product_tmpl.name
+            )
+            return
+
+        # اضافه کردن به Many2many با command (4, id)
+        try:
+            product_tmpl.sudo().write({
+                'uom_ids': [(4, uom.id)]
+            })
+            _logger.info(
+                "[SBS UOM] UOM '%s' added to uom_ids of product '%s' (id=%s)",
+                uom.name, product_tmpl.name, product_tmpl.id
+            )
+        except Exception as e:
+            _logger.warning(
+                "[SBS UOM] Failed to add UOM '%s' to product '%s': %s",
+                uom.name, product_tmpl.name, e
+            )
 
 
     
@@ -685,6 +774,18 @@ class ImportDataWizard(models.TransientModel):
                     rec['product_id'] = product.id
                 ############################################
 
+                # ── UOM SYNC ──────────────────────────────────────────────
+                # بعد از اینکه product پیدا/ساخته شد، UOM را sync کن
+                case_size = rec.get('case_size', 0)
+                if case_size and int(case_size) > 0:
+                    uom = self._get_or_create_uom(case_size)
+                    if uom:
+                        # ذخیره uom_id در rec تا در sbs.data هم ثبت بشه
+                        rec['uom_id'] = uom.id
+                        # اضافه کردن به product.template.uom_ids
+                        self._sync_uom_to_product(product, uom)
+                # ──────────────────────────────────────────────────────────
+
                 if 'supplier_code'  in rec:
                     Partner = self.env['res.partner'].search([('partner_code', '=',  rec['supplier_code'])], limit=1)
                     if Partner:
@@ -764,8 +865,6 @@ class ImportDataWizard(models.TransientModel):
             print ("exceptionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
             print (str(e))
             raise UserError(_('Error importing file: %s') % str(e))
-
-
 
 
     def action_new_import(self):

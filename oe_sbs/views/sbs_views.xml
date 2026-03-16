@@ -35,7 +35,7 @@
                 <field name="selling_price_2" groups="oe_sbs.group_sbs_admin,oe_sbs.group_sbs_sales"/>
 
 
-                
+                <field name="uom_id"/>
                 <field name="case_size"/>
                 <field name="layer"/>
                 <field name="pallet"/>
@@ -119,6 +119,7 @@
                     <field name="selling_price_2"/>
 
                     
+                    <field name="uom_id"/>
                     <field name="case_size"/>
                     <field name="layer"/>
                     <field name="pallet"/>
@@ -172,6 +173,7 @@
                 <field name="brand_id" widget="many2one"/>
 
                 
+                <field name="uom_id"/>
                 <field name="case_size"/>
                 <field name="layer"/>
                 <field name="pallet"/>
@@ -249,6 +251,7 @@
                         <field name="end_date"/>
                         <field name="ean"/>
                         <field name="product_name"/>
+                        <field name="uom_id"/>
                         <field name="case_size"/>
                         <field name="layer"/>
                         <field name="pallet"/>

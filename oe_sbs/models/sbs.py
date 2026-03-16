@@ -73,6 +73,16 @@ class SBS(models.Model):
 
     converted_rate = fields.Float(string='Converted Rate', digits=(16, 2))
 
+    
+    uom_id = fields.Many2one(
+        'uom.uom',
+        string='Unit of Measure',
+        help='Unit of measure derived from case_size',
+        readonly=True,
+    )
+
+
+    
     @api.depends('document_id')
     def _compute_spreadsheet_url(self):
         for rec in self:
