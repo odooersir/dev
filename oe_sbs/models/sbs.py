@@ -10,47 +10,46 @@ class SBS(models.Model):
     _description = 'Smart Buying System Data'
     _order = 'import_number desc'
     
-    import_date = fields.Date(string='Import Date', required=True)
-    ean = fields.Char(string='Barcode', required=True,index=True)
+    import_date = fields.Date(string='Import Date', required=True, index=True)
+    ean = fields.Char(string='Barcode', required=True, index=True)
     product_name = fields.Char(string='Product Name')
     case_size = fields.Integer(string='Unit/Case')
     layer = fields.Integer(string='Case/Layer')
     pallet = fields.Integer(string='Case/Pallet')
     note = fields.Text(string='Note')
-    coo = fields.Char(string='CoO',help='Country of Origin')
-    supplier_unit_price = fields.Float(string='Sup.U.P',help='Supplier Unit Price', digits=(16, 2),index=True,groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
+    coo = fields.Char(string='CoO', help='Country of Origin')
+    supplier_unit_price = fields.Float(string='Sup.U.P', help='Supplier Unit Price', digits=(16, 2), index=True, groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
     currency_id = fields.Many2one('res.currency', string='Currency')
-    supplier_name = fields.Char(string='Supplier Name',groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
-    
+    supplier_name = fields.Char(string='Supplier Name', index=True, groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
+
     # New fields
-    excel_filename = fields.Char(string='Excel File Name', readonly=True,index=True,groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
-    end_date = fields.Date(string='Offer Validity')
-    
+    excel_filename = fields.Char(string='Excel File Name', readonly=True, index=True, groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
+    end_date = fields.Date(string='Offer Validity', index=True)
+
     converted_price = fields.Float(
         string='Converted Supplier Price (USD)',
         digits=(16, 2))
     selling_price = fields.Float(
-        string='S.P($)',help='Selling Price (USD)',
+        string='S.P($)', help='Selling Price (USD)',
         digits=(16, 2)
     )
     selling_price_2 = fields.Float(
-        string='S.P(OC)',help='Selling Price (Original Currency)',
+        string='S.P(OC)', help='Selling Price (Original Currency)',
         digits=(16, 2)
     )
-    
+
     min_sell = fields.Float(
-        string='Min Sell(OC)',help='Min Sell(Original Currency)',
+        string='Min Sell(OC)', help='Min Sell(Original Currency)',
         digits=(16, 2)
     )
 
-    rank = fields.Integer(string='Rank', readonly=True,index=True)
+    rank = fields.Integer(string='Rank', readonly=True, index=True)
     no_of_ranks = fields.Integer(string='No of Ranks')
-    import_number = fields.Char(string='IN',help='Import Number', readonly=True)
+    import_number = fields.Char(string='IN', help='Import Number', readonly=True, index=True)
 
-    supplier_code = fields.Char(string='Supplier Code',help='Supplier Code')
+    supplier_code = fields.Char(string='Supplier Code', help='Supplier Code')
 
-   
-    is_expired = fields.Boolean()
+    is_expired = fields.Boolean(index=True)
 
     lead_time = fields.Char(string='Lead Time')
     moq = fields.Char(string='MOQ')
@@ -59,27 +58,46 @@ class SBS(models.Model):
     incoterms = fields.Char(string='Incoterms')
     t1_t2 = fields.Char(string='T1/T2')
     payment_term = fields.Char(string='Payment Term')
-    
-    
-    document_id = fields.Many2one( 'documents.document', string='Document',ondelete='restrict', index=True)
 
+    document_id = fields.Many2one('documents.document', string='Document', ondelete='restrict', index=True)
 
-    supplier_id = fields.Many2one('res.partner',ondelete='restrict', string='Supplier')
-    product_id = fields.Many2one('product.template',ondelete='restrict', string='Product')
+    supplier_id = fields.Many2one('res.partner', ondelete='restrict', string='Supplier', index=True)
+    product_id = fields.Many2one('product.template', ondelete='restrict', string='Product', index=True)
 
-    brand_id = fields.Many2one('product.brand', string='Brand',ondelete='restrict', related='product_id.brand_id')
+    brand_id = fields.Many2one('product.brand', string='Brand', ondelete='restrict', related='product_id.brand_id')
 
     spreadsheet_url = fields.Char(string='Spreadsheet URL', compute='_compute_spreadsheet_url', store=False)
 
     converted_rate = fields.Float(string='Converted Rate', digits=(16, 2))
 
-    
     uom_id = fields.Many2one(
         'uom.uom',
         string='Unit of Measure',
         help='Unit of measure derived from case_size',
         readonly=True,
     )
+
+    def _auto_init(self):
+        res = super()._auto_init()
+        # Composite indexes for most common query patterns
+        self.env.cr.execute("""
+            CREATE INDEX IF NOT EXISTS sbs_data_import_number_ean_idx
+                ON sbs_data (import_number, ean);
+
+            CREATE INDEX IF NOT EXISTS sbs_data_supplier_import_date_idx
+                ON sbs_data (supplier_name, import_date);
+
+            CREATE INDEX IF NOT EXISTS sbs_data_ean_expired_idx
+                ON sbs_data (ean, is_expired);
+
+            CREATE INDEX IF NOT EXISTS sbs_data_product_import_idx
+                ON sbs_data (product_id, import_number)
+                WHERE product_id IS NOT NULL;
+
+            CREATE INDEX IF NOT EXISTS sbs_data_ean_price_idx
+                ON sbs_data (ean, converted_price);
+        """)
+        return res
 
 
     
@@ -142,7 +160,6 @@ class SBS(models.Model):
     
     @api.model
     def compute_selling_prices(self):
-        print("Running selling price computation...")
 
         # Cache configuration values
         ICP = self.env['ir.config_parameter'].sudo()
@@ -193,15 +210,7 @@ class SBS(models.Model):
   
     
     def action_rank_products(self):
-
-        print (" Running  action_rank_products Computation ..................")
-
         """Rank products with standard competition ranking (1223 style) within each EAN group"""
-        # Ensure index exists for performance
-        self.env.cr.execute("""
-            CREATE INDEX IF NOT EXISTS sbs_data_ean_price_idx 
-            ON sbs_data (ean, converted_price)
-        """)
 
         # Get all products ordered by EAN and price
         self.env.cr.execute("""
@@ -292,21 +301,12 @@ class SBS(models.Model):
 
 
     def _search(self, domain, offset=0, limit=None, order=None, *, active_test=True, bypass_access=False):
-        print("START _search --------------------------------------------")
-        print("ORIGINAL domain:", domain)
-
-        #import requests
-        #r = requests.get("https://ifconfig.me")
-        #print(r.text)
-
         # کپی ایمن از دامین اولیه برای حفظ ساختار
         new_domain = []
-        text_search = None
         import_number_exact = None
         ean_search = None
 
         for cond in domain:
-            # نگه داشتن عملگرهای منطقی
             if cond in ('&', '|', '!'):
                 new_domain.append(cond)
                 continue
@@ -318,7 +318,7 @@ class SBS(models.Model):
                 and isinstance(cond[2], str)
             ):
                 import_number_exact = cond[2]
-                continue  # حذف شرط قدیمی
+                continue
 
             elif (
                 isinstance(cond, (list, tuple))
@@ -327,20 +327,18 @@ class SBS(models.Model):
                 and isinstance(cond[2], str)
             ):
                 ean_search = cond[2].strip()
-                continue  # حذف شرط قدیمی
+                continue
 
             elif (
                 isinstance(cond, (list, tuple))
                 and cond[1] == 'ilike'
                 and isinstance(cond[2], str)
             ):
-                text_search = cond[2]
                 new_domain.append(cond)
 
             else:
                 new_domain.append(cond)
 
-        # بازسازی شرط‌ها
         if import_number_exact is not None:
             import_number_exact = str(import_number_exact).zfill(5)
             new_domain.append(('import_number', '=', import_number_exact))
@@ -352,10 +350,7 @@ class SBS(models.Model):
             else:
                 new_domain.append(('ean', 'ilike', ean_search))
 
-       
-        print("MODIFIED domain:", new_domain)
-
-        return super(SBS, self)._search(new_domain, offset=offset, limit=limit, order=order,active_test=active_test, bypass_access=bypass_access)
+        return super(SBS, self)._search(new_domain, offset=offset, limit=limit, order=order, active_test=active_test, bypass_access=bypass_access)
 
 
     @api.model

@@ -104,9 +104,12 @@
                 <div class="mp-cart-seller mt-1 mb-1">
                     <small class="text-muted d-inline-flex align-items-center gap-1">
                         <i class="fa fa-store" style="font-size:10px;"/>
-                        <span style="font-size:11px;">
-                            Sold by:
-                            <strong t-esc="line.snapshot_import_number or line.sbs_data_id.import_number"/>
+                       <span style="font-size:11px;">
+                            Offer List:
+                            <a t-attf-href="/shop/offer/#{line.snapshot_import_number or line.sbs_data_id.import_number}"
+                            class="fw-semibold text-decoration-none">
+                                <strong t-esc="line.snapshot_import_number or line.sbs_data_id.import_number"/>
+                            </a>
                         </span>
                     </small>
                 </div>
@@ -271,6 +274,40 @@
 
     </template>
 
+
+    <template
+        id="shop_sbs_banner"
+        inherit_id="website_sale.products"
+        name="Shop – SBS Import Filter Banner"
+    >
+        <xpath expr="//header[@id='o_wsale_products_header']" position="before">
+            <t t-if="sbs_import_number">
+                <div class="alert alert-info border-0 rounded-0 mb-0 py-2 px-3"
+                     role="alert">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <i class="fa fa-tag fa-fw"/>
+                       <span>
+                            Offer list&#160;
+                            <a t-attf-href="/shop/offer/#{sbs_import_number}"
+                            class="fw-semibold text-reset">
+                                <strong t-esc="sbs_import_number"/>
+                            </a>
+                            <!-- <t t-if="sbs_supplier_name">
+                                &#160;—&#160;<t t-esc="sbs_supplier_name"/>
+                            </t> -->
+                            <t t-if="sbs_end_date">
+                                &#160;—&#160; valid until&#160;<strong t-esc="sbs_end_date"/>
+                            </t>
+                        </span>
+                        <a href="/shop"
+                           class="ms-auto btn btn-sm btn-outline-secondary">
+                            <i class="fa fa-times me-1"/>Clear filter
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
 
 
     

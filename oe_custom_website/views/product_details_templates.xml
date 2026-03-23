@@ -43,8 +43,10 @@
                             <div class="d-flex align-items-center gap-2 flex-wrap">
                                 <i class="fa fa-store text-secondary" style="font-size:11px;"/>
                                 <span style="font-size:12px;">Price List: </span>
-                                <span class="fw-semibold" style="font-size:13px;"
-                                      t-out="'#' + str(offer['import_number'])"/>
+                               <a t-attf-href="/shop/offer/#{offer['import_number']}"  class="fw-semibold text-decoration-none" 
+                                        style="font-size:13px;">
+                                    #<t t-out="offer['import_number']"/>
+                                </a>
 
                                 <!-- Best Price Badge — فقط برای active -->
                                 <t t-if="offer['id'] == mp_data.get('cheapest_id') and not offer.get('is_expired')">
@@ -66,26 +68,43 @@
 
                             <!-- قیمت -->
                             <div class="d-flex flex-column align-items-end">
-                                <t t-if="offer['case_size'] > 1">
+                                
+                                
+                                 <t t-if="offer['case_size'] &lt; 2">
                                     <div class="mp-price fw-bold text-primary" style="font-size:15px;">
+                                        <span t-esc="offer['selling_price']"
+                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                        <span class="text-muted fw-normal" style="font-size:11px;">
+                                            / Unit
+                                        </span>  
+                                    </div>
+
+
+                                   
+
+
+                                </t>
+                                
+                                <t t-if="offer['case_size'] > 1">
+                                    
+                                    <span class="mp-price fw-bold text-primary" style="font-size:15px;">
+                                        <span t-esc="offer['selling_price']"
+                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
+                                        <span class="text-muted fw-normal" style="font-size:11px;">
+                                            / Unit
+                                        </span>  
+                                    </span>
+                                    
+                                    <div class="mp-price" style="font-size:10px;">
                                         <span t-esc="offer['bundle_price']"
                                             t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
                                         <span class="text-muted fw-normal" style="font-size:11px;">
                                             / <t t-esc="offer['uom_name']"/>
                                         </span>
                                     </div>
-                                    <span class="text-muted" style="font-size:10px;">
-                                        <span t-esc="offer['selling_price']"
-                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
-                                        / unit
-                                    </span>
+                                    
                                 </t>
-                                <t t-else="">
-                                    <div class="mp-price fw-bold text-primary" style="font-size:15px;">
-                                        <span t-esc="offer['selling_price']"
-                                            t-options='{"widget": "monetary", "display_currency": website.currency_id}'/>
-                                    </div>
-                                </t>
+                              
                             </div>
                         </div>
 
@@ -137,7 +156,7 @@
                                     <div class="d-flex align-items-center gap-1 mt-1">
                                         <i class="fa fa-circle text-warning" style="font-size:9px;"/>
                                         <span class="text-muted" style="font-size:11px;">
-                                            MOQ: <t t-esc="offer['moq']"/> units
+                                            MOQ: <t t-esc="offer['moq']"/> Units
                                         </span>
                                         <span class="moq-status-label text-muted"
                                             style="font-size:11px;"> — not met</span>

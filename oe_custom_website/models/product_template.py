@@ -2,7 +2,11 @@
 
 import re
 import logging
-from odoo import models
+from odoo import models,api
+from odoo.http import request 
+from odoo.fields import Domain
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -220,4 +224,22 @@ class ProductTemplate(models.Model):
                 "[SBS UOM] Failed to add UOM '%s' to product '%s': %s",
                 uom.name, product_tmpl.name, e
             )
+
+
+    @api.model
+    def _search_get_detail(self, website, order, options):
+        result = super()._search_get_detail(website, order, options)
+
+        try:
+            tmpl_ids = getattr(request, '_sbs_tmpl_ids', None)
+        except RuntimeError:
+            tmpl_ids = None
+
+        if tmpl_ids:
+            result['base_domain'].append(
+                Domain('id', 'in', tmpl_ids)
+            )
+
+        return result
+
 
