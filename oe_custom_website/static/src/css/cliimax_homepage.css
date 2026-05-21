@@ -1,0 +1,314 @@
+/* ===== THEME VARIABLES ===== */
+:root {
+    --clx-primary:      #BF1F1A;
+    --clx-primary-dark: #c1121f;
+    --clx-primary-glow: rgba(230, 57, 70, 0.25);
+    --clx-dark:         #111111;
+    --clx-text:         #555555;
+    --clx-muted:        #888888;
+    --clx-border:       #eeeeee;
+    --clx-bg:           #ffffff;
+    --clx-bg-alt:       #f8f8f8;
+    --clx-card-shadow:  0 2px 12px rgba(0, 0, 0, 0.06);
+    --clx-btn-shadow:   0 4px 20px rgba(230, 57, 70, 0.3);
+    --clx-radius:       12px;
+    --clx-radius-sm:    8px;
+}
+
+/* ===== GLOBAL LINK RESET ===== */
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+
+/* ===== ANNOUNCEMENT BAR ===== */
+.clx-announce {
+    background: var(--clx-bg-alt);
+    border-bottom: 2px solid var(--clx-primary);
+    padding: 8px 0;
+}
+.clx-announce p {
+    color: var(--clx-muted);
+    font-size: .9rem;
+    margin: 0;
+}
+.clx-announce-badge {
+    background: var(--clx-primary);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: .8rem;
+    margin-right: 8px;
+}
+
+/* ===== HERO ===== */
+.clx-hero {
+    background: var(--clx-bg);
+    padding: 80px 0;
+}
+.clx-hero-content {
+    padding-right: 40px;
+}
+.clx-hero h1 {
+    color: var(--clx-dark);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+.clx-hero h1 span {
+    color: var(--clx-primary);
+}
+.clx-hero-desc {
+    color: var(--clx-text);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+.clx-hero-sub {
+    color: var(--clx-muted);
+    font-size: .95rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+.clx-hero-img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== BUTTONS ===== */
+.clx-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: var(--clx-radius-sm);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all .2s;
+}
+.clx-btn-primary {
+    background: var(--clx-primary);
+    color: #fff;
+    box-shadow: var(--clx-btn-shadow);
+}
+.clx-btn-primary:hover {
+    background: var(--clx-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ===== BRANDS BUTTON (RED) ===== */
+.clx-btn-brands {
+    background: var(--clx-primary);
+    color: #fff;
+    box-shadow: var(--clx-btn-shadow);
+}
+.clx-btn-brands:hover {
+    background: var(--clx-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.clx-btn-outline {
+    background: var(--clx-bg);
+    color: var(--clx-dark);
+    border: 2px solid var(--clx-border);
+    box-shadow: var(--clx-card-shadow);
+}
+.clx-btn-outline:hover {
+    border-color: var(--clx-primary);
+    color: var(--clx-primary);
+    transform: translateY(-2px);
+}
+.clx-btn-dark {
+    background: var(--clx-dark);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.clx-btn-dark:hover {
+    background: #333;
+    color: #fff;
+    transform: translateY(-2px);
+}
+.clx-btn-white {
+    background: #fff;
+    color: var(--clx-primary);
+}
+.clx-btn-white:hover {
+    background: #f5f5f5;
+    color: var(--clx-primary);
+    transform: translateY(-2px);
+}
+
+/* ===== METRICS ===== */
+.clx-metrics {
+    background: var(--clx-bg-alt);
+    border-top: 1px solid var(--clx-border);
+    border-bottom: 1px solid var(--clx-border);
+    padding: 40px 0;
+}
+.clx-metric-value {
+    color: var(--clx-primary);
+    font-size: 2rem;
+    font-weight: 800;
+}
+.clx-metric-label {
+    color: var(--clx-muted);
+    font-size: .9rem;
+    margin-top: 4px;
+}
+
+/* ===== SECTION COMMON ===== */
+.clx-section-light {
+    background: var(--clx-bg);
+    padding: 80px 0;
+}
+.clx-section-alt {
+    background: var(--clx-bg-alt);
+    padding: 80px 0;
+}
+.clx-section-title {
+    color: var(--clx-dark);
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+.clx-section-sub {
+    color: var(--clx-muted);
+}
+
+/* ===== CARDS ===== */
+.clx-card {
+    background: var(--clx-bg);
+    border: 1px solid var(--clx-border);
+    border-radius: var(--clx-radius);
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: var(--clx-card-shadow);
+    transition: all .2s;
+    display: block;
+}
+.clx-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+.clx-card img {
+    width: 100%;
+    object-fit: cover;
+}
+.clx-card-brand img  { height: 160px; }
+.clx-card-cat img    { height: 180px; }
+.clx-card-body {
+    padding: 14px;
+    text-align: center;
+}
+.clx-card-body h4 {
+    color: var(--clx-dark);
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+.clx-card-body h3 {
+    color: var(--clx-dark);
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.clx-card-body p {
+    color: var(--clx-muted);
+    margin: 0;
+    font-size: .85rem;
+}
+
+/* ===== GRID LAYOUTS ===== */
+.clx-grid-brands {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+.clx-grid-cats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ===== FEATURE CARDS ===== */
+.clx-feature-card {
+    background: var(--clx-bg);
+    border: 1px solid var(--clx-border);
+    border-top: 3px solid var(--clx-primary);
+    border-radius: var(--clx-radius);
+    padding: 28px;
+    height: 100%;
+    box-shadow: var(--clx-card-shadow);
+}
+.clx-feature-icon {
+    color: var(--clx-primary);
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+}
+.clx-feature-card h3 {
+    color: var(--clx-dark);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.clx-feature-card p {
+    color: var(--clx-muted);
+    font-size: .9rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ===== HOW IT WORKS ===== */
+.clx-step {
+    text-align: center;
+    padding: 32px 24px;
+}
+.clx-step-num {
+    width: 56px;
+    height: 56px;
+    background: var(--clx-primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 auto 20px;
+}
+.clx-step h3 {
+    color: var(--clx-dark);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.clx-step p {
+    color: var(--clx-muted);
+    font-size: .9rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ===== CTA SECTION ===== */
+.clx-cta {
+    background: var(--clx-primary);
+    padding: 80px 0;
+}
+.clx-cta h2 {
+    color: #fff;
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+.clx-cta p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}

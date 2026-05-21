@@ -305,6 +305,8 @@
 
                 <field name="excel_filename" string="Excel File"/>
                 <field name="import_number" string="Import Number"/>
+
+                <field name="brand_id" string="Brand"/>
                 
                 <!-- Filters -->
                 <!--
@@ -323,6 +325,7 @@
                     <filter string="Import Number" name="group_by_import" context="{'group_by':'import_number'}"/>
                     <filter string="Supplier" name="group_by_supplier" context="{'group_by':'supplier_name'}"/>
                     <filter string="Import Date" name="group_by_date" context="{'group_by':'import_date'}"/>
+                    <filter string="Brand" name="group_by_date" context="{'group_by':'brand_id'}"/>
                 </group>
             </search>
         </field>
@@ -339,6 +342,9 @@
                 <field name="import_number" string="Import Number"/>
                 <field name="supplier_code" string="Supplier Code"/>
 
+                <field name="brand_id" string="Brand"/>
+
+
 
                 <filter string="Not Expired" name="ean" domain="[('is_expired','=',False)]"/>
                 <filter string="Expired" name="ean" domain="[('is_expired','=',True)]"/>
@@ -349,6 +355,8 @@
                 <group>
                     <filter string="Import Number" name="group_by_import" context="{'group_by':'import_number'}"/>
                     <filter string="Import Date" name="group_by_date" context="{'group_by':'import_date'}"/>
+                    <filter string="Brand" name="group_by_date" context="{'group_by':'brand_id'}"/>
+
                 </group>
             </search>
         </field>

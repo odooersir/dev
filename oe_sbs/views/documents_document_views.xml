@@ -19,8 +19,10 @@
 
             <xpath expr="//list" position="inside"> 
                 
+                <field name="template_id" optional="show" />
                 <field name="modifier" optional="show" />
                 <field name="state" optional="show" />
+                <field name="rejection_reason" optional="hide" />
                 <field name="import_number" optional="show" />
                 <field name="old_import_number" optional="hide" />
                 

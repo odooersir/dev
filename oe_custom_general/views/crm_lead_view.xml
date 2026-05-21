@@ -1,0 +1,17 @@
+<odoo>
+
+
+    <record id="quick_create_opportunity_form" model="ir.ui.view">
+            <field name="name">crm.lead.form.quick_create</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='phone']" position="after">
+                     <field name="mobile" string="mobile" placeholder="e.g. &quot;+989127891234&quot;"/>
+
+                </xpath>
+            </field>
+    </record>
+
+
+</odoo>

@@ -39,14 +39,16 @@ class Document(models.Model):
 
     modifier=  fields.Many2one('res.users', string="Modifier")
 
-       #            <field name="state" widget="statusbar" statusbar_visible="draft,approve,reject"/>
+    # <field name="state" widget="statusbar" statusbar_visible="draft,approve,reject"/>
   
-
-     # The compute does not get triggered without a depends on record creation
+    template_id = fields.Many2one('sbs.import.template', string='Import Template', help='Template to use for importing this document' )
+   
+    rejection_reason = fields.Char()
+   
+    # The compute does not get triggered without a depends on record creation
     # aka keep the 'useless' depends
     @api.depends_context('uid')
     @api.depends('tag_ids')
-
     def _compute_is_tag_editor(self):
         self.is_tag_editor = self.env.user.has_group("oe_sbs.group_tag_editor")
 

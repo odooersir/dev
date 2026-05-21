@@ -4,3 +4,6 @@ from . import res_currency
 from . import documents_document
 from . import documents_tag
 from . import sbs_cleanup_log
+from . import res_partner
+from . import sbs_offer_list
+from . import sbs_import_template

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_supplier_info" model="ir.ui.view">
+        <field name="name">res.partner.form.supplier.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Supplier Info" invisible="supplier_rank == 0">
+                    <group>
+                        <group>
+                            <field name="offer_list_frequency"/>
+                            <field name="last_offer_date" readonly="1"/>
+                            <field name="offer_count" readonly="1"/>
+                            <field name="supplier_rating"/>
+                        </group>
+                        <group>
+                            <field name="delivery_time_days"/>
+                            <field name="payment_terms_note"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button name="action_sync_offer_lists" 
+                                string="Sync Offer List" 
+                                type="object" 
+                                class="btn-primary"/>
+                    </group>
+                </page>
+
+                <page string="Offer List History" invisible="supplier_rank == 0">
+                    <field name="offer_list_ids" readonly="1">
+                        <list>
+                            <field name="import_number"/>
+                            <field name="import_date"/>
+                            <field name="end_date"/>
+                            <field name="items_count"/>
+                            <field name="moq"/>
+                            <field name="mov"/>
+                            <field name="incoterms"/>
+                            <field name="payment_term"/>
+                            <field name="lead_time"/>
+                            <field name="document_id"/>
+                            <button name="action_view_items" 
+                                    string="View Items" 
+                                    type="object" 
+                                    icon="fa-list"/>
+
+                            <button name="action_open_spreadsheet"  type="object"   class="btn-link o_form_uri"  string="Open"
+                              />
+
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+
+    <record id="view_res_partner_sbs_search" model="ir.ui.view">
+        <field name="name">res.partner.sbs.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter string="Has Offers" name="filter_has_offers"
+                        domain="[('offer_count', '&gt;', 0)]"/>
+               
+                
+                <separator/>
+                <filter string="Last 30 Days" name="filter_offer_1month"
+                        domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 60 Days" name="filter_offer_3months"
+                        domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 3 Days" name="filter_offer_6months"
+                        domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+
+                <filter string="No Offer Yet" name="filter_no_offer"
+                        domain="[('last_offer_date', '=', False)]"/>
+                
+                <group>
+                    <filter string="Last Offer" name="group_last_offer"    context="{'group_by': 'last_offer_date'}"/>
+                 
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <record id="view_partner_supplier_list" model="ir.ui.view">
+        <field name="name">res.partner.supplier.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="offer_count"/>
+                <field name="last_offer_date"/>
+               
+            </list>
+        </field>
+    </record>
+
+    <record id="action_partner_supplier" model="ir.actions.act_window">
+        <field name="name">Supplier Tracker</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('supplier_rank', '>', 0),('is_company', '=', True)]</field>
+        <field name="context">{'default_supplier_rank': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),(0, 0, {'view_mode': 'list', 'view_id': ref('view_partner_supplier_list')})]"/>
+            
+    </record>
+
+
+     <record id="action_sync_offer_lists" model="ir.actions.server">
+        <field name="name">Sync All Offer Lists</field>
+        <field name="model_id" ref="model_sbs_data"/>
+        <field name="state">code</field>
+        <field name="code">
+# Sync offer lists for all suppliers
+all_sbs_data = env['sbs.data'].search([])
+all_sbs_data._sync_offer_lists()
+        </field>
+    </record>
+        
+</odoo>

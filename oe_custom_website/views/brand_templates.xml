@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Page template for displaying Brands -->
+    <template id="product_brands" name="Product Brands">
+    <t t-call="website.layout">
+        <div id="wrap">
+            <div class="container py-5">
+
+                <!-- ─── Search ─── -->
+                <form method="get" class="mb-4 d-flex gap-2">
+                    <input type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search brands..."
+                        t-att-value="search or ''"/>
+                    <button class="btn btn-primary px-4" type="submit">
+                        Search
+                    </button>
+                </form>
+
+                <!-- ─── نوار الفبا sticky ─── -->
+                <nav id="brand-alpha-nav">
+                    <ul>
+                        <li>
+                            <a t-att-class="'brand-letter-btn' + (' active' if current_letter == '0-9' else '') + (' disabled-letter' if '0-9' not in active_letters else '')"
+                            t-att-aria-disabled="'true' if '0-9' not in active_letters else None"
+                            href="#0-9">0-9</a>
+                        </li>
+                        <t t-foreach="alphabet" t-as="ltr">
+                            <li>
+                                <a t-att-class="'brand-letter-btn' + (' active' if current_letter == ltr else '') + (' disabled-letter' if ltr not in active_letters else '')"
+                                t-att-aria-disabled="'true' if ltr not in active_letters else None"
+                                t-att-href="'#' + ltr">
+                                    <t t-esc="ltr"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </nav>
+
+                <!-- ─── بخش 0-9 ─── -->
+                <t t-if="'0-9' in brands_by_letter">
+                    <section id="0-9" class="brand-section">
+                        <h4 class="brand-section-title">0-9</h4>
+                        <div class="brand-grid">
+                            <t t-foreach="brands_by_letter['0-9']" t-as="brand">
+                                <div class="brands-card">
+                                    <!-- ─── نام برند (بدون لینک) ─── -->
+                                    <span class="brand-name">
+                                        <t t-esc="brand.name"/>
+                                    </span>
+
+                                    <div class="brand-meta">
+                                        <span class="brand-meta-text">
+                                            <a t-attf-href="/shop/brand/#{brand.id}" class="brand-meta-link">
+                                                <t t-esc="brand_product_count.get(brand.id, 0)"/> products
+                                            </a>
+                                                <span style="color:#6b7280;font-size:0.75rem"> in </span>
+                                                
+                                            <a t-attf-href="/shop/brand/#{brand.id}/offers" class="brand-meta-link">
+                                                <t t-esc="brand_offer_count.get(brand.id, 0)"/> offers
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </section>
+                </t>
+
+                <!-- ─── بخش‌های A-Z ─── -->
+                <t t-foreach="alphabet" t-as="ltr">
+                    <t t-if="ltr in brands_by_letter">
+                        <section t-att-id="ltr" class="brand-section">
+                            <h4 class="brand-section-title">
+                                <t t-esc="ltr"/>
+                            </h4>
+                            <div class="brand-grid">
+                                <t t-foreach="brands_by_letter[ltr]" t-as="brand">
+                                    <div class="brands-card">
+                                        <!-- ─── نام برند (بدون لینک) ─── -->
+                                        <span class="brand-name">
+                                            <t t-esc="brand.name"/>
+                                        </span>
+
+                                        <div class="brand-meta">
+                                            <span class="brand-meta-text">
+                                                <a t-attf-href="/shop/brand/#{brand.id}" class="brand-meta-link">
+                                                    <t t-esc="brand_product_count.get(brand.id, 0)"/> products
+                                                </a>
+                                                <span style="color:#6b7280;font-size:0.75rem"> in </span>
+                                                <a t-attf-href="/shop/brand/#{brand.id}/offers" class="brand-meta-link">
+                                                    <t t-esc="brand_offer_count.get(brand.id, 0)"/> offers
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </section>
+                    </t>
+                </t>
+
+            </div>
+        </div>
+
+       
+    </t>
+</template>
+
+
+
+    <template id="brand_offers" name="Brand Offers">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container py-5">
+
+                    <!-- Breadcrumb -->
+                    <nav class="mb-4" style="font-size:0.85rem; color:#6b7280;">
+                        <a href="/shop/brands" style="color:#6b7280; text-decoration:none;">Brands</a>
+                        <span class="mx-2">›</span>
+                        <a t-attf-href="/shop/brand/#{brand.id}"
+                        style="color:#6b7280; text-decoration:none;">
+                            <t t-esc="brand.name"/>
+                        </a>
+                        <span class="mx-2">›</span>
+                        <span>Offers</span>
+                    </nav>
+
+                    <!-- عنوان -->
+                    <h2 class="mb-4" style="font-weight:700;">
+                        <t t-esc="brand.name"/> — Active Offers
+                    </h2>
+
+                    <!-- جدول آفرها -->
+                    <t t-if="grouped_offers">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" style="font-size:0.875rem;">
+                                <thead style="background:#f9fafb; border-bottom:2px solid #e5e7eb;">
+                                    <tr>
+                                        <th>Offer #</th>
+                                        <!-- <th>Import Date</th>-->
+                                        <th>Valid Until</th>
+                                        <th>MOQ</th>
+                                        <th>MOV</th>
+                                        <th>Incoterms</th>
+                                        <th>T1/T2</th>
+                                        <th>Payment</th>
+                                        <th>Lead Time</th>
+                                        <th>Products</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="grouped_offers" t-as="offer">
+                                        <tr>
+                                            <td style="font-weight:600; color:#111827;">
+                                                <t t-esc="offer['import_number']"/>
+                                            </td>
+                                        <!-- <td>
+                                                <t t-esc="offer['import_date']"/>
+                                             </td>
+                                        -->
+                                            <td>
+                                                <t t-if="offer['end_date']">
+                                                    <span t-att-style="'color:#dc2626; font-weight:500;' if offer['end_date'] &lt; today else 'color:#16a34a;'">
+                                                        <t t-esc="offer['end_date']"/>
+                                                    </span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color:#9ca3af;">—</span>
+                                                </t>
+                                            </td>
+                                            <td><t t-esc="offer['moq'] or '—'"/></td>
+                                            <td><t t-esc="offer['mov'] or '—'"/></td>
+                                            <td><t t-esc="offer['incoterms'] or '—'"/></td>
+                                            <td><t t-esc="offer['t1_t2'] or '—'"/></td>
+                                            <td><t t-esc="offer['payment_term'] or '—'"/></td>
+                                            <td><t t-esc="offer['lead_time'] or '—'"/></td>
+                                            <td>
+                                                <span style="color:#6b7280;">
+                                                    <t t-esc="offer['product_count']"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a t-attf-href="/shop/offer/#{offer['import_number']}"
+                                                class="btn btn-sm"
+                                                style="background:#111827; color:#fff; border-radius:6px; padding:4px 14px; text-decoration:none; font-size:0.8rem;">
+                                                    View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <p style="color:#6b7280;">No active offers found for this brand.</p>
+                    </t>
+
+                </div>
+            </div>
+        </t>
+    </template>
+
+   
+    <template id="categorie_link" inherit_id="website_sale.categorie_link">
+        <xpath expr="//a[@t-field='c.name']/.." position="attributes">
+            <attribute
+                name="t-att-data-link-href"
+            >keep('/shop/category/' + slug(c), category=0, brand=brand)</attribute>
+        </xpath>
+    </template>
+
+
+
+
+
+
+<template  id="website_sale_filter_brand_products_brands"   inherit_id="website_sale.products_attributes"   name="Brands Filter"  active="True"    customize_show="True"     priority="999" >
+        <!-- Add Brand filter inside the attributes collapse div -->
+        <xpath   expr="//div[@id='wsale_products_attributes_collapse']"    position="inside"  >
+            <div  class="accordion-item nav-item mb-1 rounded-0">
+            <!-- <div t-if="brands and len(brands)" class="accordion-item nav-item mb-1 rounded-0"> -->
+
+                <h6 class="mb-3">
+                    <b class="d-none d-lg-block">Brand</b>
+                </h6>
+                <div id="o_products_attributes_brand">
+                    <div class="flex-column mb-3">
+                        <t t-foreach="brands" t-as="brand">
+                            <t t-if="not selected_brand_ids or brand.id in selected_brand_ids">
+                                <div class="form-check mb-1">
+                                    <input
+                                        type="checkbox"
+                                        name="brand"
+                                        class="form-check-input"
+                                        t-att-id="'brand_%s' % brand.id"
+                                        t-att-value="brand.id"
+                                        t-att-checked="'checked' if brand.id in selected_brand_ids else None"
+                                    />
+                                    <label
+                                        class="form-check-label fw-normal"
+                                        t-att-for="'brand_%s' % brand.id"
+                                        t-field="brand.name"
+                                    />
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Extend collapse visibility to include brand filter -->
+        <xpath  expr="//div[@id='wsale_products_attributes_collapse']"   position="attributes" >
+            <attribute name="t-if">attributes or all_tags or selected_brand_ids</attribute>
+        </xpath>
+
+    </template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</odoo>

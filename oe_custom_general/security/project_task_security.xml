@@ -1,0 +1,47 @@
+<odoo>
+    <!-- گروه جدید -->
+    <record id="group_sale_to_po_user" model="res.groups">
+        <field name="name">Can Convert Sale to PO</field>
+      <!--  <field name="category_id" ref="base.module_category_sales_sales"/> -->
+    </record>
+
+    <record id="group_sale_export_pdf" model="res.groups">
+        <field name="name">Sale Export PDF</field>
+    <!--    <field name="category_id" ref="base.module_category_sales_sales"/> -->
+    </record>
+
+
+    <record id="group_task_limited" model="res.groups">
+        <field name="name">Limited Task User</field>
+     <!--   <field name="category_id" ref="base.module_category_services_project"/> -->
+    </record>
+
+    <!-- Rule: دیدن همه تسک‌ها (فقط read) -->
+  <!--  <record id="rule_task_read_all" model="ir.rule">
+        <field name="name">Read All Tasks</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="groups" eval="[(4, ref('group_task_limited'))]"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>-->
+
+    <!-- Rule: دسترسی باز کردن فقط تسک‌های خودش -->
+<!--<record id="rule_task_own" model="ir.rule">
+    <field name="name">Open Own Tasks</field>
+    <field name="model_id" ref="project.model_project_task"/>
+    <field name="groups" eval="[(4, ref('group_task_limited'))]"/>
+    <field name="domain_force">[('user_ids', 'in', [user.id])]</field>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_unlink" eval="False"/>
+</record>-->
+
+    <record id="group_product_admin" model="res.groups">
+        <field name="name">Product Admin</field>
+    </record>
+
+</odoo>

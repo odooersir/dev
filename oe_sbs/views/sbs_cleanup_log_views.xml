@@ -75,11 +75,5 @@
     </record>
 
     <!-- Menu -->
-    <menuitem id="menu_sbs_cleanup_log"
-              name="Cleanup Logs"
-              parent="oe_sbs.menu_sbs_root"
-              action="action_sbs_cleanup_log"
-            groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"
-
-              sequence="50"/>
+    
 </odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- list View for Offer List -->
+    <record id="view_sbs_offer_list_list" model="ir.ui.view">
+        <field name="name">sbs.offer.list.list</field>
+        <field name="model">sbs.offer.list</field>
+        <field name="arch" type="xml">
+            <list string="Offers">
+                <field name="import_number"/>
+                <field name="supplier_id"/>
+                <field name="import_date"/>
+                <field name="end_date"/>
+                <field name="items_count"/>
+                <field name="moq"/>
+                <field name="mov"/>
+                <field name="incoterms"/>
+                <field name="payment_term"/>
+                <field name="lead_time"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View for Offer List -->
+    <record id="view_sbs_offer_list_search" model="ir.ui.view">
+        <field name="name">sbs.offer.list.search</field>
+        <field name="model">sbs.offer.list</field>
+        <field name="arch" type="xml">
+            <search string="Search Offers">
+                <field name="import_number"/>
+                <field name="supplier_id"/>
+                <field name="end_date"/>
+                
+                <filter string="Active Offers" name="filter_active"
+                        domain="[('end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Expired Offers" name="filter_expired"
+                        domain="[('end_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                <filter string="This Month" name="filter_this_month"
+                        domain="[('import_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                
+                <group>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
+                    <filter string="Import Date" name="group_import_date" context="{'group_by': 'import_date'}"/>
+                    <filter string="End Date" name="group_end_date" context="{'group_by': 'end_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Form View for Offer List -->
+    <record id="view_sbs_offer_list_form" model="ir.ui.view">
+        <field name="name">sbs.offer.list.form</field>
+        <field name="model">sbs.offer.list</field>
+        <field name="arch" type="xml">
+            <form string="Offer">
+                <header>
+                    <button name="action_view_items" type="object" string="View Items" class="oe_highlight"/>
+                    <button name="action_open_spreadsheet" type="object" string="Open Spreadsheet" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="import_number"/>
+                            <field name="supplier_id"/>
+                            <field name="import_date"/>
+                            <field name="end_date"/>
+                            <field name="items_count"/>
+                        </group>
+                        <group>
+                            <field name="moq"/>
+                            <field name="mov"/>
+                            <field name="incoterms"/>
+                            <field name="t1_t2"/>
+                            <field name="payment_term"/>
+                            <field name="lead_time"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="document_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Offer List -->
+    <record id="action_sbs_offer_list" model="ir.actions.act_window">
+        <field name="name">Offers</field>
+        <field name="res_model">sbs.offer.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_sbs_offer_list_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No offers found
+            </p>
+        </field>
+    </record>
+</odoo>

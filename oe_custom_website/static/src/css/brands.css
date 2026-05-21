@@ -1,0 +1,129 @@
+#brand-alpha-nav {
+    position: sticky;
+    top: 49px;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 10px 0;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#brand-alpha-nav ul {
+    display: flex;
+    flex-wrap: nowrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 6px;
+}
+
+.brand-letter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid #e5e7eb;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #111827;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.brand-letter-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #111827;
+    text-decoration: none;
+}
+
+.brand-letter-btn.active {
+    background: #111827;
+    border-color: #111827;
+    color: #fff;
+}
+
+.brand-letter-btn.disabled-letter {
+    color: #d1d5db;
+    pointer-events: none;
+    cursor: default;
+}
+
+.brand-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 60px;
+}
+
+.brand-section-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 8px;
+    margin-bottom: 1rem;
+}
+
+.brand-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (min-width: 576px) {
+    .brand-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .brand-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 992px) {
+    .brand-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.brands-card {
+    padding: 8px 4px;
+}
+
+.brands-card:hover {
+    transform: scale(1.08);
+    text-decoration: none;
+}
+
+.brand-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #111827;
+    text-decoration: none;
+    display: block;
+}
+
+.brand-name:hover {
+    color: #4b5563;
+    text-decoration: none;
+}
+
+
+
+.brand-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+/* ─── لینک‌های products و offers ─── */
+.brand-meta-link {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.brand-meta-link:hover {
+    color: #111827;
+    text-decoration: none;
+}

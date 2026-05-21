@@ -1,42 +1,65 @@
 # -*- coding: utf-8 -*-
 """
-Override _search_has_published_products برای حل مشکل کندی /shop
+Override product.public.category برای حل مشکل N+1 کند در /shop
 
-مشکل اصلی:
-  کد اصلی Odoo:
-    self._search([('product_tmpl_ids', 'any', [('is_published', '=', True), ('active', '=', True)])])
-    
-  این یک nested subquery می‌سازد:
-    SELECT id FROM product_public_category
-    WHERE EXISTS (
-        SELECT 1 FROM product_public_category_product_template_rel rel
-        WHERE rel.product_public_category_id = ppc.id
-        AND rel.product_template_id IN (
-            SELECT id FROM product_template WHERE is_published=True AND active=True
-        )
-    )
-  
-  بدون index روی rel table این query بسیار کند است.
-  علاوه بر این در هر request چندین بار فراخوانی می‌شود.
+مشکل از log:
+  Thread 1 این query را 20 بار با ~250ms پشت سر هم اجرا می‌کند.
 
 راه‌حل:
-  1. SQL مستقیم با JOIN که از index استفاده کند
-  2. Request-level cache تا در یک page load فقط یک بار اجرا شود
+  از ormcache (registry-level) استفاده کنیم.
+  نتیجه برای همه workers و همه requests یکسان است
+  تا زمانی که محصولی publish/unpublish نشود.
+
+FIX:
+  @classmethod + @ormcache('website_id') → NameError: 'self' not defined
+  چون ormcache برای key lambda از 'self' به عنوان arg[0] استفاده می‌کند.
+  با @classmethod اولین arg برابر 'cls' است → کرش.
+  راه‌حل: @api.model به جای @classmethod
 """
 from odoo import api, models
+from odoo.tools import ormcache
 
 
 class ProductPublicCategory(models.Model):
     _inherit = 'product.public.category'
 
+    @api.depends('product_tmpl_ids.is_published', 'child_id.has_published_products')
+    def _compute_has_published_products(self):
+        """
+        Override: یک query برای همه categories به جای N query.
+        """
+        if not self:
+            return
+
+        website_id = self.env.context.get('website_id') or False
+
+        # ormcache registry-level — یک بار اجرا برای هر website_id
+        all_published = set(self._fetch_published_ids(website_id))
+
+        # محاسبه برای هر category
+        for category in self:
+            if category.id in all_published:
+                category.has_published_products = True
+                continue
+            category.has_published_products = self._has_published_descendant(
+                category, all_published
+            )
+
+    def _has_published_descendant(self, category, published_ids):
+        """بدون query اضافه — recursive روی child_id."""
+        for child in category.child_id:
+            if child.id in published_ids:
+                return True
+            if self._has_published_descendant(child, published_ids):
+                return True
+        return False
+
     @api.model
     def _search_has_published_products(self, operator, value):
         if operator != 'in':
             return NotImplemented
-
-        published_categ_ids = self._get_published_category_ids()
-
-        # Note that if the `value` is False, the ORM will invert the domain below
+        website_id = self.env.context.get('website_id') or False
+        published_categ_ids = list(self._fetch_published_ids(website_id))
         return [
             '|',
             ('id', 'in', published_categ_ids),
@@ -44,33 +67,19 @@ class ProductPublicCategory(models.Model):
         ]
 
     @api.model
-    def _get_published_category_ids(self):
+    @ormcache('website_id')
+    def _fetch_published_ids(self, website_id=False):
         """
-        یک query بهینه برای پیدا کردن categories با published products.
-        
-        نتیجه را در request object cache می‌کنیم تا در یک page load
-        فقط یک بار به DB رفته شود.
-        
-        :return: list of category IDs that have at least one published product
-        :rtype: list[int]
+        ormcache روی @api.model — کار می‌کند چون:
+          - ormcache برای key از 'self' (arg[0]) استفاده می‌کند ✓
+          - @api.model → self = model singleton (env-independent برای cache key)
+          - نتیجه در registry RAM می‌ماند تا clear_cache() فراخوانی شود
+
+        ⚠️  @classmethod + @ormcache → NameError: 'self' not defined (bug قبلی)
         """
-        # سعی می‌کنیم از request-level cache استفاده کنیم
-        cache_key = '_sbs_published_categ_ids_v1'
-        try:
-            from odoo.http import request as http_request
-            if http_request:
-                cached = getattr(http_request, cache_key, None)
-                if cached is not None:
-                    return cached
-        except RuntimeError:
-            # خارج از context یک request HTTP هستیم
-            http_request = None
-
-        # website filter — اگر website_id در context بود فیلتر می‌کنیم
-        website_id = self.env.context.get('website_id')
-
+        cr = self.env.cr
         if website_id:
-            self.env.cr.execute("""
+            cr.execute("""
                 SELECT DISTINCT rel.product_public_category_id
                 FROM product_public_category_product_template_rel rel
                 JOIN product_template pt ON pt.id = rel.product_template_id
@@ -79,42 +88,36 @@ class ProductPublicCategory(models.Model):
                   AND (pt.website_id IS NULL OR pt.website_id = %s)
             """, (website_id,))
         else:
-            self.env.cr.execute("""
+            cr.execute("""
                 SELECT DISTINCT rel.product_public_category_id
                 FROM product_public_category_product_template_rel rel
                 JOIN product_template pt ON pt.id = rel.product_template_id
                 WHERE pt.is_published = true
                   AND pt.active = true
             """)
-
-        result = [row[0] for row in self.env.cr.fetchall()]
-
-        # ذخیره در request object
-        try:
-            if http_request:
-                setattr(http_request, cache_key, result)
-        except Exception:
-            pass
-
-        return result
+        return frozenset(row[0] for row in cr.fetchall())
 
     def _auto_init(self):
-        """
-        ایجاد index های لازم برای بهبود کارایی.
-        این index ها باعث می‌شوند query بالا بسیار سریع‌تر اجرا شود.
-        """
         result = super()._auto_init()
-
         self.env.cr.execute("""
-            CREATE INDEX IF NOT EXISTS website_pricelist_shop_rel_tmpl_idx
+            CREATE INDEX IF NOT EXISTS idx_ppc_rel_tmpl
                 ON product_public_category_product_template_rel (product_template_id);
 
-            CREATE INDEX IF NOT EXISTS website_pricelist_shop_rel_categ_idx
+            CREATE INDEX IF NOT EXISTS idx_ppc_rel_categ
                 ON product_public_category_product_template_rel (product_public_category_id);
 
-            CREATE INDEX IF NOT EXISTS website_pricelist_shop_pt_published_idx
+            CREATE INDEX IF NOT EXISTS idx_pt_published_active
                 ON product_template (is_published, active, website_id)
                 WHERE is_published = true AND active = true;
         """)
+        return result
 
+
+class ProductTemplatePublish(models.Model):
+    _inherit = 'product.template'
+
+    def write(self, vals):
+        result = super().write(vals)
+        if 'is_published' in vals or 'active' in vals or 'public_categ_ids' in vals:
+            self.env.registry.clear_cache()
         return result

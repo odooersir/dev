@@ -12,6 +12,17 @@ access_sbs_import_wizard_sale,sbs.import.wizard.sale,model_sbs_import_wizard,oe_
 access_sbs_cleanup_log_user,sbs.cleanup.log.user,model_sbs_cleanup_log,oe_sbs.group_sbs_purchase,1,1,1,1
 access_sbs_cleanup_log_manager,sbs.cleanup.log.manager,model_sbs_cleanup_log,oe_sbs.group_sbs_admin,1,1,1,1
 
+access_sbs_data_public,sbs.data.public,model_sbs_data,base.group_public,1,0,0,0
 
+
+access_sbs_offer_list_user,access_sbs_offer_list_user,model_sbs_offer_list,base.group_user,1,1,1,1
+
+
+access_sbs_import_template_admin,sbs.import.template.admin,model_sbs_import_template,oe_sbs.group_sbs_admin,1,1,1,1
+
+access_sbs_import_template_purchase,sbs.import.template.purchase,model_sbs_import_template,group_sbs_purchase,1,1,1,1
+
+
+access_sbs_mov_term,sbs.mov.term.access,model_sbs_mov_term,base.group_user,1,1,1,1
 
 

@@ -26,22 +26,11 @@ class SBS(models.Model):
     excel_filename = fields.Char(string='Excel File Name', readonly=True, index=True, groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin")
     end_date = fields.Date(string='Offer Validity', index=True)
 
-    converted_price = fields.Float(
-        string='Converted Supplier Price (USD)',
-        digits=(16, 2))
-    selling_price = fields.Float(
-        string='S.P($)', help='Selling Price (USD)',
-        digits=(16, 2)
-    )
-    selling_price_2 = fields.Float(
-        string='S.P(OC)', help='Selling Price (Original Currency)',
-        digits=(16, 2)
-    )
+    converted_price = fields.Float( string='Converted Supplier Price (USD)', digits=(16, 2))
+    selling_price = fields.Float(string='S.P($)', help='Selling Price (USD)', digits=(16, 2))
+    selling_price_2 = fields.Float(string='S.P(OC)', help='Selling Price (Original Currency)', digits=(16, 2))
 
-    min_sell = fields.Float(
-        string='Min Sell(OC)', help='Min Sell(Original Currency)',
-        digits=(16, 2)
-    )
+    min_sell = fields.Float(string='Min Sell(OC)', help='Min Sell(Original Currency)', digits=(16, 2))
 
     rank = fields.Integer(string='Rank', readonly=True, index=True)
     no_of_ranks = fields.Integer(string='No of Ranks')
@@ -70,12 +59,12 @@ class SBS(models.Model):
 
     converted_rate = fields.Float(string='Converted Rate', digits=(16, 2))
 
-    uom_id = fields.Many2one(
-        'uom.uom',
-        string='Unit of Measure',
-        help='Unit of measure derived from case_size',
-        readonly=True,
-    )
+    uom_id = fields.Many2one('uom.uom', string='Unit of Measure',  help='Unit of measure derived from case_size', readonly=True, )
+
+
+    unit_per_layer = fields.Integer(string='Unit/Layer')
+    unit_per_pallet = fields.Integer(string='Unit/Pallet')
+    hs_code = fields.Char(string='HS Code(Tariff)')
 
     def _auto_init(self):
         res = super()._auto_init()
@@ -210,6 +199,40 @@ class SBS(models.Model):
   
     
     def action_rank_products(self):
+        """Rank products with standard competition ranking (1223 style) within each EAN group"""
+
+        # Using a single SQL query with Window Functions (CTE)
+        # DENSE_RANK() exactly matches your 1-2-2-3 Python logic
+        # COUNT() OVER() calculates the exact total for that EAN
+        query = """
+            WITH RankedData AS (
+                SELECT id,
+                    DENSE_RANK() OVER (PARTITION BY ean ORDER BY converted_price ASC) as new_rank,
+                    COUNT(id) OVER (PARTITION BY ean) as ean_count
+                FROM sbs_data
+            )
+            UPDATE sbs_data
+            SET rank = RankedData.new_rank,
+                no_of_ranks = RankedData.ean_count
+            FROM RankedData
+            WHERE sbs_data.id = RankedData.id;
+        """
+        
+        self.env.cr.execute(query)
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Success'),
+                'message': _('Products ranked with competition ranking (1223 style)'),
+                'sticky': False,
+            }
+        }
+
+    
+    
+    def action_rank_products__(self):
         """Rank products with standard competition ranking (1223 style) within each EAN group"""
 
         # Get all products ordered by EAN and price
@@ -510,3 +533,69 @@ class SBS(models.Model):
             return float(ICP.get_param('oe_sbs.overlap_threshold_small', '40.0'))
         else:
             return float(ICP.get_param('oe_sbs.overlap_threshold_tiny', '35.0'))
+        
+
+
+    '''
+    def _sync_offer_lists(self):
+        """Auto-sync sbs.offer.list when sbs.data changes"""
+        suppliers = self.mapped('supplier_id').filtered(lambda p: p.supplier_rank > 0)
+        
+        for supplier in suppliers:
+            sbs_records = self.env['sbs.data'].search([('supplier_id', '=', supplier.id)])
+            import_numbers = list(set(sbs_records.mapped('import_number')))
+            import_numbers = [x for x in import_numbers if x]
+            
+            existing_lists = self.env['sbs.offer.list'].search([('supplier_id', '=', supplier.id)])
+            existing_imports = existing_lists.mapped('import_number')
+            
+            # Create missing
+            for import_num in import_numbers:
+                if import_num not in existing_imports:
+                    items = sbs_records.filtered(lambda r: r.import_number == import_num)
+                    first_item = items[0] if items else False
+                    
+                    if first_item:
+                        self.env['sbs.offer.list'].create({
+                            'import_number': import_num,
+                            'supplier_id': supplier.id,
+                            'import_date': first_item.create_date,
+                            'end_date': first_item.end_date,
+                            'document_id': first_item.document_id.id if first_item.document_id else False,
+                            'moq': first_item.moq,
+                            'mov': first_item.mov,
+                            'incoterms': first_item.incoterms,
+                            't1_t2': first_item.t1_t2,
+                            'payment_term': first_item.payment_term,
+                            'lead_time': first_item.lead_time,
+                        })
+            
+            # Update existing
+            for offer_list in existing_lists:
+                items = sbs_records.filtered(lambda r: r.import_number == offer_list.import_number)
+                if items:
+                    first_item = items[0]
+                    offer_list.write({
+                        'end_date': first_item.end_date,
+                        'document_id': first_item.document_id.id if first_item.document_id else False,
+                        'moq': first_item.moq,
+                        'mov': first_item.mov,
+                        'incoterms': first_item.incoterms,
+                        't1_t2': first_item.t1_t2,
+                        'payment_term': first_item.payment_term,
+                        'lead_time': first_item.lead_time,
+                    })
+            
+            # Delete orphaned
+            orphaned = existing_lists.filtered(lambda ol: ol.import_number not in import_numbers)
+            orphaned.unlink()
+    '''
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        return records
+
+    #def write(self, vals):
+    #    result = super().write(vals)
+    #    if any(field in vals for field in ['import_number', 'supplier_id', 'end_date', 'moq', 'mov', 'incoterms', 't1_t2', 'payment_term', 'lead_time', 'document_id']):
+    #    return result

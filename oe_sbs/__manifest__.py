@@ -31,13 +31,19 @@
         'data/ir_sequence.xml',
         'data/ir_cron_data.xml',
         'data/res_config_settings_data.xml',
+        'data/sbs_import_template_data.xml',
+
         'views/res_config_settings_views.xml',
         'wizard/import_wizard_views.xml',
         'views/sbs_views.xml',
-        'views/menus.xml',
+        'views/res_partner_views.xml',
+        'views/sbs_offer_list_views.xml',
         'views/documents_document_views.xml',
         'views/documents_tag_views.xml',
-        'views/sbs_cleanup_log_views.xml'
+        'views/sbs_cleanup_log_views.xml',
+        'views/sbs_import_template_views.xml',
+        'views/menus.xml',
+
 
     ],
     'assets': {

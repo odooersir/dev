@@ -49,6 +49,13 @@
           action="action_sbs_data_purchase"
           groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"/>
 
+    <menuitem id="menu_sbs_offers"
+          name="Offers"
+          parent="menu_sbs_data"
+          action="action_sbs_offer_list"
+          groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"
+         />
+
     
     <!-- Configuration -->
     <menuitem 
@@ -72,6 +79,34 @@
         action="action_sbs_settings"
         sequence="20"/>
 
+    <menuitem id="menu_sbs_cleanup_log"
+        name="Cleanup Logs"
+        parent="menu_sbs_configuration"
+        action="action_sbs_cleanup_log"
+    groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"
+
+        sequence="30"/>
+
+    <!-- Menu Item (add this to your main menu structure) -->
+    
+     <menuitem id="menu_sbs_mov_term"
+                  name="MOV Terms"
+                  parent="menu_sbs_configuration" 
+                  action="action_sbs_mov_term"
+                  sequence="40"/>
+
+        <!-- منوی Incoterms -->
+        <menuitem id="menu_sbs_incoterms"
+                  name="Incoterms"
+                  parent="menu_sbs_configuration" 
+                  action="action_account_incoterms_sbs"
+                  sequence="50"/>
+
+    <menuitem id="menu_sbs_import_template"
+              name="Mapping"
+              parent="menu_sbs_configuration"
+              action="action_sbs_import_template"
+              sequence="60"/>
 
 
     <!-- Compute -->
@@ -120,7 +155,12 @@
         action="action_suppliers"
         sequence="50"/>
 
-
+        <menuitem
+            id="menu_sbs_sync_offer_lists"
+            name="Sync Offer Lists"
+            parent="menu_sbs_compute"
+            action="action_sync_offer_lists"
+            sequence="60"/>
 
         <!-- Action to open wizard from menu -->
   <!--  <menuitem 
@@ -129,6 +169,15 @@
         parent="menu_sbs_import" 
         action="action_import_wizard"
         sequence="10"/>-->
+
+    <!-- Suppliers -->
+     <menuitem
+        id="menu_sbs_suppliers"
+        name="Supplier Tracker"
+        parent="menu_sbs_root"
+        action="action_partner_supplier"
+        groups="oe_sbs.group_sbs_purchase,oe_sbs.group_sbs_admin"
+        sequence="50"/>
 
 
 

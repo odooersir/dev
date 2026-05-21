@@ -1,0 +1,38 @@
+<odoo>
+
+
+    <record id="quick_create_opportunity_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick_create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[field[@name='phone']]" position="after">
+                <div class="d-flex align-items-center" colspan="2">
+                    <i class="fa fa-phone" title="Mobile"/>
+                    <field name="mobile" string="Contact Mobile" placeholder="Contact Mobile" nolabel="1" class="o_field_highlight w-100 mb-0"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+    
+    <record id="crm_lead_view_form" model="ir.ui.view">
+            <field name="name">crm.lead.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='o_row o_row_readonly'][field[@name='phone']]" position="after">
+                  
+
+                  
+                        <field name="mobile" class="w-100" widget="phone" placeholder="Mobile"/>
+
+
+
+                </xpath>
+            </field>
+    </record>
+
+
+</odoo>

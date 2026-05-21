@@ -9,38 +9,45 @@
                 <sheet>
                     
                     <group>
-                     <field name="from_doc" invisible="1"/>
-                     </group>
-                     
+                        <field name="from_doc" invisible="1"/>
+                    </group>
+                    
+                    <!-- ─── Template Selection ─── -->
+                    <group string="Import Configuration">
+                        
+                        <field name="supplier_id" />
+                        <field name="template_id"   options="{'no_create': True, 'no_open': True}"/>
+                        
+                    </group>
+                    
                     <group>
-                        <group  invisible="from_doc==True">
-                            <field name="file" filename="file_name" required="not from_doc"/>
+                        <group invisible="from_doc==True">
+                            <field name="file" filename="file_name" 
+                                   required="not from_doc"/>
                             <field name="file_name" invisible="1"/>
                         </group>
-                        
-                       
                     </group>
 
                     <group>
-                  
                         <group invisible="from_doc==False">
-                           
-                            <field name="document_id" domain="[('mimetype', 'in', ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])]"  required="from_doc" />
-                         
+                            <field name="document_id" 
+                                   domain="[('mimetype', 'in', ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])]" 
+                                   required="from_doc"/>
                         </group>
-
                     </group>
                     
                     <footer>
-                        <button name="action_import" string="Import" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        <button name="action_import" string="Import" 
+                                type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" 
+                                special="cancel"/>
                     </footer>
                 </sheet>
             </form>
         </field>
     </record>
     
-    <!-- Results View -->
+    <!-- Results View (بدون تغییر) -->
     <record id="view_import_wizard_results" model="ir.ui.view">
         <field name="name">sbs.import.wizard.results</field>
         <field name="model">sbs.import.wizard</field>
@@ -69,9 +76,13 @@
                     </div>
 
                     <footer>
-                        <button name="action_new_import" string="Import Another" type="object" class="btn-secondary"/>
-                        <button name="action_view_imported" string="View Imported" type="object" class="btn-primary" invisible="result_error != '' " />
-                        <button string="Close" class="btn-secondary" special="cancel"/>
+                        <button name="action_new_import" string="Import Another" 
+                                type="object" class="btn-secondary"/>
+                        <button name="action_view_imported" string="View Imported" 
+                                type="object" class="btn-primary" 
+                                invisible="result_error != ''"/>
+                        <button string="Close" class="btn-secondary" 
+                                special="cancel"/>
                     </footer>
                 </sheet>
             </form>
@@ -88,6 +99,5 @@
         <field name="binding_model_id" eval="False"/>
         <field name="binding_view_types">list,form</field>
     </record>
-    
     
 </odoo>

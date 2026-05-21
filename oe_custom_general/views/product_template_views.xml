@@ -1,0 +1,141 @@
+<odoo>
+    <data>
+        <record id="product_template_only_form_view" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+               
+                <xpath expr="//label[@for='weight']" position="before">
+                  
+                    <field name="height_unit"/>
+                    <field name="height"/>
+                    
+                    <field name="width_unit"/>
+                    <field name="width"/>
+                    
+                    <field name="depth_unit"/>
+                    <field name="depth"/>
+                    
+                    <field name="net_weight"/>
+                    <field name="weight_unit"/>
+
+                </xpath>
+
+                 <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="hs_code"/>
+                    <field name="country_origin"/>
+                    <field name="brand_id"/>
+                     <field name="creation_method"/>
+                    <field name="product_link"   groups="oe_custom_general.group_product_admin"/>
+
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="product_normal_form_view" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+               
+                <xpath expr="//label[@for='weight']" position="before">
+                    <field name="height"/>
+                    <field name="width"/>
+                    <field name="depth"/>
+                    <field name="net_weight"/>
+                </xpath>
+
+                 <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="hs_code"/>
+                    <field name="country_origin"/>
+                    <field name="brand_id"/>
+                    <field name="creation_method"/>
+                    <field name="product_link"  groups="oe_custom_general.group_product_admin"/>
+
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="sale.product_template_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="res_model">product.template</field>
+            <field name="path">products</field>
+            <field name="view_mode">list,kanban,form,activity</field>
+            <field name="view_id" ref="product.product_template_tree_view"/>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <field name="context">{ "sale_multi_pricelist_product_template": 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new product
+                </p><p>
+                    You must define a product for everything you sell or purchase,
+                    whether it's a storable product, a consumable or a service.
+                </p>
+            </field>
+        </record>
+
+
+  
+
+    <record id="product_template_tree_view" model="ir.ui.view">
+    <field name="name">product.template.product.list</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_tree_view"/> <!-- ارث از ویوی اصلی -->
+    <field name="arch" type="xml">
+
+        <!-- جایگزینی کل محتوای list -->
+        <xpath expr="//list" position="replace">
+            <list string="Products" multi_edit="1" sample="1">
+                <header>
+                    <button string="Print Labels" type="object" name="action_open_label_layout"/>
+                </header>
+
+                <!-- فقط فیلدهای خواسته‌شده -->
+                <field name="barcode"/>
+                <field name="name" string="Product Name"/>
+                <field name="brand_id" optional="show"/>
+                <field name="public_categ_ids" widget="many2many_tags" string="Categories" optional="show"/>
+                <field name="creation_method" string="Creation Method" optional="show"/>
+                <field name="type" string="Product Type" optional="show"  readonly="1"/>
+                <field name="country_origin" string="Country of Origin" optional="show"/>
+                <field name="product_tag_ids" widget="many2many_tags" string="Tags" optional="show"/>
+
+
+
+                <field name="product_variant_count" column_invisible="True"/>
+                <field name="sale_ok" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="cost_currency_id" column_invisible="True"/>
+                <field name="is_favorite" widget="boolean_favorite" optional="show" nolabel="1"/>
+                <field name="name" string="Product Name"/>
+                <field name="default_code" optional="show"/>
+                <field name="product_tag_ids" widget="many2many_tags" optional="hide"/>
+                <field name="barcode" optional="hide" readonly="product_variant_count != 1"/>
+                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" optional="hide"/>
+                <field name="list_price" string="Sales Price" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
+                <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/>
+                <field name="categ_id" optional="hide"/>
+                <field name="type" optional="hide" readonly="1"/>
+                <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>
+                <field name="active" column_invisible="True"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+                 <field name="website_id"/>
+               
+               
+               
+               
+               </list>
+        </xpath>
+
+    </field>
+</record>
+
+
+
+
+    </data>
+</odoo>

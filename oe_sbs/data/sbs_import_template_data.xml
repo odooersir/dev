@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <record id="sbs_default_import_template_itsme" model="sbs.import.template">
+            <field name="name">Default Mapping</field>
+            
+            <!-- تشخیص قالب (Anchor) -->
+            <!-- از سلول A1 که کلمه Import Date در آن است برای شناسایی این قالب استفاده می‌کنیم -->
+         <!--   <field name="signature_cell">A1</field>
+            <field name="signature_text">Import Date</field> -->
+            
+            <!-- تاریخ‌ها -->
+           <!-- <field name="import_date_col">A2</field>
+            <field name="end_date_col">B2</field> -->
+            
+            <!-- فیلدهای اصلی (عدد 2 نشان می‌دهد که خواندن داده‌ها از ردیف دوم آغاز می‌شود) -->
+            <field name="ean_col">C2</field>
+            <field name="product_name_col">D2</field>
+            <field name="price_col">J2</field>
+            
+            <!-- فرض می‌کنیم ارز برای این فایل ثابت و یورو است -->
+            <field name="currency_fixed_id" eval="ref('base.EUR')"/>
+            
+            <field name="moq_col">M2</field>
+            <field name="mov_col">N2</field>
+            <field name="available_qty_col">O2</field>
+            <field name="t1_t2_col">Q2</field>
+
+            <!-- فیلدهای اختیاری -->
+            <field name="case_size_col">E2</field>
+            <field name="layer_col">F2</field>
+            <field name="pallet_col">G2</field>
+            <field name="coo_col">I2</field>
+            <field name="lead_time_col">L2</field>
+            <field name="incoterms_col">P2</field>
+            <field name="payment_terms_col">R2</field>
+            <field name="note_col">H2</field>
+        </record>
+
+    </data>
+</odoo>

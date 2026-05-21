@@ -54,18 +54,36 @@ class DocumentSBSController(http.Controller):
                 
 
             else:
-                try:
-                    wizard = request.env['sbs.import.wizard'].sudo().create({
-                        'from_doc': True,
-                        'from_rpc': True,
-                        'document_id': document.id,
-                        'file_name': document.name,
-                    })
-                    result = wizard.action_import()
-                except Exception as e:
-                    result['status']='no'
-                    result['result_error']=str(e)
+                 # 1. پیدا کردن تامین‌کننده از روی نام فولدر داکیومنت
+                supplier = False
+                if document.folder_id and document.folder_id.name:
+                    supplier = request.env['res.partner'].sudo().search([
+                        ('name', 'ilike', document.folder_id.name)
+                    ], limit=1)
 
+                if not supplier:
+                    # اگر تامین‌کننده‌ای هم‌نام با فولدر پیدا نشد، خطا می‌دهیم
+                    result['status'] = 'no'
+                    result['result_error'] = f"تامین‌کننده‌ای با نام '{document.folder_id.name}' یافت نشد."
+                else:
+                    try:
+                        # 2. ارسال supplier_id به ویزارد در زمان ساخت
+                        wizard = request.env['sbs.import.wizard'].sudo().create({
+                            'from_doc': True,
+                            'from_rpc': True,
+                            'document_id': document.id,
+                            'file_name': document.name,
+                            'supplier_id': supplier.id,  # اضافه شدن این خط
+                        })
+                        
+                        # حالا که supplier_id وجود دارد، action_import می‌تواند 
+                        # قالب (template) مناسب را به صورت خودکار پیدا کند
+                        result = wizard.action_import()
+                    except Exception as e:
+                        result['status']='no'
+                        result['result_error']=str(e)
+
+                        
 
             # انتظار می‌ره action_import یک dict برگردونه، مثل:
             # {"status": "ok", "import_number": ..., "total_imported": ...}
@@ -93,9 +111,11 @@ class DocumentSBSController(http.Controller):
                 #tags_to_add = request.env['documents.tag'].search([('state', '=', 'sent_to_sbs')])
                 #document.tag_ids = [(4, tag.id) for tag in tags_to_add]
             else:
-                result_summary.update({
-                    'error': result.get('result_error'),
-                })
+                result_summary.update({'error': result.get('result_error'),})
+
+                document.sudo().write({'rejection_reason':result.get('result_error'),'state':'reject'})
+
+
 
             results.append(result_summary)
 

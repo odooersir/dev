@@ -2,7 +2,7 @@
 
 import re
 import logging
-from odoo import models,api
+from odoo import fields,models,api
 from odoo.http import request 
 from odoo.fields import Domain
 
@@ -40,6 +40,42 @@ def _parse_numeric(value, cast=float):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+
+      
+    valid_offers_count = fields.Integer(
+        string='Valid Offers',
+        store=True,
+        readonly=True,
+        help='Number of valid offers from SBS data'
+    )
+    
+    expired_offers_count = fields.Integer(
+        string='Expired Offers',
+        store=True,
+        readonly=True,
+        help='Number of expired offers from SBS data'
+    )
+   
+
+    @api.model
+    def _update_all_offers_count(self):
+        """Called by cron - bulk update using SQL"""
+        self.env.cr.execute("""
+            UPDATE product_template pt
+            SET 
+                valid_offers_count = COALESCE((
+                    SELECT COUNT(*) FROM sbs_data sd 
+                    WHERE sd.product_id = pt.id AND sd.is_expired = false
+                ), 0),
+                expired_offers_count = COALESCE((
+                    SELECT COUNT(*) FROM sbs_data sd 
+                    WHERE sd.product_id = pt.id AND sd.is_expired = true
+                ), 0)
+        """)
+        self.invalidate_cache(['valid_offers_count', 'expired_offers_count'])
+        return True
+
+
     def get_marketplace_offers(self):
         self.ensure_one()
 
@@ -69,13 +105,13 @@ class ProductTemplate(models.Model):
                 LEFT JOIN uom_uom u ON u.id = sd.uom_id
                 WHERE sd.ean           = %s
                 AND sd.selling_price > 0
-                AND (
+               /* AND (
                     sd.is_expired = FALSE
                     OR (
                         sd.is_expired = TRUE
-                        AND sd.end_date >= (CURRENT_DATE - INTERVAL '3 months')
+                        AND sd.end_date >= (CURRENT_DATE - INTERVAL '24 months')
                     )
-                )
+                )*/
                 ORDER BY
                     import_number,
                     sd.is_expired   ASC,
@@ -225,7 +261,7 @@ class ProductTemplate(models.Model):
                 uom.name, product_tmpl.name, e
             )
 
-
+    '''
     @api.model
     def _search_get_detail(self, website, order, options):
         result = super()._search_get_detail(website, order, options)
@@ -241,5 +277,51 @@ class ProductTemplate(models.Model):
             )
 
         return result
+    '''
 
+    @api.model
+    def _search_get_detail(self, website, order, options):
+        result = super()._search_get_detail(website, order, options)
 
+        # ─── فیلتر برند ───────────────────────────────────────────────────────
+        brand_id = options.get('brand_id')
+        if brand_id:
+            result['base_domain'].append([('brand_id', '=', brand_id)])
+
+        # ─── فیلتر offer ──────────────────────────────────────────────────────
+        offer_import = options.get('offer_import')
+        if offer_import:
+            # یک query مستقیم — بدون loop
+            sbs_records = self.env['sbs.data'].search([
+                ('import_number', '=', offer_import),
+                ('is_expired', '=', False),
+                ('product_id', '!=', False),
+            ])
+            tmpl_ids = sbs_records.mapped('product_id.id')
+            if tmpl_ids:
+                result['base_domain'].append([('id', 'in', tmpl_ids)])
+            else:
+                result['base_domain'].append([('id', '=', False)])
+
+        return result
+
+    @api.model
+    def get_price_history(self):
+        """Return price history from sbs_data offers"""
+        sbs_data = self.env['sbs.data'].search([
+            ('ean', '=', self.barcode),
+            ('selling_price', '>', 0)
+        ], order='import_date asc')
+        
+        history = []
+        for record in sbs_data:
+            history.append({
+                'date': record.import_date.strftime('%Y-%m-%d'),
+                'price': record.selling_price,
+                'import_number': record.import_number
+            })
+        
+        #print ("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+        #print (history)
+
+        return history

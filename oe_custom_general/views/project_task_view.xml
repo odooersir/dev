@@ -1,0 +1,278 @@
+<odoo>
+
+      <record id="project.view_task_form2" model="ir.ui.view">
+            <field name="name">project.task.form</field>
+            <field name="model">project.task</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Task" class="o_form_project_tasks" js_class="project_task_form">
+                    <field name="recurrence_id" invisible="1" />
+                    <field name="allow_task_dependencies" invisible="1" />
+                    <field name="rating_last_value" invisible="1"/>
+                    <field name="rating_count" invisible="1"/>
+                    <field name="allow_milestones" invisible="1" />
+                    <field name="parent_id" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="is_closed" invisible="1"/>
+                    <field name="depend_on_count" invisible="1"/>
+                    <field name="closed_depend_on_count" invisible="1"/>
+                    <field name="html_field_history_metadata" invisible="1"/>
+                    <field name="is_template" invisible="1"/>
+                    <field name="is_rotting" invisible="1"/>
+                    <field name="rotting_days" invisible="1"/>
+                    <header>
+                        <field name="stage_id" widget="rotting_statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" invisible="not project_id and not stage_id" readonly="is_invisible"/>
+                        <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" invisible="1"/>
+                        <field name="personal_stage_type_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" invisible="project_id" domain="[('user_id', '=', uid)]" string="Personal Stage"/>
+                    </header>
+                    <!-- Used in inherited views to display the eventual warnings -->
+                    <t name="warning_section"/>
+                    <sheet string="Task">
+                    <div class="oe_button_box" name="button_box" groups="base.group_user">
+                        <!-- Dummy tag for organizing buttons, using position='replace' when inheriting -->
+                        <span id="button_products" invisible="1"/>
+                        <span id="button_worksheet" invisible="1"/>
+                        <!-- Dummy tag used to organize buttons, englobing the 3 buttons modifies the width of the button -->
+                        <span id="start_rating_buttons" invisible="1"/>
+                        <field name="rating_avg" invisible="1"/>
+                        <field name="rating_active" invisible="1"/>
+                        <button name="action_open_ratings" type="object" invisible="rating_count == 0 or not rating_active or has_template_ancestor or has_project_template" class="oe_stat_button">
+                            <i class="fa fa-fw o_button_icon fa-smile-o text-success" invisible="rating_avg &lt; 3.66" title="Happy"/>
+                            <i class="fa fa-fw o_button_icon fa-meh-o text-warning" invisible="rating_avg &lt; 2.33 or rating_avg &gt;= 3.66" title="Neutral"/>
+                            <i class="fa fa-fw o_button_icon fa-frown-o text-danger" invisible="rating_avg &gt;= 2.33" title="Unhappy"/>
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="rating_avg_text" nolabel="1"/></span>
+                                <span class="o_stat_text">Last Rating</span>
+                            </div>
+                        </button>
+                        <!-- Dummy tag used to organize buttons -->
+                        <span id="end_rating_buttons" invisible="1"/>
+                        <button name="action_open_parent_task" type="object" class="oe_stat_button" icon="fa-check" invisible="not parent_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Parent Task</span>
+                            </div>
+                        </button>
+                        <button name="action_recurring_tasks" type="object" invisible="not active or not recurrence_id or not allow_recurring_tasks" class="oe_stat_button" icon="fa-repeat" groups="project.group_project_recurring_tasks">
+                            <field name="recurring_count" widget="statinfo" string="Recurring Tasks"/>
+                        </button>
+                        <button name="%(project.project_task_action_sub_task)d" type="action" class="oe_stat_button" icon="fa-check"
+                            invisible="not id or subtask_count == 0"
+                            context="{
+                                'default_project_id': project_id,
+                                'default_user_ids': user_ids,
+                                'default_milestone_id': milestone_id,
+                                'subtask_action': True,
+                                'default_is_template': is_template,
+                            }"
+                        >
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Sub-tasks</span>
+                                <span class="o_stat_value">
+                                    <field name="closed_subtask_count"/> / <field name="subtask_count"/>
+                                    (<field name="subtask_completion_percentage" widget="percentage" options="{'digits': [1, 0]}"/>)
+                                </span>
+                            </div>
+                        </button>
+                        <button name="action_dependent_tasks" type="object" invisible="dependent_tasks_count == 0 or not allow_task_dependencies" class="oe_stat_button" icon="fa-check" groups="project.group_project_task_dependencies">
+                            <field name="dependent_tasks_count" widget="statinfo" string="Blocked Tasks" />
+                        </button>
+                        <!-- Dummy tag used to organize buttons -->
+                        <span id="end_button_box" invisible="1"/>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active or is_template"/>
+                    <widget name="web_ribbon" title="Template" bg_color="text-bg-info" invisible="not is_template"/>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="d-flex w-100">
+                            <field name="name" options="{'line_breaks': False}" widget="text" class="o_task_name text-truncate w-md-75 w-100 pe-2" placeholder="Task Title..." readonly="is_invisible"/>
+                        </h1>
+                        <div class="d-flex justify-content-end align-items-center px-1" invisible="not active or is_template or has_project_template">
+                            <field name="priority" class="h3 pe-2" widget="priority_switch" readonly="is_invisible"/>
+                        </div>
+                        <div class="d-flex justify-content-end o_state_container" invisible="not active or is_template or has_project_template">
+                            <field name="state" widget="project_task_state_selection" class="o_task_state_widget" readonly="is_invisible"/>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-center w-100 w-md-50 w-lg-25" invisible="active and not (is_template or has_project_template)">
+                            <field name="priority" class="h3 pe-2" widget="priority_switch" readonly="is_invisible"/>
+                            <field name="state" widget="project_task_state_selection" class="o_task_state_widget" readonly="is_invisible"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"
+                                domain="[('active', '=', True), '|', ('company_id', '=', False), ('company_id', '=?', company_id)]"
+                                required="parent_id or child_ids or is_template"
+                                widget="project"
+                                readonly="is_invisible"/>
+                            <field name="milestone_id"
+                                placeholder="e.g. Product Launch"
+                                context="{'default_project_id': project_id}"
+                                invisible="not project_id or not allow_milestones"
+                                readonly="is_invisible"/>
+                            <field name="user_ids"
+                                class="o_task_user_field"
+                                options="{'no_open': True}"
+                                widget="many2many_avatar_user"
+                                readonly="is_invisible"/>
+                            <field name="role_ids" invisible="not has_project_template or is_template" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Assign at project creation"/>
+                        </group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" context="{'project_id': project_id}" readonly="is_invisible"/>
+                            <field name="partner_id" nolabel="0" widget="res_partner_many2one" class="o_task_customer_field" invisible="not project_id or has_template_ancestor or has_project_template"/>
+                            <label for="date_deadline"/>
+                            <div id="date_deadline_and_recurring_task" class="d-inline-flex w-100">
+                                <field name="date_deadline" nolabel="1" decoration-danger="date_deadline and date_deadline &lt; current_date and state not in ['1_done', '1_canceled']" readonly="is_invisible"/>
+                                <field name="recurring_task" nolabel="1" class="ms-0" style="width: fit-content;"
+                                       widget="boolean_icon" options="{'icon': 'fa-repeat'}"
+                                       invisible="not active or parent_id or not allow_recurring_tasks"
+                                       groups="project.group_project_recurring_tasks"/>
+                            </div>
+                            <label for="repeat_interval" groups="project.group_project_recurring_tasks" invisible="not recurring_task or not allow_recurring_tasks"/>
+                            <div invisible="not recurring_task or not allow_recurring_tasks" class="d-flex" groups="project.group_project_recurring_tasks" name="repeat_intervals">
+                                <field name="repeat_interval" required="recurring_task"
+                                       class="me-2" style="max-width: 2rem !important;" />
+                                <field name="repeat_unit" required="recurring_task"
+                                       class="me-2" style="max-width: 4rem !important;" />
+                                <field name="repeat_type" required="recurring_task"
+                                       class="me-2" style="max-width: 15rem !important;" />
+                                <field name="repeat_until" invisible="repeat_type != 'until'" required="repeat_type == 'until'"
+                                       class="me-2" />
+                            </div>
+                            <!-- Field needed to trigger its compute in project_enterprise, but will be replaced in an override defined in hr_timesheet module -->
+                            <field name="allocated_hours" invisible="1"/>
+                        </group>
+                    </group>
+                        <field name="task_properties" columns="2"/>
+                    <notebook>
+                        <page name="description_page" string="Description">
+                            <field name="description" type="html" options="{'collaborative': true, 'resizable': false}" placeholder="Add details about this task..." readonly="is_invisible"/>
+                        </page>
+                        <page name="sub_tasks_page" string="Sub-tasks" invisible="not project_id">
+                            <field name="child_ids"
+                                   mode="list,kanban"
+                                   context="{
+                                        'default_project_id': project_id,
+                                        'default_user_ids': user_ids,
+                                        'default_parent_id': id,
+                                        'default_partner_id': partner_id,
+                                        'default_milestone_id': allow_milestones and milestone_id,
+                                        'kanban_view_ref': 'project.project_sub_task_view_kanban_mobile',
+                                        'closed_X2M_count': closed_subtask_count,
+                                        'default_is_template': is_template,
+                                        'default_tag_ids': tag_ids,
+                                   }"
+                                   widget="subtasks_one2many">
+                                <list editable="bottom" decoration-muted="state in ['1_done','1_canceled']" open_form_view="True">
+                                    <field name="active" column_invisible="True"/>
+                                    <field name="is_template" column_invisible="True"/>
+                                    <field name="allow_milestones" column_invisible="True"/>
+                                    <field name="display_in_project" column_invisible="True" force_save="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="id" optional="hide" options="{'enable_formatting': False}"/>
+                                    <field name="parent_id" column_invisible="True"/>
+                                    <field name="state" widget="project_task_state_selection" nolabel="1" width="20px"/>
+                                    <field name="name" widget="name_with_subtask_count"/>
+                                    <field name="subtask_count" column_invisible="True"/>
+                                    <field name="closed_subtask_count" column_invisible="True"/>
+                                    <field name="project_id" string="Project" optional="hide" required="1" options="{'no_open': 1}" widget="project"/>
+                                    <field name="milestone_id"
+                                        optional="hide"
+                                        context="{'default_project_id': project_id}"
+                                        column_invisible="not parent.allow_milestones"
+                                        invisible="not allow_milestones"/>
+                                    <field name="partner_id" optional="hide" widget="res_partner_many2one" invisible="not project_id" column_invisible="parent.has_template_ancestor or parent.has_project_template"/>
+                                    <field name="user_ids" widget="many2many_avatar_user" optional="show"/>
+                                    <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="date_deadline" invisible="state in ['1_done', '1_canceled']" optional="hide" decoration-danger="date_deadline and date_deadline &lt; current_date"/>
+                                    <field name="priority" widget="priority" optional="hide" width="70px"/>
+                                    <field name="activity_ids" string="Next Activity" widget="list_activity" optional="hide"/>
+                                    <field name="my_activity_date_deadline" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}" optional="hide"/>
+                                    <field name="rating_last_text" string="Rating" decoration-danger="rating_last_text == 'ko'"
+                                        decoration-warning="rating_last_text == 'ok'" decoration-success="rating_last_text == 'top'"
+                                        class="fw-bold" widget="badge" optional="hide" invisible="rating_last_text == 'none'" column_invisible="True"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                                    <field name="create_date" optional="hide"/>
+                                    <field name="stage_id" optional="hide" context="{'default_project_id': project_id}"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="task_dependencies" string="Blocked By" invisible="not allow_task_dependencies" groups="project.group_project_task_dependencies">
+                            <field name="depend_on_ids"
+                                   nolabel="1"
+                                   mode="list,kanban"
+                                   context="{
+                                        'default_project_id': project_id,
+                                        'search_view_ref' : 'project.view_task_search_form',
+                                        'search_default_project_id': project_id,
+                                        'list_view_ref': 'project.open_view_all_tasks_list_view',
+                                        'search_default_open_tasks': 1,
+                                        'kanban_view_ref': 'project.project_sub_task_view_kanban_mobile',
+                                        'closed_X2M_count': closed_depend_on_count,
+                                        'default_is_template': is_template,
+                                   }"
+                                   widget="notebook_task_one2many">
+                                <list editable="bottom" decoration-muted="state in ['1_done','1_canceled']" open_form_view="True">
+                                    <field name="allow_milestones" column_invisible="True"/>
+                                    <field name="parent_id" column_invisible="True" />
+                                    <field name="subtask_count" column_invisible="True"/>
+                                    <field name="closed_subtask_count" column_invisible="True"/>
+                                    <field name="id" optional="hide" options="{'enable_formatting': False}"/>
+                                    <field name="state" widget="project_task_state_selection" nolabel="1" width="20px"/>
+                                    <field name="name" widget="name_with_subtask_count"/>
+                                    <field name="project_id" optional="hide" options="{'no_open': 1}" />
+                                    <field name="milestone_id"
+                                        optional="hide"
+                                        context="{'default_project_id': project_id}"
+                                        column_invisible="not parent.allow_milestones"
+                                        invisible="not allow_milestones"/>
+                                    <field name="partner_id" optional="hide" widget="res_partner_many2one" invisible="not project_id" column_invisible="parent.has_template_ancestor or parent.has_project_template"/>
+                                    <field name="parent_id" optional="hide" groups="base.group_no_one"/>
+                                    <field name="user_ids" widget="many2many_avatar_user" optional="show"/>
+                                    <field name="company_id" optional="hide" groups="base.group_multi_company" />
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="date_deadline" invisible="state in ['1_done', '1_canceled']" optional="hide" decoration-danger="date_deadline and date_deadline &lt; current_date"/>
+                                    <field name="priority" widget="priority" optional="hide" width="70px"/>
+                                    <field name="activity_ids" string="Next Activity" widget="list_activity" optional="hide"/>
+                                    <field name="my_activity_date_deadline" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}" optional="hide"/>
+                                    <field name="rating_last_text" string="Rating" decoration-danger="rating_last_text == 'ko'"
+                                        decoration-warning="rating_last_text == 'ok'" decoration-success="rating_last_text == 'top'"
+                                        class="fw-bold" widget="badge" optional="hide" invisible="rating_last_text == 'none'" column_invisible="True"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                                    <field name="create_date" optional="hide"/>
+                                    <field name="stage_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="extra_info" string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="parent_id" invisible="not project_id" groups="base.group_no_one" context="{'search_view_ref' : 'project.view_task_search_form', 'search_default_project_id': project_id, 'default_project_id': project_id}"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" placeholder="Visible to all"/>
+                                    <field name="sequence" groups="base.group_no_one"/>
+                                    <field name="email_cc" groups="base.group_no_one" invisible="is_template or has_project_template"/>
+                                </group>
+                                <group invisible="is_template or has_project_template">
+                                    <field name="date_assign" groups="base.group_no_one"/>
+                                    <field name="date_last_stage_update" groups="base.group_no_one"/>
+                                </group>
+                                <group string="Working Time to Assign" invisible="working_hours_open == 0.0">
+                                    <field name="working_hours_open" widget="float_time" string="Hours"/>
+                                    <field name="working_days_open" string="Days"/>
+                                </group>
+                                <group string="Working Time to Close" invisible="working_hours_close == 0.0">
+                                    <field name="working_hours_close" widget="float_time" string="Hours"/>
+                                    <field name="working_days_close" string="Days"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <chatter reload_on_follower="True"/>
+                </form>
+            </field>
+        </record>
+
+
+
+</odoo>

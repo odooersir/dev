@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 import base64
 from io import BytesIO
 from datetime import datetime,date,timedelta
+from dateutil.relativedelta import relativedelta
 import re
 from openpyxl import load_workbook,Workbook
 from unidecode import unidecode
@@ -13,7 +14,16 @@ import re
 import logging
 _logger = logging.getLogger(__name__)
 
-
+def parse_cell_reference(cell_ref):
+    """ تبدیل آدرس (مثلاً A3) به (ایندکس ستون، شماره ردیف شروع) - ایندکس ستون از 0 شروع می‌شود """
+    if not cell_ref: return None, None
+    match = re.match(r"([A-Z]+)(\d+)", str(cell_ref).strip().upper())
+    if not match: return None, None
+    col_str, row_str = match.groups()
+    col_idx = 0
+    for char in col_str:
+        col_idx = col_idx * 26 + (ord(char) - ord('A') + 1)
+    return col_idx - 1, int(row_str)
 
 class ImportDataWizard(models.TransientModel):
     _name = 'sbs.import.wizard'
@@ -40,8 +50,44 @@ class ImportDataWizard(models.TransientModel):
 
    # def _generate_import_number(self):
     #    return self.env['ir.sequence'].next_by_code('sbs.import.sequence') or _('New')
+
+    supplier_id = fields.Many2one('res.partner', string='Supplier')
+    # فیلد template_id دیگر required نیست
+    template_id = fields.Many2one('sbs.import.template', string='Template', domain="[('supplier_id', '=', supplier_id)]")
     
    
+
+        
+    @api.onchange('template_id')
+    def _onchange_template_id(self):
+        """Auto-fill sheet name when template is selected"""
+        if self.template_id:
+            self.sheet_name = self.template_id.sheet_name or 'climax'
+
+    def _get_template_column_mapping(self):
+        """Build column mapping from template lines"""
+        if not self.template_id:
+            return {}
+        
+        mapping = {}
+        for line in self.template_id.line_ids:
+            mapping[line.excel_column.strip().lower()] = line.field_name
+        
+        return mapping
+
+    def _get_template_required_columns(self):
+        """Get list of required columns from template"""
+        if not self.template_id:
+            return []
+        
+        required = []
+        for line in self.template_id.line_ids:
+            if line.is_required:
+                required.append(line.excel_column.strip().lower())
+        
+        return required
+
+    
     def _safe_unidecode(self,text):
         result = ""
         for i, ch in enumerate(text):
@@ -124,6 +170,7 @@ class ImportDataWizard(models.TransientModel):
         except Exception:
             return 0.0, False
    
+    '''
     def get_final_spreadsheet_xlsx(self, document):
         """
         Return bytes of the final XLSX file for a documents.document record.
@@ -199,6 +246,7 @@ class ImportDataWizard(models.TransientModel):
         print ("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
         xlsx_bytes = self.env['spreadsheet.mixin']._zip_xslx_files(files_list)
         return xlsx_bytes
+    '''
      
     def excel_date_to_str(self, value):
         try:
@@ -308,8 +356,6 @@ class ImportDataWizard(models.TransientModel):
                 uom.name, product_tmpl.name, e
             )
 
-
-    
     def action_import(self):
         self.ensure_one()
         if not self.from_doc and not self.file:
@@ -322,7 +368,13 @@ class ImportDataWizard(models.TransientModel):
             validation_errors = []
             temp_records = []
 
-            # ---- استخراج داده‌ها به یک لیست دیکشنری مشترک ----
+            #import_date = date.today().isoformat()
+            import_date = date.today()
+
+
+            # =================================================================
+            # 1. خواندن فایل و تبدیل به ماتریس 2 بعدی (List of Lists)
+            # =================================================================
             if not self.from_doc:
                 file_content = base64.b64decode(self.file)
                 is_json = False
@@ -333,191 +385,296 @@ class ImportDataWizard(models.TransientModel):
                     is_json = False
                 elif mimetype == 'application/o-spreadsheet':
                     file_content = self.document_id.export_final_xlsx()
-                   # print (file_content)
                     is_json = True
                 else:
                     raise UserError(_('Unsupported document type: %s') % mimetype)
 
-            rows_list = []
+            # =================================================================
+            # 1 و 2. جستجوی قالب‌ها، انتخاب شیت و استخراج داده‌ها به صورت همزمان
+            # =================================================================
+            if hasattr(self, 'supplier_id') or not self.supplier_id:
+                available_templates = self.env['sbs.import.template'].search([
+                    ('supplier_id', '=', self.supplier_id.id),
+                    ('active', '=', True)
+                ])
+            
+            if not available_templates:
+                available_templates = self.env['sbs.import.template'].search([('active', '=', True), ('supplier_id', '=', False)])
+                
+            template = None
+            sheet_data = []
+    
+            print(self.supplier_id)
+            print(available_templates)
+            print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFffffffffffffffffffffff")
+            print(is_json)
 
+            
+            # --- تابع اعتبارسنجی دقیق هدرها ---
+                        # --- تابع اعتبارسنجی بسیار دقیق هدرها ---
+            
+            def validate_template_headers(t, current_sheet_data):
+                header_row_val = getattr(t, 'header_row', 1)
+                header_row_idx = header_row_val - 1 if header_row_val > 0 else 0
+                
+                if header_row_idx < 0 or header_row_idx >= len(current_sheet_data):
+                    return False
 
+                fields_to_check = [
+                    (t.ean_col, t.ean_header, 'EAN'),
+                    (t.product_name_col, t.product_name_header, 'Product Name'),
+                    (t.price_col, t.price_header, 'Price'),
+                    (t.supplier_code_col, t.supplier_code_header, 'Supplier Code'),
+                    (t.brand_col, t.brand_header, 'Brand'),
+                    (t.moq_col, t.moq_header, 'MOQ'),
+                    (t.mov_col, t.mov_header, 'MOV'),
+                    (t.available_qty_col, t.available_qty_header, 'Available Qty'),
+                ]
+                
+                has_headers_to_check = False
+
+                for col_ref, expected_header, field_name in fields_to_check:
+                    # اگر ستون (مثلا A) در تنظیمات پر شده بود، باید حتما چکش کنیم
+                    if col_ref:
+                        has_headers_to_check = True
+                        c_idx, _ = parse_cell_reference(col_ref)
+                        
+                        if c_idx is not None:
+                            try:
+                                val = current_sheet_data[header_row_idx][c_idx]
+                                # مدیریت مقادیر خالی
+                                actual_header = str(val.value if hasattr(val, 'value') and val.value is not None else val if val is not None else "").strip()
+                                expected_str = str(expected_header).strip() if expected_header else ""
+                                
+                                # مقایسه دقیق
+                                if not expected_str:
+                                    print(f"❌ Template '{t.name}' rejected: expected header is empty in template settings.")
+                                    return False
+
+                                if actual_header.lower() != expected_str.lower():
+                                    print(f"❌ Template '{t.name}' rejected: {field_name} mismatch. Excel has '{actual_header}', Template expects '{expected_str}'")
+                                    return False
+                                    
+                            except IndexError:
+                                print(f"❌ Template '{t.name}' rejected: Column {col_ref} does not exist in Excel.")
+                                return False
+                
+                if not has_headers_to_check:
+                    print(f"❌ Template '{t.name}' rejected: No columns defined in template settings.")
+                    return False
+                    
+                print(f"✅ Template '{t.name}' EXACT MATCH FOUND!")
+                return True
+
+            
+            
+            # ----------------------------------------
 
             if is_json:
                 data = file_content if isinstance(file_content, dict) else json.loads(file_content)
                 sheets = data.get("sheets", [])
-                sheet = next((s for s in sheets if s["name"].strip().lower() == "climax"), sheets[0])
-                cells = sheet.get("cells", {})
                 
-                print("celcccccccccccccccccccccccccccccccccccccccccsss")
-                print(cells)
-
-                # 🔹 تابع کمکی برای استخراج مقدار
-                def get_cell_value(cell_data):
-                    """استخراج مقدار سلول - هم برای dict و هم برای string"""
-                    if isinstance(cell_data, dict):
-                        return cell_data.get("content", "")
-                    return str(cell_data) if cell_data else ""
-                
-                # هدرها در ردیف 1 (A1, B1, ...)
-                headers = []
-                col = 1
-                while True:
-                    col_letter = chr(64 + col)
-                    key = f"{col_letter}1"
-                    if key not in cells:
-                        break
-                    headers.append(get_cell_value(cells[key]).strip().lower())
-                    col += 1
-
-                # داده‌ها از ردیف 2 به بعد
-                rows_list = []
-                max_row = sheet.get("rowNumber", 100)
-                for row_num in range(2, max_row + 1):
-                    row_dict = {}
-                    has_data = False  # 🔹 تغییر نام به has_data (واضح‌تر)
+                for t in available_templates:
                     
-                    for idx, header in enumerate(headers, start=1):
-                        col_letter = chr(64 + idx)
-                        key = f"{col_letter}{row_num}"
-                        value = get_cell_value(cells.get(key, ""))
+                    print ("tttttttttttttttttttttttttttttttttttttttttttttt")
+                    print (t)
 
-                        # 🔹 اصلاح تاریخ فقط برای ستون‌های موردنظر
-                        if header in ["import date", "offer validity", "end date"]:
-                            if value:  # فقط اگر مقدار داشت
-                                print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-                                print(value)
-                                value = self.excel_date_to_str(value)
-                                print(value)
-
-                        row_dict[header] = value
-                        
-                        # 🔹 چک کردن تمام ستون‌ها (نه فقط تاریخ‌ها)
-                        if value and str(value).strip():
-                            has_data = True
-                    
-                    # 🔹 فقط اگر حداقل یک سلول پر بود، ردیف را اضافه کن
-                    if has_data:
-                        rows_list.append(row_dict)
+                    # پیدا کردن شیت بر اساس نام در قالب یا انتخاب شیت اول
+                    t_sheet_name = t.sheet_name.strip().lower() if getattr(t, 'sheet_name', False) else None
+                    if t_sheet_name:
+                        sheet = next((s for s in sheets if s["name"].strip().lower() == t_sheet_name), None)
                     else:
-                        print(f"⚠️ ردیف {row_num} خالی است - رد شد")
+                        sheet = sheets[0] if sheets else None
 
-                            #print("Headers:", headers)
-                            #print("Rows:", rows_list)
+                    if not sheet: 
+                        continue
+                        
+                    cells = sheet.get("cells", {})
+                    def get_json_val(cell_data):
+                        if isinstance(cell_data, dict): return cell_data.get("content", "")
+                        return str(cell_data) if cell_data else ""
 
+                    # ساخت موقت داده‌های این شیت
+                    temp_sheet_data = []
+                    max_row = sheet.get("rowNumber", 100)
+                    max_col = 50 
+                    for r in range(1, max_row + 1):
+                        row_vals = []
+                        for c in range(1, max_col + 1):
+                            col_letter = chr(64 + c) if c <= 26 else chr(64 + c//26) + chr(64 + c%26)
+                            key = f"{col_letter}{r}"
+                            row_vals.append(get_json_val(cells.get(key, "")))
+                        temp_sheet_data.append(row_vals)
+                        
+                    '''
+                    # بررسی امضای قالب و سپس اعتبارسنجی هدرها در این شیت
+                    col_idx, row_num = parse_cell_reference(t.signature_cell)
+                    if col_idx is not None and row_num is not None:
+                        try:
+                            cell_val = str(temp_sheet_data[row_num - 1][col_idx]).strip()
+                            if cell_val == t.signature_text.strip():
+                                if validate_template_headers(t, temp_sheet_data): # چک کردن هدرها
+                                    template = t
+                                    sheet_data = temp_sheet_data
+                                    break  # قالب پیدا شد، خروج از حلقه
+                        except IndexError:
+                            continue
+                    '''
+                    # بررسی امضای قالب فعلاً حذف شده است و فقط هدرها چک می‌شوند
+                    if validate_template_headers(t, temp_sheet_data): # چک کردن هدرها
+                        template = t
+                        sheet_data = temp_sheet_data
+                        break  # قالب پیدا شد، خروج از حلقه
 
-            else:
+                print ("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+                print (template)
+
+            else: # حالت XLSX
                 workbook = load_workbook(filename=BytesIO(file_content), data_only=True)
                 
-                # انتخاب شیت "climax" اگر موجود باشد
-                sheet_name = next((n for n in workbook.sheetnames if n.strip().lower() == "climax"), workbook.sheetnames[0])
-                sheet = workbook[sheet_name]
+                for t in available_templates:
+                    t_sheet_name = t.sheet_name.strip().lower() if getattr(t, 'sheet_name', False) else None
+                    if t_sheet_name:
+                        sheet_name = next((n for n in workbook.sheetnames if n.strip().lower() == t_sheet_name), None)
+                    else:
+                        sheet_name = workbook.sheetnames[0] if workbook.sheetnames else None
+                        
+                    if not sheet_name: 
+                        continue
+                        
+                    sheet = workbook[sheet_name]
+                    temp_sheet_data = []
+                    for row in sheet.iter_rows():
+                        temp_sheet_data.append([cell.value for cell in row])
+                        
+                    '''
+                    # بررسی امضای قالب و سپس اعتبارسنجی هدرها
+                    col_idx, row_num = parse_cell_reference(t.signature_cell)
+                    if col_idx is not None and row_num is not None:
+                        try:
+                            val = temp_sheet_data[row_num - 1][col_idx]
+                            cell_val = str(val).strip() if val is not None else ""
+                            if cell_val == t.signature_text.strip():
+                                if validate_template_headers(t, temp_sheet_data): # چک کردن هدرها
+                                    template = t
+                                    sheet_data = temp_sheet_data
+                                    break  # قالب پیدا شد، خروج از حلقه
+                        except IndexError:
+                            continue
+                    '''
 
-                # استخراج هدر
-                headers = [str(cell.value).strip().lower() if cell.value else '' for cell in sheet[1]]
+                    # بررسی امضای قالب فعلاً حذف شده است و فقط هدرها چک می‌شوند
+                    if validate_template_headers(t, temp_sheet_data): # چک کردن هدرها
+                        template = t
+                        sheet_data = temp_sheet_data
+                        break  # قالب پیدا شد، خروج از حلقه
 
-                # استخراج داده‌ها
-                for row in sheet.iter_rows(min_row=2):
-                    print ("POOOOOOOOOOOOOOOOOOOOO")
-                    print(row)
-                    row_dict = {headers[idx]: cell for idx, cell in enumerate(row)}
-                    rows_list.append(row_dict)
+            # اگر هیچ قالبی مچ نشد (به دلیل امضا یا هدر)
+            if not template:
+                raise UserError(_('No matching template found. Please ensure both the column number and the expected column headers match the uploaded file.'))
 
-            print ("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
-            # ستون‌های الزامی ساده
-            required_columns = ['import date', 'description', 'supplier unit price', 'supplier name']
-            missing_columns = [col for col in required_columns if col not in headers]
+         
+            # --- تعیین سطر شروع داده‌ها بر اساس ترکیب header_row و ean_col ---
+            header_row_val = getattr(template, 'header_row', 0)
+            ean_col_idx, start_row_from_ean = parse_cell_reference(template.ean_col)
+            
+            if header_row_val and header_row_val > 0:
+                # اگر کاربر سطر هدر را مشخص کرده، داده‌ها از سطر بعدی شروع می‌شوند
+                start_row = header_row_val + 1
+            else:
+                # اگر مشخص نکرده بود، از عدد همراه ستون (مثلا 2 در A2) استفاده می‌کنیم
+                start_row = start_row_from_ean if start_row_from_ean is not None else 2
 
-            # ستون‌هایی که حداقل یکی باید وجود داشته باشد
-            if 'ean' not in headers and 'barcode' not in headers:
-                missing_columns.append('ean or barcode')
-            if 'end date' not in headers and 'offer validity' not in headers:
-                missing_columns.append('end date or offer validity')
+            # =================================================================
+            # 3. توابع کمکی
+            # =================================================================
+            def get_val(col_ref, current_row_idx_0_based):
+                c_idx, _ = parse_cell_reference(col_ref)
+                if c_idx is None: return None
+                try:
+                    val = sheet_data[current_row_idx_0_based][c_idx]
+                    return val.value if hasattr(val, 'value') else val
+                except IndexError:
+                    return None
 
-            if missing_columns:
-                raise UserError(_('Missing required columns: %s') % ", ".join(missing_columns))
+
+            # --- تابع جدید برای اعمال منطق Fallback ---
+            def get_final_val(col_ref, fixed_val, current_row_idx):
+                # 1. اول تلاش برای خواندن از ستون اکسل
+                val = get_val(col_ref, current_row_idx) if col_ref else None
+                if val not in (False, None, ''):
+                    return val
+                # 2. اگر اکسل خالی بود، استفاده از مقدار ثابت قالب
+                if fixed_val not in (False, None, ''):
+                    return fixed_val
+                # 3. در غیر این صورت هیچی
+                return None
 
 
-            print ("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
-
-            column_mapping = {
-                'unit/case': 'case_size',
-                'case/layer': 'layer',
-                'case/pallet': 'pallet',
-                'case size': 'case_size',
-                'layer': 'layer',
-                'pallet': 'pallet',
-                'note': 'note',
-                'coo': 'coo',
-                'lead time': 'lead_time',
-                #'moq': 'moq',
-               # 'mov':'mov',
-               # 'available qty':'availabale_qty',
-                #'available units':'availabale_qty',
-                'incoterms':'incoterms',
-                #'t1/t2':'t1_t2',
-                'payment terms':'payment_term',
-                'supplier code':'supplier_code'
-            }
+            def parse_date_value(val, fmt_list=("%d-%b-%Y", "%d/%m/%Y", "%d-%m-%Y")):
+                if not val: return None
+                if isinstance(val, datetime): return val
+                if isinstance(val, date): return datetime.combine(val, datetime.min.time())
+                for fmt in fmt_list:
+                    try:
+                        return datetime.strptime(str(val).strip(), fmt)
+                    except ValueError:
+                        continue
+                return None
 
             SBSData = self.env['sbs.data']
-            existing_file = SBSData.with_context(prefetch_fields=False).search([('excel_filename', '=', self.file_name)])
-            if existing_file:
-                print ("fnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-                print (self.file_name)
-
+            if SBSData.with_context(prefetch_fields=False).search([('excel_filename', '=', self.file_name)]):
                 raise UserError(_('File Already Exist!'))
 
-            print ("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
             valid_currency_ids = self.env['res.currency'].search([]).ids
             ICP = self.env['ir.config_parameter'].sudo()
             margin = float(ICP.get_param('oe_sbs.default_profit_margin', '8')) / 100
             min_margin = float(ICP.get_param('oe_sbs.min_profit_margin', '7')) / 100
             usd_currency = self.env.ref('base.USD')
 
-            print (rows_list)
-            for row_index, row_data in enumerate(rows_list, start=2):
+            # =================================================================
+            # 4. پردازش ردیف‌ها
+            # =================================================================
+            
+            print ("SSSSSSSSSSSSSSSSSSSSddddddddddddddddddddddddddddddddddddddddd")
+            print (len(sheet_data))
+            
+            for row_idx_0_based in range(start_row - 1, len(sheet_data)):
+                row_index = row_idx_0_based + 1
+                row_vals_list = sheet_data[row_idx_0_based]
+                
+                # اگر ردیف کاملا خالی است رد شود
+                if not any(val not in (None, '') for val in row_vals_list):
+                    continue
+
+                # بررسی اجمالی: اگر EAN و اسم محصول خالی بود، رد شو
+                ean_check = get_val(template.ean_col, row_idx_0_based)
+                desc_check = get_val(template.product_name_col, row_idx_0_based)
+                if not ean_check and not desc_check:
+                    continue
+
                 record_vals = {'excel_filename': self.file_name}
                 row_errors = []
 
-                # ---------------- import date ----------------
+                # --- اطلاعات تامین‌کننده (از قالب یا خواندن از اکسل) ---
+                if template.supplier_id:
+                    record_vals['supplier_id'] = template.supplier_id.id
+                    record_vals['supplier_name'] = template.supplier_id.name
+                    if hasattr(template.supplier_id, 'partner_code'):
+                        record_vals['supplier_code'] = template.supplier_id.partner_code
+                else:
+                    # اگر قالب تامین‌کننده ثابت نداشت، می‌گذاریم خالی بماند تا بعدا پیدا کنیم
+                    record_vals['supplier_id'] = False
+                    
+                    if hasattr(template, 'supplier_code_col') and template.supplier_code_col:
+                        record_vals['supplier_code'] = get_val(template.supplier_code_col, row_idx_0_based)
 
-                print ("import dateimport dateimport date")
-                print (row_data.get('import date'))
-                import_date_cell = row_data.get('import date')
-                val = import_date_cell.value if hasattr(import_date_cell, 'value') else import_date_cell
-                try:
-                    if val:
-                        if isinstance(val, datetime):
-                            date_obj = val
-                        else:
-                            parsed_date = None
-                            for fmt in ( "%d-%b-%Y", "%d/%m/%Y", "%d-%m-%Y"):  # فرمت‌های قابل قبول
-                                try:
-                                    parsed_date = datetime.strptime(str(val), fmt)
-                                    break
-                                except ValueError:
-                                    continue
-
-                            if not parsed_date:
-                                raise ValueError("Unsupported date format")
-
-                            date_obj = parsed_date
-                            #date_obj = datetime.strptime(str(val), "%d-%b-%Y")
-
-                        if date_obj.date() > date.today():
-                            row_errors.append("Import date cannot be in the future")
-                        else:
-                            record_vals['import_date'] = date_obj.isoformat()
-                    else:
-                        row_errors.append("Invalid import date (expected DD-Mon-YYYY, e.g. 19-Sep-2025)")
-                except Exception:
-                    row_errors.append("Invalid import date (expected DD-Mon-YYYY, e.g. 19-Sep-2025)")
+                # ---------------- Import Date ----------------
+                           
+                #record_vals['import_date'] =import_date
+                
                 # ---------------- EAN / Barcode ----------------
-                ean_val = ''
-                val = row_data.get('ean') or row_data.get('barcode')
-                val = val.value if hasattr(val, 'value') else val
-                ean_val = str(val).strip() if val else ''
-
+                ean_val = str(get_val(template.ean_col, row_idx_0_based) or '').strip()
                 if not ean_val:
                     row_errors.append("Missing EAN (barcode)")
                 elif not ean_val.isdigit():
@@ -525,104 +682,107 @@ class ImportDataWizard(models.TransientModel):
                 elif len(ean_val) > 13:
                     row_errors.append(f"Invalid EAN length > 13: {ean_val}")
                 else:
-                    # اگر کوتاه‌تر از ۱۳ بود با صفر پر می‌شود
-                    ean_val = ean_val.zfill(13)
-                    record_vals['ean'] = ean_val
-
+                    record_vals['ean'] = ean_val.zfill(13)
 
                 # ---------------- Product Name ----------------
-                desc_cell = row_data.get('description')
-                val = desc_cell.value if hasattr(desc_cell, 'value') else desc_cell
-                if not val:
+                desc_val = get_val(template.product_name_col, row_idx_0_based)
+                if not desc_val:
                     row_errors.append("Missing product name")
                 else:
-                    record_vals['product_name'] = unidecode(str(val).strip()).title()
-
-                # ---------------- Supplier Name ----------------
-                supplier_cell = row_data.get('supplier name')
-                val = supplier_cell.value if hasattr(supplier_cell, 'value') else supplier_cell
-                if not val:
-                    row_errors.append("Missing supplier name")
-                else:
-                    record_vals['supplier_name'] = str(val).strip().title()
-
-                # ---------------- Supplier Code ----------------
-                #supplier_code_cell = row_data.get('supplier code')
-                #val = supplier_code_cell.value if hasattr(supplier_code_cell, 'value') else supplier_code_cell
-                #if not val:
-                #    row_errors.append("Missing supplier code")
-                #else:
-                #    record_vals['supplier_code'] = str(val).strip()
+                    record_vals['product_name'] = unidecode(str(desc_val).strip()).title()
 
                 # ---------------- Price & Currency ----------------
-                price_cell = row_data.get('supplier unit price')
-                val = price_cell.value if hasattr(price_cell, 'value') else price_cell
-                #try:
-                price_value, currency_id = self._parse_accounting_number(price_cell)
+                price_val = get_val(template.price_col, row_idx_0_based)
+                price_value, currency_id = self._parse_accounting_number(price_val)
+                
+                # اگر ارز از طریق تابع به دست نیامد، از ارز ثابت قالب استفاده می‌کنیم
+                if not currency_id and hasattr(template, 'currency_fixed_id') and template.currency_fixed_id:
+                    currency_id = template.currency_fixed_id.id
+
                 if not currency_id or currency_id not in valid_currency_ids or price_value is None or price_value == 0:
                     row_errors.append("Invalid price or currency")
                 else:
                     record_vals['supplier_unit_price'] = abs(price_value)
                     record_vals['currency_id'] = currency_id
-                #except Exception:
-                #    row_errors.append("Invalid price or currency")
 
+                
+                '''
                 # ---------------- End Date / Offer Validity ----------------
-
-                end_cell = row_data.get('end date') or row_data.get('offer validity')
-                val = end_cell.value if hasattr(end_cell, 'value') else end_cell
-
-                try:
-                    if val:
-                        if isinstance(val, datetime):
-                            date_obj = val
-                        else:
-                            # فقط این فرمت معتبره: DD-Mon-YYYY (مثلاً 19-Sep-2025)
-                            parsed_date = None
-                            for fmt in ( "%d-%b-%Y", "%d/%m/%Y", "%d-%m-%Y"):  # فرمت‌های قابل قبول
-                                try:
-                                    parsed_date = datetime.strptime(str(val), fmt)
-                                    break
-                                except ValueError:
-                                    continue
-
-                            if not parsed_date:
-                                raise ValueError("Unsupported date format")
-
-                            date_obj = parsed_date
-                            #date_obj = datetime.strptime(str(val), "%d-%b-%Y")
-
-                        record_vals['end_date'] = date_obj.isoformat()
-                    else:
-                        row_errors.append(f"Row {row_index}: Invalid offer validity format (expected DD-Mon-YYYY)")
-                except Exception:
+                end_date_val = get_val(template.end_date_col, row_idx_0_based)
+                parsed_end_date = parse_date_value(end_date_val)
+                if parsed_end_date:
+                    record_vals['end_date'] = parsed_end_date.isoformat()
+                else:
                     row_errors.append(f"Row {row_index}: Invalid offer validity format (expected DD-Mon-YYYY)")
-
-
-
 
                 # ---------- بررسی اعتبار تاریخ‌ها ----------
                 today = date.today()
-                if 'end_date' in record_vals and record_vals['end_date']:
-                    end_date1 = datetime.strptime(record_vals['end_date'], '%Y-%m-%dT%H:%M:%S').date()
-                    if 'import_date' in record_vals and record_vals['import_date']:
-                        import_date1 = datetime.strptime(record_vals['import_date'], '%Y-%m-%dT%H:%M:%S').date()
-                        if end_date1 <= import_date1:
-                            row_errors.append(f"Row {row_index}: Offer validity is earlier than import date")
-                    record_vals['is_expired'] = bool(end_date1 < today)
-                    if end_date1 < today:
+                if parsed_end_date:
+                    if parsed_import_date and parsed_end_date.date() <= parsed_import_date.date():
+                        row_errors.append(f"Row {row_index}: Offer validity is earlier than import date")
+                    
+                    record_vals['is_expired'] = bool(parsed_end_date.date() < today)
+                    if parsed_end_date.date() < today:
                         row_errors.append(f"Row {row_index}: Offer validity date is expired")
+                '''
+                
+                offer_validity_val = None
+                
+                # ۱. خواندن مقدار Offer Validity از اکسل یا مقدار ثابت قالب
+                offer_fixed_key = template.offer_validity_fixed if hasattr(template, 'offer_validity_fixed') else None
+                offer_val_from_excel = get_val(getattr(template, 'offer_validity_col', False), row_idx_0_based)
+                
+                final_offer_val_text = None
+                if offer_val_from_excel not in (False, None, ''):
+                    offer_validity_val = offer_val_from_excel
+                    final_offer_val_text = str(offer_val_from_excel).strip()
+                elif offer_fixed_key not in (False, None, ''):
+                    offer_validity_val = offer_fixed_key  # مقدار کلید Selection مثل '1', '2'
+                    # استخراج متن نمایشی (مثلا '1 Week') برای ذخیره در رکورد
+                    final_offer_val_text = dict(template._fields['offer_validity_fixed'].selection).get(offer_fixed_key)
+
+                # ذخیره مقدار متنی offer_validity در رکورد
+                if final_offer_val_text:
+                    record_vals['end_date'] = final_offer_val_text
+
+                # ۲. تنظیم import_date و محاسبه end_date
+                record_vals['import_date'] = import_date
+                
+                end_date = None
+                
+                               
+                
+                if offer_validity_val:
+                    try:
+                        # استخراج اولین عدد از متن (مثلا از '2 Weeks' یا '2' عدد 2 را می‌گیرد)
+                        weeks_to_add = int(re.search(r'\d+', str(offer_validity_val)).group())
+                        
+                        # استفاده از timedelta که در فایل شما ایمپورت شده است
+                        end_date = import_date + timedelta(weeks=weeks_to_add)
+                    except (ValueError, AttributeError, TypeError) as e:
+                        row_errors.append(f"Row {row_index}: Invalid Offer Validity format: '{offer_validity_val}' - Error: {str(e)}")
+                
+
+                record_vals['end_date'] = end_date if end_date else False
 
                 # ---------------- MOQ & MOV ----------------
-                moq_val = row_data.get('moq')
-                mov_val = row_data.get('mov')
-                moq_val = moq_val.value if hasattr(moq_val, 'value') else moq_val
-                mov_val = mov_val.value if hasattr(mov_val, 'value') else mov_val
+                moq_val = get_val(template.moq_col, row_idx_0_based) if hasattr(template, 'moq_col') and template.moq_col else None
+                #mov_val = get_val(template.mov_col, row_idx_0_based) if hasattr(template, 'mov_col') and template.mov_col else None
 
+                
+                 # برای MOV: استخراج مقدار نام از فیلد Many2one در صورت وجود
+                mov_fixed_name = template.mov_fixed.name if hasattr(template, 'mov_fixed') and template.mov_fixed else None
+                mov_val = get_final_val(getattr(template, 'mov_col', False), mov_fixed_name, row_idx_0_based)
+
+                
                 if not moq_val and not mov_val:
                     row_errors.append(f"Row {row_index}: At least one of MOQ or MOV must have value")
-                if moq_val and isinstance(moq_val, str) and re.search(r'(€|\$|£|aed)', moq_val, re.IGNORECASE):
+                
+                if moq_val and isinstance(moq_val, str) and re.search(r'(€|\$|£|aed)', str(moq_val), re.IGNORECASE):
                     row_errors.append(f"Row {row_index}: MOQ must not contain currency")
+                else:
+                    if moq_val: record_vals['moq'] = str(moq_val).strip()
+                
                 if mov_val:
                     mov_raw = str(mov_val).strip()
                     m = re.search(r'(€|\$|£|aed)', mov_raw, re.IGNORECASE)
@@ -631,8 +791,7 @@ class ImportDataWizard(models.TransientModel):
                     else:
                         mov_symbol = m.group(0).upper()
                         body = re.sub(r'(€|\$|£|aed)\s*', '', mov_raw, flags=re.IGNORECASE)
-                        body = re.sub(r'[^0-9\.,kK]', '', body)
-                        body = body.replace('K', 'k')
+                        body = re.sub(r'[^0-9\.,kK]', '', body).replace('K', 'k')
                         if body.count('k') > 1:
                             row_errors.append(f"Row {row_index}: MOV contains multiple 'k' characters")
                         else:
@@ -642,35 +801,22 @@ class ImportDataWizard(models.TransientModel):
                                 row_errors.append(f"Row {row_index}: MOV must contain at least one digit")
                             else:
                                 record_vals['mov'] = f"{mov_symbol}{body}"
-                                # بررسی تطابق نماد MOV با currency_id
-                                cur_symbol = None
-                                try:
-                                    cur = self.env['res.currency'].browse(record_vals.get('currency_id') or False)
-                                except Exception:
-                                    cur = False
-                                if cur and cur.exists() and cur.symbol in ('$', '€', '£', 'AED'):
-                                    cur_symbol = cur.symbol
-                                else:
-                                    try:
-                                        cur_symbol = (
-                                            '$' if record_vals.get('currency_id') == self.env.ref('base.USD').id else
-                                            '€' if record_vals.get('currency_id') == self.env.ref('base.EUR').id else
-                                            '£' if record_vals.get('currency_id') == self.env.ref('base.GBP').id else
-                                            'AED' if record_vals.get('currency_id') == self.env.ref('base.AED').id else None
-                                        )
-                                    except Exception:
-                                        cur_symbol = None
+                                # بررسی تطابق ارز MOV
+                                cur = self.env['res.currency'].browse(currency_id) if currency_id else False
+                                cur_symbol = cur.symbol if cur and cur.symbol in ('$', '€', '£', 'AED') else None
+                                if not cur_symbol and cur:
+                                    cur_symbol = ('$' if cur.id == self.env.ref('base.USD').id else
+                                                  '€' if cur.id == self.env.ref('base.EUR').id else
+                                                  '£' if cur.id == self.env.ref('base.GBP').id else
+                                                  'AED' if cur.id == self.env.ref('base.AED').id else None)
                                 if cur_symbol and mov_symbol != cur_symbol:
-                                    row_errors.append(
-                                        f"Row {row_index}: MOV currency ({mov_symbol}) does not match supplier unit price currency ({cur_symbol})"
-                                    )
+                                    row_errors.append(f"Row {row_index}: MOV currency ({mov_symbol}) does not match price currency ({cur_symbol})")
 
                 # ---------------- Available QTY ----------------
-                avail_cell = row_data.get('available qty') or row_data.get('available units')
-                val = avail_cell.value if hasattr(avail_cell, 'value') else avail_cell
-                if val not in (None, ''):
+                avail_val = get_val(template.available_qty_col, row_idx_0_based)
+                if avail_val not in (None, ''):
                     try:
-                        val_str = str(val).strip()
+                        val_str = str(avail_val).strip()
                         if re.search(r'(€|\$|£|aed)', val_str, re.IGNORECASE):
                             row_errors.append(f"Row {row_index}: Available Units must not contain currency symbols")
                         else:
@@ -679,51 +825,87 @@ class ImportDataWizard(models.TransientModel):
                         row_errors.append(f"Row {row_index}: Available Units must be numeric")
 
                 # ---------------- T1/T2 ----------------
-                t1t2_cell = row_data.get('t1/t2')
-                val = t1t2_cell.value if hasattr(t1t2_cell, 'value') else t1t2_cell
-                if val:
-                    tval = str(val).strip().upper()
+                t1t2_val = get_val(template.t1_t2_col, row_idx_0_based) if hasattr(template, 't1_t2_col') and template.t1_t2_col else None
+                if t1t2_val:
+                    tval = str(t1t2_val).strip().upper()
                     if tval not in ['T1', 'T2']:
                         row_errors.append(f"Row {row_index}: T1-T2 must be empty or T1/T2")
                     else:
                         record_vals['t1_t2'] = tval
 
-                # ---------------- سایر فیلدهای optional ----------------
-                for excel_field, odoo_field in column_mapping.items():
-                    if excel_field in required_columns:
-                        continue
-                    cell = row_data.get(excel_field)
-                    val = cell.value if hasattr(cell, 'value') else cell
+               # ---------------- سایر فیلدهای Optional (معمولی) ----------------
+                optional_fields = {
+                    'case_size': getattr(template, 'case_size_col', False),
+                    'layer': getattr(template, 'layer_col', False),
+                    'pallet': getattr(template, 'pallet_col', False),
+                    'note': getattr(template, 'note_col', False),
+                    'unit_per_layer': getattr(template, 'unit_per_layer_col', False),
+                    'unit_per_pallet': getattr(template, 'unit_per_pallet_col', False),
+                    'hs_code': getattr(template, 'hs_code_col', False),
+                }
+                
+                for odoo_field, col_ref in optional_fields.items():
+                    if not col_ref: continue
+                    val = get_val(col_ref, row_idx_0_based)
                     if val not in (None, ''):
-                        if odoo_field in ['case_size', 'layer', 'pallet']:
-                            try:
-                                record_vals[odoo_field] = int(float(val))
-                            except:
-                                record_vals[odoo_field] = 0
+                        # فیلدهای عددی جدید به این لیست اضافه شدند
+                        if odoo_field in ['case_size', 'layer', 'pallet', 'unit_per_layer', 'unit_per_pallet']:
+                            try: record_vals[odoo_field] = int(float(val))
+                            except: record_vals[odoo_field] = 0
                         else:
+                            # فیلد hs_code و note از این طریق به صورت متن خوانده می‌شوند
                             record_vals[odoo_field] = str(val).strip()
 
-                # ---------------- ثبت خطا یا رکورد ----------------
+                # ---------------- فیلدهای دارای مقدار ثابت (Fallback) ----------------
+                
+                # COO (Country of Origin) - Many2one
+                coo_fixed = template.coo_fixed.name if hasattr(template, 'coo_fixed') and template.coo_fixed else None
+                coo_val = get_final_val(getattr(template, 'coo_col', False), coo_fixed, row_idx_0_based)
+                if coo_val not in (None, ''):
+                    record_vals['coo'] = str(coo_val).strip()
+
+                # Payment Terms - Char
+                pay_fixed = template.payment_terms_fixed if hasattr(template, 'payment_terms_fixed') else None
+                pay_val = get_final_val(getattr(template, 'payment_terms_col', False), pay_fixed, row_idx_0_based)
+                if pay_val not in (None, ''):
+                    record_vals['payment_term'] = str(pay_val).strip()
+
+                # Lead Time - Selection
+                lead_fixed = False
+                if hasattr(template, 'lead_time_fixed') and template.lead_time_fixed:
+                    lead_fixed = dict(template._fields['lead_time_fixed'].selection).get(template.lead_time_fixed)
+                lead_val = get_final_val(getattr(template, 'lead_time_col', False), lead_fixed, row_idx_0_based)
+                if lead_val not in (None, ''):
+                    record_vals['lead_time'] = str(lead_val).strip()
+
+                # Incoterms - ترکیب چند فیلد
+                inc_fixed = False
+                if hasattr(template, 'incoterm_id') and template.incoterm_id:
+                    inc_fixed = template.incoterm_id.name
+                    locs = []
+                    if template.incoterm_country_id: locs.append(template.incoterm_country_id.name)
+                    if template.incoterm_city: locs.append(template.incoterm_city)
+                    if locs:
+                        inc_fixed += f": {', '.join(locs)}"
+                        
+                inc_val = get_final_val(getattr(template, 'incoterms_col', False), inc_fixed, row_idx_0_based)
+                if inc_val not in (None, ''):
+                    record_vals['incoterms'] = str(inc_val).strip()
+
+                # ---------------- ثبت خطا یا محاسبه نهایی ----------------
                 if row_errors:
                     validation_errors.append(f"Row {row_index}: " + "; ".join(row_errors))
                 else:
-                    # ---- محاسبه قیمت تبدیل شده و selling price ----
-                    cur = False
-                    try:
-                        cur = self.env['res.currency'].browse(record_vals.get('currency_id') or False)
-                    except Exception:
-                        cur = False
+                    cur = self.env['res.currency'].browse(record_vals.get('currency_id') or False)
                     converted_price = 0
-                    converted_rate=0
+                    converted_rate = 0
 
                     if cur == usd_currency:
                         converted_price = record_vals.get('supplier_unit_price', 0)
-                        converted_rate=1
-                    elif cur:
-                        #converted_price = usd_currency._convert(record_vals.get('supplier_unit_price', 0), cur, self.env.company, date.today())
+                        converted_rate = 1
+                    elif cur and cur.exists():
                         converted_price = cur._convert(record_vals.get('supplier_unit_price', 0), usd_currency, self.env.company, date.today())
-                        converted_rate= cur._get_conversion_rate(cur, usd_currency, self.env.company, date.today())
-
+                        converted_rate = cur._get_conversion_rate(cur, usd_currency, self.env.company, date.today())
 
                     record_vals['converted_price'] = converted_price
                     record_vals['selling_price'] = converted_price * (1 + margin)
@@ -733,9 +915,13 @@ class ImportDataWizard(models.TransientModel):
 
                     temp_records.append(record_vals)
 
-            # ---------------- اگر خطا بود ----------------
+            # =================================================================
+            # 5. پایان حلقه و ذخیره‌سازی داده‌ها
+            # =================================================================
+            
+            print ("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
             if validation_errors:
-                if self.from_rpc:
+                if getattr(self, 'from_rpc', False):
                     return {"status": "no", "result_error": '\n'.join(validation_errors)}
                 self.write({
                     'total_imported': 0,
@@ -752,104 +938,85 @@ class ImportDataWizard(models.TransientModel):
                     'target': 'new',
                     'context': self.env.context,
                 }
-            # ثبت رکوردها
+            
             import_number = self.env['ir.sequence'].next_by_code('sbs.import.sequence') or _('New')
+            Product = self.env['product.template']
+
+            print ("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt")
             for rec in temp_records:
                 
-                ##############################################
+                # --- پیدا کردن تامین‌کننده (داینامیک از روی فایل اکسل) ---
+                if not rec.get('supplier_id') and rec.get('supplier_code'):
+                    partner = self.env['res.partner'].search([('partner_code', '=', str(rec['supplier_code']).strip())], limit=1)
+                    if partner:
+                        rec['supplier_id'] = partner.id
+                        rec['supplier_name'] = partner.name
+                # --------------------------------------------------------
                 
-                Product = self.env['product.template']
                 product = Product.search([('barcode', '=', rec['ean'])], limit=1)
                 if product:
                     rec['product_id'] = product.id
+                    product.sudo().write({'is_published': True})
                 else:
                     product = Product.create({
                         'name': rec['product_name'],
                         'barcode': rec['ean'],
-                        'type': 'consu',  # یا 'consu' یا 'service' بسته به نیاز
+                        'type': 'consu',
                         'is_storable': True, 
-                        'tracking':'lot',
-                        'creation_method':'sbs',
+                        'tracking': 'lot',
+                        'creation_method': 'sbs',
+                        'is_published': True, 
                     })
                     rec['product_id'] = product.id
-                ############################################
 
-                # ── UOM SYNC ──────────────────────────────────────────────
-                # بعد از اینکه product پیدا/ساخته شد، UOM را sync کن
+                # ── UOM SYNC ──
                 case_size = rec.get('case_size', 0)
                 if case_size and int(case_size) > 0:
                     uom = self._get_or_create_uom(case_size)
                     if uom:
-                        # ذخیره uom_id در rec تا در sbs.data هم ثبت بشه
                         rec['uom_id'] = uom.id
-                        # اضافه کردن به product.template.uom_ids
                         self._sync_uom_to_product(product, uom)
-                # ──────────────────────────────────────────────────────────
 
-                if 'supplier_code'  in rec:
-                    Partner = self.env['res.partner'].search([('partner_code', '=',  rec['supplier_code'])], limit=1)
-                    if Partner:
-                        rec['supplier_id'] = Partner.id
-
-                ############################################
                 rec['import_number'] = import_number
-                rec['document_id'] = self.document_id.id
+                rec['document_id'] = self.document_id.id if self.from_doc else False
                 SBSData.create(rec)
                 imported_count += 1
-
+            
+            print ("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+            
             self.write({
                 'import_number': import_number,
                 'total_imported': imported_count,
                 'result_error': '',
                 'show_results': True
             })
+            print ("aftrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
 
-            #if imported_count > 0:
-                #imported_records = SBSData.search([('import_number', '=', import_number)])
-                #imported_records._compute_selling_prices()
-
-            print ("rankkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-            # print (self.env['ir.config_parameter'].sudo().get_param('oe_sbs.auto_rank'))
             if ICP.get_param('oe_sbs.auto_rank') == 'True' and imported_count > 0:
-                print ("rankkkk2222222222222222222222222222222222222222222222222222222222222222222")
-
                 self.env['sbs.data'].action_rank_products()
 
+            print ("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCcc")
             
-            
-            cleanup_msg=''
-            # Auto Cleanup Old Lists
+            cleanup_msg = ''
             if ICP.get_param('oe_sbs.auto_cleanup_old_lists') == 'True' and imported_count > 0:
-                #try:
-                    cleanup_summary = self.env['sbs.data'].action_cleanup_old_lists(
-                        new_import_number=import_number,
-                        new_import_date= fields.Date.today()
+                cleanup_summary = self.env['sbs.data'].action_cleanup_old_lists(
+                    new_import_number=import_number,
+                    new_import_date=fields.Date.today()
+                )
+                if cleanup_summary.get('deleted_lists', 0) > 0:
+                    cleanup_msg = (
+                        f"\n\n🧹 Cleanup Summary:\n"
+                        f"Supplier: {cleanup_summary.get('supplier_name', '')}\n"
+                        f"Old lists removed: {cleanup_summary['deleted_lists']}\n"
+                        f"Records deleted: {cleanup_summary['total_records_deleted']}"
                     )
-                    
-                    # اضافه کردن به پیام
-                    if cleanup_summary.get('deleted_lists', 0) > 0:
-                        cleanup_msg = (
-                            f"\n\n🧹 Cleanup Summary:\n"
-                            f"Supplier: {cleanup_summary['supplier_name']}\n"
-                            f"Old lists removed: {cleanup_summary['deleted_lists']}\n"
-                            f"Records deleted: {cleanup_summary['total_records_deleted']}"
-                        )
-                       
-                        
-                #except Exception as e:
-                #   print(f"Auto cleanup failed: {str(e)}")
-                    # عدم توقف فرآیند اصلی
 
             self.write({'cleanup_msg': cleanup_msg})
             
-            
-            
-            
-            
-            
-            if self.from_rpc:
-                return {"status": "ok",  'import_number': import_number,'total_imported': imported_count,'cleanup_msg': cleanup_msg}
+            if getattr(self, 'from_rpc', False):
+                return {"status": "ok", 'import_number': import_number, 'total_imported': imported_count, 'cleanup_msg': cleanup_msg}
 
+            print ("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEee")
             return {
                 'name': _('Import Results'),
                 'type': 'ir.actions.act_window',
@@ -862,9 +1029,8 @@ class ImportDataWizard(models.TransientModel):
             }
 
         except Exception as e:
-            print ("exceptionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-            print (str(e))
-            raise UserError(_('Error importing file: %s') % str(e))
+            raise UserError(_('Error importing file: %s') % str(e))    
+
 
 
     def action_new_import(self):
