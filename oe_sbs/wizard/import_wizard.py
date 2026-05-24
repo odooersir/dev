@@ -356,14 +356,18 @@ class ImportDataWizard(models.TransientModel):
                 uom.name, product_tmpl.name, e
             )
 
+    
+    
+        
+    
     def action_import(self):
-        self.ensure_one()
-        if not self.from_doc and not self.file:
-            raise UserError(_('Please upload a file first.'))
-        if self.from_doc and not self.document_id:
-            raise UserError(_('Please select a file first.'))
+            self.ensure_one()
+            if not self.from_doc and not self.file:
+                raise UserError(_('Please upload a file first.'))
+            if self.from_doc and not self.document_id:
+                raise UserError(_('Please select a file first.'))
 
-        try:
+        #try:
             imported_count = 0
             validation_errors = []
             temp_records = []
@@ -411,65 +415,80 @@ class ImportDataWizard(models.TransientModel):
 
             
             # --- تابع اعتبارسنجی دقیق هدرها ---
-                        # --- تابع اعتبارسنجی بسیار دقیق هدرها ---
-            
-            def validate_template_headers(t, current_sheet_data):
-                header_row_val = getattr(t, 'header_row', 1)
-                header_row_idx = header_row_val - 1 if header_row_val > 0 else 0
-                
-                if header_row_idx < 0 or header_row_idx >= len(current_sheet_data):
+            # ── تابع مشترک تبدیل حرف ستون به index ──
+            def col_letter_to_index(col_str):
+                col_str = ''.join(ch for ch in str(col_str).strip().upper() if ch.isalpha())
+                if not col_str:
+                    return None
+                result = 0
+                for ch in col_str:
+                    result = result * 26 + (ord(ch) - ord('A') + 1)
+                return result - 1
+
+            # ── get_val اصلاح‌شده ──
+            def get_val(col_ref, current_row_idx_0_based):
+                if not col_ref:
+                    return None
+                c_idx = col_letter_to_index(col_ref)   # ← به جای parse_cell_reference
+                if c_idx is None:
+                    return None
+                try:
+                    val = sheet_data[current_row_idx_0_based][c_idx]
+                    return val.value if hasattr(val, 'value') else val
+                except IndexError:
+                    return None
+
+            def validate_template_headers(t, sheet_data):
+                header_row = int(t.header_row) if getattr(t, 'header_row', None) else 1
+                header_row_idx = header_row - 1
+
+                if header_row_idx >= len(sheet_data):
+                    print(f"❌ '{t.name}': header_row={header_row} ولی فایل {len(sheet_data)} ردیف داره")
                     return False
 
-                fields_to_check = [
-                    (t.ean_col, t.ean_header, 'EAN'),
-                    (t.product_name_col, t.product_name_header, 'Product Name'),
-                    (t.price_col, t.price_header, 'Price'),
-                    (t.supplier_code_col, t.supplier_code_header, 'Supplier Code'),
-                    (t.brand_col, t.brand_header, 'Brand'),
-                    (t.moq_col, t.moq_header, 'MOQ'),
-                    (t.mov_col, t.mov_header, 'MOV'),
-                    (t.available_qty_col, t.available_qty_header, 'Available Qty'),
-                ]
-                
-                has_headers_to_check = False
+                template_fields = t.fields_get()
+                fields_to_check = []
+                for field_name in template_fields:
+                    if field_name.endswith('_col'):
+                        col_val = getattr(t, field_name, None)
+                        if not col_val:
+                            continue
+                        header_field = field_name.replace('_col', '_header')
+                        expected_header = getattr(t, header_field, None)
+                        fields_to_check.append((col_val, expected_header, field_name))
 
+                has_checks = False
                 for col_ref, expected_header, field_name in fields_to_check:
-                    # اگر ستون (مثلا A) در تنظیمات پر شده بود، باید حتما چکش کنیم
-                    if col_ref:
-                        has_headers_to_check = True
-                        c_idx, _ = parse_cell_reference(col_ref)
-                        
-                        if c_idx is not None:
-                            try:
-                                val = current_sheet_data[header_row_idx][c_idx]
-                                # مدیریت مقادیر خالی
-                                actual_header = str(val.value if hasattr(val, 'value') and val.value is not None else val if val is not None else "").strip()
-                                expected_str = str(expected_header).strip() if expected_header else ""
-                                
-                                # مقایسه دقیق
-                                if not expected_str:
-                                    print(f"❌ Template '{t.name}' rejected: expected header is empty in template settings.")
-                                    return False
+                    expected_str = str(expected_header).strip() if expected_header else ""
+                    if not expected_str:
+                        continue
 
-                                if actual_header.lower() != expected_str.lower():
-                                    print(f"❌ Template '{t.name}' rejected: {field_name} mismatch. Excel has '{actual_header}', Template expects '{expected_str}'")
-                                    return False
-                                    
-                            except IndexError:
-                                print(f"❌ Template '{t.name}' rejected: Column {col_ref} does not exist in Excel.")
-                                return False
-                
-                if not has_headers_to_check:
-                    print(f"❌ Template '{t.name}' rejected: No columns defined in template settings.")
+                    has_checks = True
+                    col_idx = col_letter_to_index(col_ref)  # ← تابع مشترک
+                    if col_idx is None:
+                        print(f"❌ '{t.name}': col_ref '{col_ref}' نامعتبر")
+                        return False
+
+                    header_row_data = sheet_data[header_row_idx]
+                    if col_idx >= len(header_row_data):
+                        print(f"❌ '{t.name}': ستون '{col_ref}' خارج از محدوده")
+                        return False
+
+                    cell_value = header_row_data[col_idx]
+                    actual_str = str(cell_value).strip() if cell_value is not None else ""
+                    print(f"[Check] {field_name}: row={header_row}, col={col_ref}(idx={col_idx}) actual='{actual_str}' expected='{expected_str}'")
+
+                    if actual_str.lower() != expected_str.lower():
+                        print(f"❌ '{t.name}' MISMATCH: '{actual_str}' != '{expected_str}'")
+                        return False
+
+                if not has_checks:
+                    print(f"⚠️ '{t.name}': هیچ col+header تعریف نشده → رد شد")
                     return False
-                    
-                print(f"✅ Template '{t.name}' EXACT MATCH FOUND!")
-                return True
 
-            
-            
-            # ----------------------------------------
-
+                print(f"✅ '{t.name}' matched!")
+                return True        
+           
             if is_json:
                 data = file_content if isinstance(file_content, dict) else json.loads(file_content)
                 sheets = data.get("sheets", [])
@@ -574,30 +593,13 @@ class ImportDataWizard(models.TransientModel):
                 raise UserError(_('No matching template found. Please ensure both the column number and the expected column headers match the uploaded file.'))
 
          
-            # --- تعیین سطر شروع داده‌ها بر اساس ترکیب header_row و ean_col ---
-            header_row_val = getattr(template, 'header_row', 0)
-            ean_col_idx, start_row_from_ean = parse_cell_reference(template.ean_col)
-            
-            if header_row_val and header_row_val > 0:
-                # اگر کاربر سطر هدر را مشخص کرده، داده‌ها از سطر بعدی شروع می‌شوند
-                start_row = header_row_val + 1
-            else:
-                # اگر مشخص نکرده بود، از عدد همراه ستون (مثلا 2 در A2) استفاده می‌کنیم
-                start_row = start_row_from_ean if start_row_from_ean is not None else 2
-
+            # --- تعیین سطر شروع ---
+            header_row_val = int(getattr(template, 'header_row', 1) or 1)
+            start_row = header_row_val + 1  # داده‌ها همیشه از ردیف بعد از هدر شروع می‌شن
+           
             # =================================================================
             # 3. توابع کمکی
             # =================================================================
-            def get_val(col_ref, current_row_idx_0_based):
-                c_idx, _ = parse_cell_reference(col_ref)
-                if c_idx is None: return None
-                try:
-                    val = sheet_data[current_row_idx_0_based][c_idx]
-                    return val.value if hasattr(val, 'value') else val
-                except IndexError:
-                    return None
-
-
             # --- تابع جدید برای اعمال منطق Fallback ---
             def get_final_val(col_ref, fixed_val, current_row_idx):
                 # 1. اول تلاش برای خواندن از ستون اکسل
@@ -920,12 +922,26 @@ class ImportDataWizard(models.TransientModel):
             # =================================================================
             
             print ("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
-            if validation_errors:
+            print (temp_records)
+            print (validation_errors)
+            if not temp_records:
+                if validation_errors:
+                    error_msg = '\n'.join(validation_errors)
+                else:
+                    error_msg = _(
+                        'No valid data rows found.\n'
+                        '- Template column mapping is incorrect, or\n'
+                        '- Data starts at a different row than configured, or\n'
+                        '- File is empty or all rows failed validation\n'
+                        f'(Template: {template.name}, Start row: {start_row}, Sheet rows: {len(sheet_data)})'
+                    )
+                
                 if getattr(self, 'from_rpc', False):
-                    return {"status": "no", "result_error": '\n'.join(validation_errors)}
+                    return {"status": "no", "result_error": error_msg}
+                
                 self.write({
                     'total_imported': 0,
-                    'result_error': '\n'.join(validation_errors),
+                    'result_error': error_msg,
                     'show_results': True,
                 })
                 return {
@@ -1028,8 +1044,8 @@ class ImportDataWizard(models.TransientModel):
                 'context': self.env.context,
             }
 
-        except Exception as e:
-            raise UserError(_('Error importing file: %s') % str(e))    
+        #except Exception as e:
+        #    raise UserError(_('Error importing file: %s') % str(e))    
 
 
 

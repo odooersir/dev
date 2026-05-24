@@ -66,7 +66,7 @@ class DocumentSBSController(http.Controller):
                     result['status'] = 'no'
                     result['result_error'] = f"تامین‌کننده‌ای با نام '{document.folder_id.name}' یافت نشد."
                 else:
-                    try:
+                    #try:
                         # 2. ارسال supplier_id به ویزارد در زمان ساخت
                         wizard = request.env['sbs.import.wizard'].sudo().create({
                             'from_doc': True,
@@ -79,9 +79,9 @@ class DocumentSBSController(http.Controller):
                         # حالا که supplier_id وجود دارد، action_import می‌تواند 
                         # قالب (template) مناسب را به صورت خودکار پیدا کند
                         result = wizard.action_import()
-                    except Exception as e:
-                        result['status']='no'
-                        result['result_error']=str(e)
+                    #except Exception as e:
+                    #    result['status']='no'
+                    #    result['result_error']=str(e)
 
                         
 

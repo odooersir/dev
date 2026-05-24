@@ -22,7 +22,7 @@
 
                         <group>
                             <field name="active" widget="boolean_toggle"/>
-                            <field name="supplier_id"/>
+                            <field name="supplier_id" domain="[('is_company','=',True)]"/>
                             <field name="sheet_name" placeholder="Leave empty for active sheet"/>
 
                             <field name="header_row"/>
@@ -273,7 +273,7 @@
                         <h3 class="text-muted">Excel Preview / Data</h3>
                         <!-- در اینجا ویجت Odoo Spreadsheet یا یک iframe برای نمایش فایل قرار می‌گیرد -->
                         <div class="alert alert-info text-center mt-4">
-                            <p>بخش پیش‌نمایش فایل اکسل</p>
+                            <p>Excell Preview</p>
                             <p class="small"></p>
                         </div>
                     </div>
