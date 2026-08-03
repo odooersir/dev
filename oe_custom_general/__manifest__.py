@@ -24,6 +24,7 @@
         'views/res_partner_view.xml',
         'views/product_brand_view.xml',
         'views/crm_lead.xml',
+        'views/res_country_views.xml',
 
     ],
 

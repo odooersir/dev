@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="oe_sbs.ExcelViewerField">
+        <div class="o_excel_preview o_excel_viewer" t-att-class="{ o_fullscreen: state.fullscreen }">
+
+            <div class="o_excel_toolbar mb-2 d-flex align-items-center gap-2">
+                <span t-if="state.totalRows" class="text-muted" style="font-size:12px;">
+                    <t t-if="state.sheets.length > 1">
+                        <b t-esc="state.sheets.length"/> sheets,
+                    </t>
+                    showing <b t-esc="state.shownRows"/> of <b t-esc="state.totalRows"/> rows
+                </span>
+                <button t-if="hasMore" class="btn btn-secondary btn-sm"
+                        t-on-click="loadAllRows">
+                    <i class="fa fa-list me-1"/> Show all rows
+                </button>
+                <button class="btn btn-light btn-sm ms-auto" t-on-click="toggleFullscreen">
+                    <i class="fa" t-att-class="state.fullscreen ? 'fa-compress' : 'fa-expand'"/>
+                </button>
+            </div>
+
+            <div t-if="state.loading" class="text-muted p-2">
+                <i class="fa fa-spinner fa-spin me-1"/> Loading file…
+            </div>
+
+            <div t-if="state.error" class="alert alert-danger" t-esc="state.error"/>
+
+            <!-- Every sheet is rendered below; these are jump links, not a
+                 switcher - nothing is hidden behind them. -->
+            <div t-if="state.sheets.length > 1" class="o_xlsx_tabs">
+                <t t-foreach="state.sheets" t-as="sheet" t-key="sheet_index">
+                    <span class="o_xlsx_tab"
+                          t-att-class="{ active: sheet_index === state.active }"
+                          t-on-click="() => this.selectSheet(sheet_index)"
+                          t-att-title="'Jump to ' + sheet">
+                        <t t-esc="sheet"/>
+                    </span>
+                </t>
+            </div>
+
+            <div class="o_xlsx_scroll">
+                <div t-ref="grid"/>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_sbs_field_synonym_list" model="ir.ui.view">
+        <field name="name">sbs.field.synonym.list</field>
+        <field name="model">sbs.field.synonym</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="field_key"/>
+                <field name="synonym"/>
+                <field name="source"/>
+                <field name="seen_count"/>
+                <field name="mapping_count" string="# Maps"/>
+                <field name="mapping_ids" widget="many2many_tags" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_sbs_field_synonym_form" model="ir.ui.view">
+        <field name="name">sbs.field.synonym.form</field>
+        <field name="model">sbs.field.synonym</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="field_key"/>
+                        <field name="synonym"/>
+                        <field name="source"/>
+                        <field name="seen_count"/>
+                        <field name="mapping_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_sbs_field_synonym_search" model="ir.ui.view">
+        <field name="name">sbs.field.synonym.search</field>
+        <field name="model">sbs.field.synonym</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="synonym"/>
+                <field name="field_key"/>
+                <filter name="manual" string="Manual"
+                        domain="[('source', '=', 'manual')]"/>
+                <filter name="learned" string="Learned"
+                        domain="[('source', '=', 'learned')]"/>
+                <filter name="system" string="System"
+                        domain="[('source', '=', 'system')]"/>
+                <group>
+                    <filter name="group_field" string="Target Field"
+                            context="{'group_by': 'field_key'}"/>
+                    <filter name="group_source" string="Source"
+                            context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_sbs_field_synonym" model="ir.actions.act_window">
+        <field name="name">Auto-Map Synonyms</field>
+        <field name="res_model">sbs.field.synonym</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_sbs_field_synonym_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No synonyms yet</p>
+            <p>Synonyms used to auto-map spreadsheet headers to template fields.</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_sbs_field_synonym"
+              name="Auto-Map Synonyms"
+              action="action_sbs_field_synonym"
+              parent="menu_sbs_root"
+              sequence="50"
+              groups="oe_sbs.group_synonym_editor"/>
+
+</odoo>

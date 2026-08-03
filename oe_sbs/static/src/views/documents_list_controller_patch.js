@@ -31,6 +31,14 @@ patch(DocumentsListController.prototype, {
                     callback: () => this.model.onDeleteFromSBS(),
                     groupNumber: 1,
                 },
+                create_template: {
+                    isAvailable: () => userIsInternal && selectionCount > 0,
+                    sequence: 40,
+                    description: _t("Create Mapping"),
+                    icon: "fa fa-upload",
+                    callback: () => this.model.onCreateTemplate(),
+                    groupNumber: 1,
+                },
                 ...menuItems,
             };
         }

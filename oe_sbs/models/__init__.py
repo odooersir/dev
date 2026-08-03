@@ -7,3 +7,7 @@ from . import sbs_cleanup_log
 from . import res_partner
 from . import sbs_offer_list
 from . import sbs_import_template
+from . import sbs_data_export
+from . import sbs_field_synonym
+from . import sbs_ai_provider
+from . import sbs_partner_offer_email

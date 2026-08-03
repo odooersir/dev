@@ -1,20 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data noupdate="0">
 
+    <!-- Superseded by cron_sbs_nightly_recompute: compute_expired_ean is now
+         step 3 of the nightly batch, so this standalone 00:05 job is redundant
+         and used to run the same scan twice. Kept (inactive) rather than
+         deleted so existing databases upgrade without a missing-record error. -->
     <record id="ir_cron_compute_expired_ean" model="ir.cron">
-      <field name="name">Compute Expired EAN</field>
+      <field name="name">Compute Expired EAN (superseded by SBS Nightly Recompute)</field>
       <field name="model_id" ref="model_sbs_data"/>
       <field name="state">code</field>
       <field name="code">model.compute_expired_ean()</field>
-
-      <!-- اجرای روزانه -->
       <field name="interval_number">1</field>
       <field name="interval_type">days</field>
-
-      <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=5, second=0, microsecond=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
-
-
-      <field name="active">True</field>
+      <field name="active" eval="False"/>
     </record>
 
   </data>

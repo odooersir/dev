@@ -9,6 +9,7 @@
                 <page string="Supplier Info" invisible="supplier_rank == 0">
                     <group>
                         <group>
+                            <field name="receive_offer"/>
                             <field name="offer_list_frequency"/>
                             <field name="last_offer_date" readonly="1"/>
                             <field name="offer_count" readonly="1"/>
@@ -25,6 +26,23 @@
                                 type="object" 
                                 class="btn-primary"/>
                     </group>
+                </page>
+
+                <!-- Suppliers often mail offers from more than one address.
+                     Routing checks the main email first, then this list. -->
+                <page string="Mapping Emails" invisible="supplier_rank == 0">
+                    <field name="offer_email_ids">
+                        <list editable="bottom">
+                            <field name="email" placeholder="offers@supplier.com"/>
+                            <field name="name" placeholder="e.g. sales desk"/>
+                            <field name="active" widget="boolean_toggle" optional="hide"/>
+                        </list>
+                    </field>
+                    <p class="text-muted">
+                        Offers arriving from any address listed here are filed in
+                        this supplier's folder, exactly as if they had come from
+                        the main email above.
+                    </p>
                 </page>
 
                 <page string="Offer List History" invisible="supplier_rank == 0">
@@ -72,15 +90,26 @@
                         domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                 <filter string="Last 60 Days" name="filter_offer_3months"
                         domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
-                <filter string="Last 3 Days" name="filter_offer_6months"
+                <!-- domain is 90 days: the label said "Last 3 Days" and the
+                     name said 6 months, so neither matched the filter. -->
+                <filter string="Last 90 Days" name="filter_offer_90days"
                         domain="[('last_offer_date', '&gt;', (context_today() - relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
 
                 <filter string="No Offer Yet" name="filter_no_offer"
                         domain="[('last_offer_date', '=', False)]"/>
                 
                 <group>
-                    <filter string="Last Offer" name="group_last_offer"    context="{'group_by': 'last_offer_date'}"/>
-                 
+                    <filter string="Last Offer" name="group_last_offer"
+                            context="{'group_by': 'last_offer_date'}"/>
+                    <filter string="Receive Offer" name="group_receive_offer"
+                            context="{'group_by': 'receive_offer'}"/>
+                    <!-- Tags are already SEARCHABLE through base's
+                         &lt;field name="category_id" string="Tag"/&gt;, so only the
+                         group-by is added here. Re-declaring the field would
+                         give two searchable items the same name and make
+                         search_default_category_id ambiguous. -->
+                    <filter string="Tags" name="group_partner_tags"
+                            context="{'group_by': 'category_id'}"/>
                 </group>
             </xpath>
         </field>
@@ -96,6 +125,9 @@
                 <field name="name"/>
                 <field name="phone"/>
                 <field name="email"/>
+                <field name="category_id" widget="many2many_tags"
+                       options="{'color_field': 'color'}" optional="show"/>
+                <field name="receive_offer"/>
                 <field name="offer_count"/>
                 <field name="last_offer_date"/>
                

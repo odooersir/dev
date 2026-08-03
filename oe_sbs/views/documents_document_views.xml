@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Read-only Excel viewer opened from the list-row 'Preview' button.
+         Uses the same SheetJS grid as the import-template mapper. -->
+    <record id="documents_document_view_excel_preview_form" model="ir.ui.view">
+        <field name="name">documents.document.excel.preview.form</field>
+        <field name="model">documents.document</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Excel Preview" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title mb-2">
+                        <h2><field name="name" readonly="1" nolabel="1"/></h2>
+                    </div>
+                    <field name="sbs_is_spreadsheet" invisible="1"/>
+                    <!-- The widget never reads this field's value: it pulls the
+                         bytes through sbs_get_file_b64(). It is bound to
+                         'mimetype' simply because that field always exists on
+                         documents.document, whereas 'datas' may not. -->
+                    <field name="mimetype" widget="excel_viewer" nolabel="1"
+                           readonly="1" options="{'max_rows': 300}"/>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
     <record id="documents_view_list" model="ir.ui.view">
         <field name="name">documents.list.oe_custom</field>
         <field name="model">documents.document</field>
@@ -14,17 +42,43 @@
           
           
             <xpath expr="//list" position="attributes">
-                <attribute name="decoration-success">state=='sent_to_sbs'</attribute>
+                <attribute name="decoration-success">state in ('sent_to_sbs', 'auto_sent_to_sbs')</attribute>
+                <attribute name="decoration-warning">state=='no_template'</attribute>
+                <attribute name="decoration-danger">state=='reject'</attribute>
+                <attribute name="decoration-muted">sbs_split_done == True or state in ('deleted_from_sbs', 'auto_deleted')</attribute>
             </xpath>
 
             <xpath expr="//list" position="inside"> 
                 
-                <field name="template_id" optional="show" />
-                <field name="modifier" optional="show" />
-                <field name="state" optional="show" />
-                <field name="rejection_reason" optional="hide" />
-                <field name="import_number" optional="show" />
+                <field name="sbs_is_spreadsheet" column_invisible="1"/>
+                <button name="action_sbs_preview_excel" type="object"
+                        string="Preview" icon="fa-table"
+                        invisible="not sbs_is_spreadsheet"
+                        help="Open this spreadsheet in a full Excel viewer"/>
+                <field name="template_id" string="Import Mapping" class="text-center"
+                       widget="sbs_open_link"
+                       options="{'res_model': 'sbs.import.template', 'id_field': 'template_id', 'name': 'Import Mapping'}"
+                       optional="show" />
+                <field name="import_number" string="Import Number"
+                       widget="sbs_open_link"
+                       options="{'res_model': 'sbs.data', 'domain_field': 'import_number', 'name': 'SBS Records'}"
+                       optional="show" />
                 <field name="old_import_number" optional="hide" />
+                <field name="sbs_split_done" optional="hide"/>
+                <field name="sbs_origin_id" optional="hide"/>
+                <button name="action_sbs_retry" type="object"
+                        string="Retry" icon="fa-refresh"
+                        invisible="state not in ('reject', 'no_template')"
+                        help="Queue this file for auto-send again (after fixing the template or supplier)"/>
+                <field name="modifier" optional="show" />
+                <field name="state" optional="show" widget="badge"
+                       decoration-success="state == 'sent_to_sbs'"
+                       decoration-info="state in ('approve', 'auto_sent_to_sbs')"
+                       decoration-warning="state == 'no_template'"
+                       decoration-danger="state == 'reject'"
+                       decoration-muted="state in ('deleted_from_sbs', 'auto_deleted')"/>
+                <field name="rejection_reason" string="Rejection Reason" optional="show" />
+               
                 
             </xpath>
             
@@ -55,5 +109,33 @@
 
 
 
+    <!-- Add SBS-status filters + a state search field to the Documents search,
+         so users can filter documents by their SBS state and clear it freely. -->
+    <record id="documents_view_search_sbs" model="ir.ui.view">
+        <field name="name">documents.search.oe_sbs.state</field>
+        <field name="model">documents.document</field>
+        <field name="inherit_id" ref="documents.document_view_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="state" string="SBS Status"/>
+                <field name="import_number" string="Import Number"/>
+                <field name="template_id" string="Import Mapping"/>
+            </field>
+            <filter name="documents" position="after">
+                <separator/>
+                <filter string="Manually Sent" name="sbs_manual"
+                        domain="[('state','=','sent_to_sbs')]"/>
+                <filter string="Auto Sent" name="sbs_auto"
+                        domain="[('state','=','auto_sent_to_sbs')]"/>
+                <filter string="Waiting For Mapping" name="sbs_waiting"
+                        domain="[('state','=','no_template')]"/>
+                <filter string="Reject" name="sbs_reject"
+                        domain="[('state','=','reject')]"/>
+                <separator/>
+                <filter string="SBS Status" name="group_by_state"
+                        context="{'group_by':'state'}"/>
+            </filter>
+        </field>
+    </record>
 
 </odoo>

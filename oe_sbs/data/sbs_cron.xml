@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_sbs_nightly_recompute" model="ir.cron">
+            <field name="name">SBS: Nightly Recompute (links, expiry, prices, ranks, offer lists)</field>
+            <field name="model_id" ref="model_sbs_data"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_nightly_recompute()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+            <!-- Next 02:00 server time: today if it hasn't passed yet, otherwise
+                 tomorrow. The old expression always said "tomorrow 02:00", so an
+                 upgrade run between midnight and 02:00 skipped that night. -->
+            <field name="nextcall"
+                   eval="(DateTime.now().replace(hour=2, minute=0, second=0, microsecond=0)
+                          + timedelta(days=1 if DateTime.now().hour >= 2 else 0)
+                         ).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+        <record id="cron_sbs_auto_send" model="ir.cron">
+            <field name="name">SBS: Auto-send documents to SBS</field>
+            <field name="model_id" ref="documents.model_documents_document"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_auto_send_to_sbs()</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+    </data>
+</odoo>

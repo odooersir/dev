@@ -6,38 +6,30 @@
          ======================================================================== -->
 
     <!-- 1. Remove price from product card -->
-    <template id="custom_products_item_remove_price"    inherit_id="website_sale.products_item"    name="Remove Price from Product Card">
+    <template id="custom_products_item_remove_price" 
+              inherit_id="website_sale.products_item" 
+              name="Remove Price from Product Card">
         <xpath expr="//div[hasclass('product_price')]" position="replace"/>
     </template>
 
     <!-- 2. Add barcode to product card -->
-    <template id="custom_products_item_add_barcode"   inherit_id="website_sale.products_item"     name="Add Barcode to Product Card">
+    <template id="custom_products_item_add_barcode" 
+              inherit_id="website_sale.products_item" 
+              name="Add Barcode to Product Card">
         <xpath expr="//h2[hasclass('o_wsale_products_item_title')]" position="after">
             <div t-if="product.barcode" class="text-muted small mt-1 font-monospace o_product_barcode">
                 <i class="fa fa-barcode me-1"/>
                 <span t-field="product.barcode"/>
             </div>
-                
-            <div t-if="product.brand_id" class="product_brand text-muted small">
-                <i class="fa fa-tag"/> <span t-field="product.brand_id.name"/>
-            </div>
-            
-            <!-- نمایش تعداد آفرها -->
-            <div class="product_offers small mt-1">
-                <span  class="badge badge-success me-1">
-                    <t t-esc="product.valid_offers_count"/> valid offers
-                </span>
-                <span  class="badge badge-secondary">
-                    <t t-esc="product.expired_offers_count"/> expired offers
-                </span>
-            </div>
-
         </xpath>
     </template>
 
     <!-- 3. External image for product card -->
      <!-- 1️⃣ استفاده از تصویر خارجی (image_url) برای PRIMARY و SECONDARY -->
-    <template id="custom_products_item_external_images"  inherit_id="website_sale.products_item"  name="External Image URL for Product Card"  priority="12">
+    <template id="custom_products_item_external_images" 
+              inherit_id="website_sale.products_item" 
+              name="External Image URL for Product Card"
+              priority="12">
         
         <!-- تصویر اصلی (Primary Image) -->
         <xpath expr="//span[hasclass('oe_product_image_img_wrapper_primary')]" position="replace">
@@ -93,8 +85,6 @@
                 </t>
             </span>
         </xpath>
-
-
     </template>
 
 

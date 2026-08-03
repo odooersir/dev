@@ -1,5 +1,6 @@
 /* ===== THEME VARIABLES ===== */
 :root {
+    /*--clx-primary:      #e63946;*/
     --clx-primary:      #BF1F1A;
     --clx-primary-dark: #c1121f;
     --clx-primary-glow: rgba(230, 57, 70, 0.25);
@@ -13,14 +14,6 @@
     --clx-btn-shadow:   0 4px 20px rgba(230, 57, 70, 0.3);
     --clx-radius:       12px;
     --clx-radius-sm:    8px;
-}
-
-/* ===== GLOBAL LINK RESET ===== */
-a {
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: none;
 }
 
 /* ===== ANNOUNCEMENT BAR ===== */
@@ -102,19 +95,6 @@ a:hover {
     color: #fff;
     transform: translateY(-2px);
 }
-
-/* ===== BRANDS BUTTON (RED) ===== */
-.clx-btn-brands {
-    background: var(--clx-primary);
-    color: #fff;
-    box-shadow: var(--clx-btn-shadow);
-}
-.clx-btn-brands:hover {
-    background: var(--clx-primary-dark);
-    color: #fff;
-    transform: translateY(-2px);
-}
-
 .clx-btn-outline {
     background: var(--clx-bg);
     color: var(--clx-dark);

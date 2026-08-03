@@ -5,7 +5,7 @@ from odoo.addons.website_sale.const import SHOP_PATH
 from werkzeug.exceptions import NotFound
 from odoo.addons.website.controllers.main import QueryURL
 from datetime import date
-from collections import defaultdict
+
 
 # ─── MOV Logic ────────────────────────────────────────────────────────────────
 def _compute_mov_violations(order_sudo):
@@ -88,7 +88,8 @@ class WebsiteSaleExtended(WebsiteSale):
 
         return values
 
-   
+
+
     # ─── Route: /shop/brand/<brand> ───────────────────────────────────────────
 
     @http.route([
@@ -98,11 +99,6 @@ class WebsiteSaleExtended(WebsiteSale):
     def shop_brand(self, brand, page=0, **post):
         request.session['shop_brand_id'] = brand.id
         request.session.pop('shop_offer_import', None)
-
-
-        # تنظیم مسیر سفارشی برای pagination
-        request._sbs_base_path = f'{SHOP_PATH}/brand/{self.env['ir.http']._slug(brand)}'
-
         return super().shop(page=page, **post)
 
     # ─── Route: /shop/offer/<import_number> ───────────────────────────────────
@@ -129,10 +125,6 @@ class WebsiteSaleExtended(WebsiteSale):
 
         request.session['shop_offer_import'] = normalized
         request.session.pop('shop_brand_id', None)
-
-
-         # تنظیم مسیر سفارشی برای pagination
-        request._sbs_base_path = f'{SHOP_PATH}/offer/{normalized}'
 
         return super().shop(page=page, search=search,
                             min_price=min_price, max_price=max_price, **post)
@@ -168,13 +160,10 @@ class WebsiteSaleExtended(WebsiteSale):
 
 
     #-----
-    def _get_shop_domain(self, search, category, attrib_values,
-                        min_price=0.0, max_price=0.0, **post):
+    def _get_shop_domain(self, search, category, attribute_value_dict, search_in_description=True):
+
         """اعمال فیلتر برند به domain محصولات"""
-        domain = super()._get_shop_domain(
-            search, category, attrib_values,
-            min_price=min_price, max_price=max_price, **post
-        )
+        domain = super()._get_shop_domain( search, category, attribute_value_dict, search_in_description=True )
         
         brand_id = request.session.get('shop_brand_id')
         if brand_id:
@@ -203,92 +192,91 @@ class WebsiteSaleExtended(WebsiteSale):
         
         return result
 
-    @staticmethod
-    def _get_shop_path(category=None, page=0):
-        sbs_path = getattr(request, '_sbs_base_path', None)
-        if sbs_path and not category:
-            path = sbs_path
-            if page:
-                path += f'/page/{page}'
-            return path
-        return WebsiteSale._get_shop_path(category, page)
 
     #______________________________________________________________
-    @http.route(['/shop/brands', '/shop/brands/letter/<string:letter>'], 
-                type='http', auth='public', website=True, sitemap=False)
+    @http.route(
+        '/shop/brands',
+        type='http',
+        auth='public',
+        website=True,
+    )
     def product_brands(self, search='', letter='', **post):
-        """نمایش برندهایی که آفر فعال دارند با تعداد آفر و محصول"""
-        
-        SbsData = request.env['sbs.data'].sudo()
-        Brand = request.env['product.brand'].sudo()
-        
-        # ─── محاسبه تعداد آفرها و محصولات با read_group ───
-        # تعداد import_number یونیک (آفرها)
-        offer_data = SbsData.read_group(
-            domain=[('brand_id', '!=', False), ('import_number', '!=', False)],
-            fields=['brand_id'],
-            groupby=['brand_id', 'import_number'],
-            lazy=False
-        )
-        
+        from collections import defaultdict
+
+        # ─── برندهایی که آفر فعال دارند ───
+        sbs_records = request.env['sbs.data'].sudo().search([
+            ('brand_id', '!=', False),
+            ('is_expired', '=', False),
+        ])
+
+        # تعداد آفر هر برند
         brand_offer_count = {}
-        for item in offer_data:
-            bid = item['brand_id'][0] if item['brand_id'] else None
-            if bid:
-                brand_offer_count[bid] = brand_offer_count.get(bid, 0) + 1
-        
-        # تعداد product_id یونیک (محصولات)
-        product_data = SbsData.read_group(
-            domain=[('brand_id', '!=', False), ('product_id', '!=', False)],
-            fields=['brand_id'],
-            groupby=['brand_id', 'product_id'],
-            lazy=False
-        )
-        
-        brand_product_count = {}
-        for item in product_data:
-            bid = item['brand_id'][0] if item['brand_id'] else None
-            if bid:
-                brand_product_count[bid] = brand_product_count.get(bid, 0) + 1
-        
-        # ─── فیلتر برندها ───
-        sbs_brand_ids = list(set(brand_offer_count.keys()) | set(brand_product_count.keys()))
-        
+        for rec in sbs_records:
+            bid = rec.brand_id.id
+            brand_offer_count[bid] = brand_offer_count.get(bid, 0) + 1
+
+        sbs_brand_ids = list(brand_offer_count.keys())
+
         if not sbs_brand_ids:
-            return request.render('oe_custom_website.product_brands', {
-                'brands_by_letter': {},
-                'alphabet': list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
-                'active_letters': set(),
-                'brand_offer_count': {},
-                'brand_product_count': {},
-                'current_letter': letter,
-                'search': search,
-            })
-        
-        domain = [('id', 'in', sbs_brand_ids), ('active', '=', True)]
+            return request.render(
+                'oe_custom_website.product_brands',
+                {
+                    'brands_by_letter': {},
+                    'alphabet'        : list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                    'active_letters'  : set(),
+                    'brand_offer_count': {},
+                    'current_letter'  : letter,
+                    'search'          : search,
+                }
+            )
+
+        domain = [
+            ('id', 'in', sbs_brand_ids),
+            ('active', '=', True),
+        ]
         if search:
-            domain.append(('name', 'ilike', search))
-        
-        all_brands = Brand.search(domain, order='name asc')
-        
+            domain += [('name', 'ilike', search)]
+
+        all_brands = request.env['product.brand'].sudo().search(
+            domain, order='name asc'
+        )
+
         # ─── گروه‌بندی بر اساس حرف اول ───
         brands_by_letter = defaultdict(list)
         for brand in all_brands:
             first_char = (brand.name or '#')[0].upper()
             key = first_char if first_char.isalpha() else '0-9'
             brands_by_letter[key].append(brand)
-        
-        return request.render('oe_custom_website.product_brands', {
-            'brands_by_letter': dict(brands_by_letter),
-            'alphabet': list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
-            'active_letters': set(brands_by_letter.keys()),
-            'brand_offer_count': brand_offer_count,
-            'brand_product_count': brand_product_count,
-            'current_letter': letter,
-            'search': search,
-        })
 
-    #_____________________________________________________________________________
+        # تعداد محصولات هر برند از product.template
+        brand_product_count = {}
+        if all_brands:
+            product_data = request.env['product.template'].sudo().read_group(
+                domain=[
+                    ('brand_id', 'in', all_brands.ids),
+                    ('active', '=', True),
+                ],
+                fields=['brand_id'],
+                groupby=['brand_id'],
+            )
+            for row in product_data:
+                bid = row['brand_id'][0]
+                brand_product_count[bid] = row['brand_id_count']
+
+        values = {
+            'brands_by_letter'  : dict(brands_by_letter),
+            'alphabet'          : list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+            'active_letters'    : set(brands_by_letter.keys()),
+            'brand_offer_count' : brand_offer_count,
+            'brand_product_count': brand_product_count,
+            'current_letter'    : letter,
+            'search'            : search,
+        }
+
+        return request.render(
+            'oe_custom_website.product_brands', values
+        )
+
     @http.route([
         '/shop/brand/<int:brand_id>/offers',
     ], type='http', auth='public', website=True)
@@ -303,7 +291,7 @@ class WebsiteSaleExtended(WebsiteSale):
         # واکشی آفرهای فعال این برند - بدون supplier
         offers = request.env['sbs.data'].sudo().search([
             ('brand_id', '=', brand_id),
-           # ('is_expired', '=', False),
+            ('is_expired', '=', False),
         ], order='import_date desc')
 
         # گروه‌بندی بر اساس import_number (هر import_number = یک آفر)
@@ -331,96 +319,6 @@ class WebsiteSaleExtended(WebsiteSale):
 
         return request.render('oe_custom_website.brand_offers', {
             'brand': brand,
-            'grouped_offers': grouped_offers,
-            'today': date.today(),
-        })
-
-
-#---------------------------------------------------------------------------------------------------------
-
-
-
-    @http.route('/shop/categories', type='http', auth='public', website=True)
-    def product_categories(self, **kwargs):
-        Category = request.env['product.public.category'].sudo()
-        SbsData = request.env['sbs.data']
-        
-        # همه کتگوری‌های سطح اول
-        root_categories = Category.search([('parent_id', '=', False)], order='sequence, name')
-        
-        # محاسبه تعداد محصولات و آفرها برای همه کتگوری‌ها
-        category_data = {}
-        all_categories = Category.search([])
-        
-        for cat in all_categories:
-            # محصولات یونیک از طریق product_id.public_categ_ids
-            sbs_records = SbsData.search([('product_id.public_categ_ids', 'in', [cat.id])])
-            unique_products = len(set(sbs_records.mapped('product_id.id')))
-            
-            # آفرهای یونیک
-            unique_offers = len(set(sbs_records.mapped('import_number')))
-            
-            category_data[cat.id] = {
-                'products': unique_products,
-                'offers': unique_offers,
-            }
-        
-        return request.render('oe_custom_website.product_categories', {
-            'root_categories': root_categories,
-            'category_data': category_data,
-        })
-
-
-    @http.route('/shop/category/<int:category_id>/offers', type='http', auth='public', website=True)
-    def category_offers(self, category_id, **kwargs):
-        Category = request.env['product.public.category']
-        SbsData = request.env['sbs.data']
-        
-        category = Category.browse(category_id)
-        if not category.exists():
-            return request.not_found()
-        
-        # آفرهای مرتبط با این کتگوری
-        sbs_records = SbsData.search([
-            ('product_id.public_categ_ids', 'in', [category_id])
-        ])
-        
-        # گروه‌بندی بر اساس import_number
-        offers_dict = {}
-        for rec in sbs_records:
-            key = rec.import_number
-            if key not in offers_dict:
-                offers_dict[key] = {
-                    'import_number': rec.import_number,
-                    'end_date': rec.end_date,
-                    'moq': rec.moq,
-                    'mov': rec.mov,
-                    'incoterms': rec.incoterms,
-                    't1_t2': rec.t1_t2,
-                    'payment_term': rec.payment_term,
-                    'lead_time': rec.lead_time,
-                    'product_ids': set()
-                }
-            offers_dict[key]['product_ids'].add(rec.product_id.id)
-        
-        grouped_offers = []
-        for offer in offers_dict.values():
-            grouped_offers.append({
-                'import_number': offer['import_number'],
-                'end_date': offer['end_date'],
-                'moq': offer['moq'],
-                'mov': offer['mov'],
-                'incoterms': offer['incoterms'],
-                't1_t2': offer['t1_t2'],
-                'payment_term': offer['payment_term'],
-                'lead_time': offer['lead_time'],
-                'product_count': len(offer['product_ids']),
-            })
-        
-        grouped_offers.sort(key=lambda x: x['import_number'], reverse=True)
-        
-        return request.render('oe_custom_website.category_offers', {
-            'category': category,
             'grouped_offers': grouped_offers,
             'today': date.today(),
         })

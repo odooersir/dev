@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       
+    <!-- وراثت ویوی فرم -->
+    <record id="view_country_form_inherit" model="ir.ui.view">
+        <field name="name">res.country.form.inherit</field>
+        <field name="model">res.country</field>
+        <field name="inherit_id" ref="base.view_country_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="code3"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- وراثت ویوی لیست (Tree) -->
+    <record id="view_country_tree_inherit" model="ir.ui.view">
+        <field name="name">res.country.tree.inherit.</field>
+        <field name="model">res.country</field>
+        <field name="inherit_id" ref="base.view_country_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="code3"/>
+            </xpath>
+        </field>
+    </record>
+
+    </data>
+</odoo>

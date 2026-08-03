@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+  <record id="syn_ean_col_barcode" model="sbs.field.synonym">
+    <field name="field_key">ean_col</field>
+    <field name="synonym">barcode</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_ean_col_ean" model="sbs.field.synonym">
+    <field name="field_key">ean_col</field>
+    <field name="synonym">ean</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_ean_col_gtin" model="sbs.field.synonym">
+    <field name="field_key">ean_col</field>
+    <field name="synonym">gtin</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_ean_col_ean13" model="sbs.field.synonym">
+    <field name="field_key">ean_col</field>
+    <field name="synonym">ean13</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_ean_col_bar_code" model="sbs.field.synonym">
+    <field name="field_key">ean_col</field>
+    <field name="synonym">bar code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_hs_code_col_hs_code" model="sbs.field.synonym">
+    <field name="field_key">hs_code_col</field>
+    <field name="synonym">hs code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_hs_code_col_hs" model="sbs.field.synonym">
+    <field name="field_key">hs_code_col</field>
+    <field name="synonym">hs</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_hs_code_col_tariff" model="sbs.field.synonym">
+    <field name="field_key">hs_code_col</field>
+    <field name="synonym">tariff</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_hs_code_col_hscode" model="sbs.field.synonym">
+    <field name="field_key">hs_code_col</field>
+    <field name="synonym">hscode</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_hs_code_col_commodity_code" model="sbs.field.synonym">
+    <field name="field_key">hs_code_col</field>
+    <field name="synonym">commodity code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_language" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">language</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_languages" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">languages</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_cover_language" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">cover language</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_pack_language" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">pack language</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_lang" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">lang</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_cover_language_col_languages_on_pack" model="sbs.field.synonym">
+    <field name="field_key">cover_language_col</field>
+    <field name="synonym">languages on pack</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_description" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">description</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_product_name" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">product name</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_item_name" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">item name</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_article" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">article</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_desc" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">desc</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_product" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">product</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_product_name_col_name" model="sbs.field.synonym">
+    <field name="field_key">product_name_col</field>
+    <field name="synonym">name</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_price_col_price" model="sbs.field.synonym">
+    <field name="field_key">price_col</field>
+    <field name="synonym">price</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_price_col_unit_price" model="sbs.field.synonym">
+    <field name="field_key">price_col</field>
+    <field name="synonym">unit price</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_price_col_cost" model="sbs.field.synonym">
+    <field name="field_key">price_col</field>
+    <field name="synonym">cost</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_price_col_net_price" model="sbs.field.synonym">
+    <field name="field_key">price_col</field>
+    <field name="synonym">net price</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_price_col_ppu" model="sbs.field.synonym">
+    <field name="field_key">price_col</field>
+    <field name="synonym">ppu</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_supplier_code" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">supplier code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_vendor_code" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">vendor code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_sku" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">sku</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_item_code" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">item code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_ref" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">ref</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_reference" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">reference</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_supplier_code_col_article_code" model="sbs.field.synonym">
+    <field name="field_key">supplier_code_col</field>
+    <field name="synonym">article code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_brand_col_brand" model="sbs.field.synonym">
+    <field name="field_key">brand_col</field>
+    <field name="synonym">brand</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_size_col_size" model="sbs.field.synonym">
+    <field name="field_key">size_col</field>
+    <field name="synonym">size</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_size_col_volume" model="sbs.field.synonym">
+    <field name="field_key">size_col</field>
+    <field name="synonym">volume</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_size_col_content" model="sbs.field.synonym">
+    <field name="field_key">size_col</field>
+    <field name="synonym">content</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_size_col_ml" model="sbs.field.synonym">
+    <field name="field_key">size_col</field>
+    <field name="synonym">ml</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_case_pack" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">case pack</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_case_size" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">case size</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_carton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">carton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_units_per_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">units per case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_ctn" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">ctn</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_pcspercarton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">pcspercarton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_pcs_per_carton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">pcs per carton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_pieces_per_carton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">pieces per carton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_units_per_carton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">units per carton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_pcs_carton" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">pcs/carton</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_unit_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">unit/case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_units_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">units/case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_unit_per_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">unit per case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_u_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">u/case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_pcs_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">pcs/case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_case_size_col_qty_case" model="sbs.field.synonym">
+    <field name="field_key">case_size_col</field>
+    <field name="synonym">qty/case</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_ti" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">ti</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_case_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">case/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_cases_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">cases/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_case_per_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">case per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_cases_per_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">cases per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_ctn_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">ctn/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_carton_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">carton/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_layer_col_cartons_per_layer" model="sbs.field.synonym">
+    <field name="field_key">layer_col</field>
+    <field name="synonym">cartons per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_hi" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">hi</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_ctnperpallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">ctnperpallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_ctn_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">ctn per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_cartons_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">cartons per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_cases_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">cases per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_cases_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">cases/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_ctn_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">ctn/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_case_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">case/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_case_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">case per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_pallet_col_carton_pallet" model="sbs.field.synonym">
+    <field name="field_key">pallet_col</field>
+    <field name="synonym">carton/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_available_qty_col_stock" model="sbs.field.synonym">
+    <field name="field_key">available_qty_col</field>
+    <field name="synonym">stock</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_available_qty_col_qty" model="sbs.field.synonym">
+    <field name="field_key">available_qty_col</field>
+    <field name="synonym">qty</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_available_qty_col_quantity" model="sbs.field.synonym">
+    <field name="field_key">available_qty_col</field>
+    <field name="synonym">quantity</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_available_qty_col_available" model="sbs.field.synonym">
+    <field name="field_key">available_qty_col</field>
+    <field name="synonym">available</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_available_qty_col_availability" model="sbs.field.synonym">
+    <field name="field_key">available_qty_col</field>
+    <field name="synonym">availability</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_unit_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">unit/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_units_per_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">units per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_unit_per_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">unit per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_u_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">u/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_units_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">units/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_pcs_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">pcs/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_pcs_per_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">pcs per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_pieces_per_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">pieces per layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_layer_col_qty_layer" model="sbs.field.synonym">
+    <field name="field_key">unit_per_layer_col</field>
+    <field name="synonym">qty/layer</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_unit_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">unit/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_units_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">units per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_unit_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">unit per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_u_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">u/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_units_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">units/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_pcs_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">pcs/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_pcs_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">pcs per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_pieces_per_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">pieces per pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_unit_per_pallet_col_qty_pallet" model="sbs.field.synonym">
+    <field name="field_key">unit_per_pallet_col</field>
+    <field name="synonym">qty/pallet</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_moq_col_moq" model="sbs.field.synonym">
+    <field name="field_key">moq_col</field>
+    <field name="synonym">moq</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_moq_col_minimum_order_quantity" model="sbs.field.synonym">
+    <field name="field_key">moq_col</field>
+    <field name="synonym">minimum order quantity</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_moq_col_min_order_qty" model="sbs.field.synonym">
+    <field name="field_key">moq_col</field>
+    <field name="synonym">min order qty</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_moq_col_min_order" model="sbs.field.synonym">
+    <field name="field_key">moq_col</field>
+    <field name="synonym">min order</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_mov_col_mov" model="sbs.field.synonym">
+    <field name="field_key">mov_col</field>
+    <field name="synonym">mov</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_mov_col_minimum_order_value" model="sbs.field.synonym">
+    <field name="field_key">mov_col</field>
+    <field name="synonym">minimum order value</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_mov_col_min_order_value" model="sbs.field.synonym">
+    <field name="field_key">mov_col</field>
+    <field name="synonym">min order value</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_payment_terms_col_payment_terms" model="sbs.field.synonym">
+    <field name="field_key">payment_terms_col</field>
+    <field name="synonym">payment terms</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_payment_terms_col_payment" model="sbs.field.synonym">
+    <field name="field_key">payment_terms_col</field>
+    <field name="synonym">payment</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_payment_terms_col_terms" model="sbs.field.synonym">
+    <field name="field_key">payment_terms_col</field>
+    <field name="synonym">terms</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_incoterms_col_incoterms" model="sbs.field.synonym">
+    <field name="field_key">incoterms_col</field>
+    <field name="synonym">incoterms</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_incoterms_col_incoterm" model="sbs.field.synonym">
+    <field name="field_key">incoterms_col</field>
+    <field name="synonym">incoterm</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_incoterms_col_delivery_terms" model="sbs.field.synonym">
+    <field name="field_key">incoterms_col</field>
+    <field name="synonym">delivery terms</field>
+    <field name="source">system</field>
+  </record>
+  <!-- t1_t2_col is gone: customs status is offer-level metadata now, not a
+       mapped column. Its place in the column mapper is taken by the batch code. -->
+  <record id="syn_batch_code_col_batch" model="sbs.field.synonym">
+    <field name="field_key">batch_code_col</field>
+    <field name="synonym">batch</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_batch_code_col_batch_code" model="sbs.field.synonym">
+    <field name="field_key">batch_code_col</field>
+    <field name="synonym">batch code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_batch_code_col_batch_no" model="sbs.field.synonym">
+    <field name="field_key">batch_code_col</field>
+    <field name="synonym">batch no</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_batch_code_col_lot" model="sbs.field.synonym">
+    <field name="field_key">batch_code_col</field>
+    <field name="synonym">lot</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_batch_code_col_lot_code" model="sbs.field.synonym">
+    <field name="field_key">batch_code_col</field>
+    <field name="synonym">lot code</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_coo_col_country_of_origin" model="sbs.field.synonym">
+    <field name="field_key">coo_col</field>
+    <field name="synonym">country of origin</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_coo_col_coo" model="sbs.field.synonym">
+    <field name="field_key">coo_col</field>
+    <field name="synonym">coo</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_coo_col_origin" model="sbs.field.synonym">
+    <field name="field_key">coo_col</field>
+    <field name="synonym">origin</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_coo_col_made_in" model="sbs.field.synonym">
+    <field name="field_key">coo_col</field>
+    <field name="synonym">made in</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_lead_time_col_lead_time" model="sbs.field.synonym">
+    <field name="field_key">lead_time_col</field>
+    <field name="synonym">lead time</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_lead_time_col_leadtime" model="sbs.field.synonym">
+    <field name="field_key">lead_time_col</field>
+    <field name="synonym">leadtime</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_lead_time_col_delivery_time" model="sbs.field.synonym">
+    <field name="field_key">lead_time_col</field>
+    <field name="synonym">delivery time</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_note_col_note" model="sbs.field.synonym">
+    <field name="field_key">note_col</field>
+    <field name="synonym">note</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_note_col_notes" model="sbs.field.synonym">
+    <field name="field_key">note_col</field>
+    <field name="synonym">notes</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_note_col_remarks" model="sbs.field.synonym">
+    <field name="field_key">note_col</field>
+    <field name="synonym">remarks</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_note_col_remark" model="sbs.field.synonym">
+    <field name="field_key">note_col</field>
+    <field name="synonym">remark</field>
+    <field name="source">system</field>
+  </record>
+  <record id="syn_note_col_comment" model="sbs.field.synonym">
+    <field name="field_key">note_col</field>
+    <field name="synonym">comment</field>
+    <field name="source">system</field>
+  </record>
+
+</odoo>

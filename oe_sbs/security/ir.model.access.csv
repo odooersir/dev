@@ -14,15 +14,19 @@ access_sbs_cleanup_log_manager,sbs.cleanup.log.manager,model_sbs_cleanup_log,oe_
 
 access_sbs_data_public,sbs.data.public,model_sbs_data,base.group_public,1,0,0,0
 
-
 access_sbs_offer_list_user,access_sbs_offer_list_user,model_sbs_offer_list,base.group_user,1,1,1,1
 
-
 access_sbs_import_template_admin,sbs.import.template.admin,model_sbs_import_template,oe_sbs.group_sbs_admin,1,1,1,1
-
 access_sbs_import_template_purchase,sbs.import.template.purchase,model_sbs_import_template,group_sbs_purchase,1,1,1,1
-
 
 access_sbs_mov_term,sbs.mov.term.access,model_sbs_mov_term,base.group_user,1,1,1,1
 
+access_sbs_field_synonym_user,sbs.field.synonym.user,model_sbs_field_synonym,base.group_user,1,1,1,0
+access_sbs_field_synonym_editor,sbs.field.synonym.editor,model_sbs_field_synonym,oe_sbs.group_synonym_editor,1,1,1,1
 
+access_sbs_synonym_conflict_wizard_user,sbs.synonym.conflict.wizard.user,model_sbs_synonym_conflict_wizard,base.group_user,1,1,1,1
+access_sbs_synonym_conflict_wizard_editor,sbs.synonym.conflict.wizard.editor,model_sbs_synonym_conflict_wizard,oe_sbs.group_synonym_editor,1,1,1,1
+access_sbs_send_wizard_send,sbs.send.wizard.send,model_sbs_send_wizard,oe_sbs.group_sbs_send,1,1,1,1
+access_sbs_partner_offer_email_user,sbs.partner.offer.email.user,model_sbs_partner_offer_email,base.group_user,1,0,0,0
+access_sbs_partner_offer_email_send,sbs.partner.offer.email.send,model_sbs_partner_offer_email,oe_sbs.group_sbs_send,1,1,1,1
+access_sbs_partner_offer_email_admin,sbs.partner.offer.email.admin,model_sbs_partner_offer_email,oe_sbs.group_sbs_admin,1,1,1,1

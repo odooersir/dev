@@ -127,11 +127,27 @@
                         </t>
 
                         <!-- ردیف ۴: T1/T2 -->
-                        <t t-if="offer['t1_t2']">
+                        <t t-if="offer['t1']">
                             <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
                                 <i class="fa fa-globe text-muted" style="font-size:11px;"/>
-                                <span class="text-muted" style="font-size:11px;">T1/T2:</span>
-                                <span style="font-size:11px;" t-esc="offer['t1_t2']"/>
+                                <span class="text-muted" style="font-size:11px;">T1:</span>
+                                <span style="font-size:11px;" t-esc="offer['t1']"/>
+                            </div>
+                        </t>
+
+                        <t t-if="offer['t2']">
+                            <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                <i class="fa fa-globe text-muted" style="font-size:11px;"/>
+                                <span class="text-muted" style="font-size:11px;">T2:</span>
+                                <span style="font-size:11px;" t-esc="offer['t2']"/>
+                            </div>
+                        </t>
+
+                        <t t-if="offer['euro1']">
+                            <div class="mp-meta-row d-flex align-items-center gap-1 mb-1">
+                                <i class="fa fa-globe text-muted" style="font-size:11px;"/>
+                                <span class="text-muted" style="font-size:11px;">euro1:</span>
+                                <span style="font-size:11px;" t-esc="offer['euro1']"/>
                             </div>
                         </t>
 
@@ -235,152 +251,6 @@
 </template>
 
 
-
-<!-- ================================================================
-    TECHNICAL SPECIFICATIONS SECTION
-================================================================ -->
-<template id="product_technical_specs" name="Product Technical Specifications">
-    <t t-if="product.net_weight or product.height or product.width or product.depth or product.country_origin">
-        <div class="tech-specs-box my-4 p-3 border rounded bg-light">
-            <div class="tech-specs-header d-flex align-items-center gap-2 mb-3">
-                <i class="fa fa-info-circle text-primary" style="font-size:14px;"/>
-                <span class="fw-semibold" style="font-size:14px;">Technical Specifications</span>
-            </div>
-            
-            <div class="row g-2">
-                <t t-if="product.net_weight">
-                    <div class="col-6 col-md-4">
-                        <small class="text-muted d-block" style="font-size:11px;">Net Weight</small>
-                        <span style="font-size:13px;">
-                            <t t-esc="product.net_weight"/> 
-                            <t t-if="product.weight_unit" t-esc="product.weight_unit"/>
-                        </span>
-                    </div>
-                </t>
-                
-                <t t-if="product.height">
-                    <div class="col-6 col-md-4">
-                        <small class="text-muted d-block" style="font-size:11px;">Height</small>
-                        <span style="font-size:13px;">
-                            <t t-esc="product.height"/> 
-                            <t t-if="product.height_unit" t-esc="product.height_unit"/>
-                        </span>
-                    </div>
-                </t>
-                
-                <t t-if="product.width">
-                    <div class="col-6 col-md-4">
-                        <small class="text-muted d-block" style="font-size:11px;">Width</small>
-                        <span style="font-size:13px;">
-                            <t t-esc="product.width"/> 
-                            <t t-if="product.width_unit" t-esc="product.width_unit"/>
-                        </span>
-                    </div>
-                </t>
-                
-                <t t-if="product.depth">
-                    <div class="col-6 col-md-4">
-                        <small class="text-muted d-block" style="font-size:11px;">Depth</small>
-                        <span style="font-size:13px;">
-                            <t t-esc="product.depth"/> 
-                            <t t-if="product.depth_unit" t-esc="product.depth_unit"/>
-                        </span>
-                    </div>
-                </t>
-                
-                <t t-if="product.country_origin">
-                    <div class="col-6 col-md-4">
-                        <small class="text-muted d-block" style="font-size:11px;">Country of Origin</small>
-                        <span style="font-size:13px;" t-field="product.country_origin.name"/>
-                    </div>
-                </t>
-            </div>
-        </div>
-    </t>
-</template>
-
-<!-- ================================================================
-    PRICE HISTORY CHART SECTION
-================================================================ -->
-<template id="product_price_history" name="Product Price History Chart">
-    <t t-set="price_history" t-value="product.get_price_history()"/>
-    <t t-if="price_history and len(price_history) > 1">
-        <div class="price-history-box my-4 p-3 border rounded">
-            <div class="price-history-header d-flex align-items-center gap-2 mb-3">
-                <i class="fa fa-line-chart text-primary" style="font-size:14px;"/>
-                <span class="fw-semibold" style="font-size:14px;">Price History</span>
-            </div>
-            
-            <canvas id="priceHistoryChart" style="max-height: 300px;"/>
-            
-          <script type="text/javascript">
-    (function() {
-        function initChart() {
-            var priceData = [
-                <t t-foreach="price_history" t-as="item">
-                    {date: '<t t-esc="item['date']"/>', price: <t t-esc="item['price']"/>}<t t-if="not item_last">,</t>
-                </t>
-            ];
-            
-            var ctx = document.getElementById('priceHistoryChart');
-            if (!ctx) return;
-            
-            new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: priceData.map(d => d.date),
-                    datasets: [{
-                        label: 'Price (USD)',
-                        data: priceData.map(d => d.price),
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value.toFixed(2);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // اگه Chart.js لود شده، مستقیم اجرا کن
-        if (typeof Chart !== 'undefined') {
-            initChart();
-        } else {
-            // اگه نه، لود کن و بعد اجرا کن
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-            script.onload = initChart;
-            script.onerror = function() {
-                console.error('Failed to load Chart.js');
-            };
-            document.head.appendChild(script);
-        }
-    })();
-</script>
-
-
-
-
-        </div>
-    </t>
-</template>
-
         
     <!-- ========================================================================
     PRODUCT DETAIL PAGE MODIFICATIONS
@@ -421,9 +291,7 @@
             <!--  ADD BARCODE - After Product Name (Priority 10) -->
 
             <div class="product_barcode mt-2" t-if="product.barcode" style="font-size: 14px; color: #666;">
-                <strong>Barcode:</strong> <span t-field="product.barcode"/> <br/>
-                <strong>Brand:</strong> <span t-field="product.brand_id"/>
-
+                <strong>Barcode:</strong> <span t-field="product.barcode"/>
             </div>
 
         </xpath> 
@@ -433,15 +301,6 @@
             <t t-if="offers_data['count'] > 0">
                 <t t-call="oe_custom_website.marketplace_offers_section"/>
             </t>
-
-
-            <!-- اضافه کردن Technical Specs -->
-            <t t-call="oe_custom_website.product_technical_specs"/>
-            
-            <!-- اضافه کردن Price History Chart -->
-            <t t-call="oe_custom_website.product_price_history"/>
-
-
     </xpath>
 
       <!-- Replace default CTA wrapper with marketplace offers -->
@@ -453,23 +312,8 @@
 -->
     </template>
 
-  <template id="custom_cta_wrapper"   inherit_id="website_sale.cta_wrapper">
 
-        <xpath expr="//div[@id='o_wsale_cta_wrapper']" position="replace">
 
-             <div
-            id="o_wsale_cta_wrapper"
-            t-att-class="'d-flex flex-wrap align-items-center gap-2 mb-4' +
-                (' w-100 w-lg-auto' if is_50_pc else ' w-100') +
-                (' ' if not is_fullwidth_content and not is_view_active('website_sale.cta_wrapper_boxed') else ' ')"
-        >
-           
-          
-        </div>
-
-        </xpath>
-
-  </template>
 
 
 

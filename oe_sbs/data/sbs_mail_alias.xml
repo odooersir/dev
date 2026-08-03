@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+      Mail alias for incoming supplier files. Any email sent to
+      <alias_name>@<catchall-domain> creates a documents.document; our
+      message_new override routes it to the sender's supplier folder (or
+      'Unmatched'). Attachments are stored by the standard mail flow.
+
+      NOTE: set the actual local-part in Settings > Technical > Email > Aliases
+      or adjust alias_name below. The catch-all domain is the DB's mail domain.
+    -->
+    <record id="sbs_documents_alias" model="mail.alias">
+        <field name="alias_name">sbs</field>
+        <field name="alias_model_id" ref="documents.model_documents_document"/>
+        <!-- accept mail from anyone (suppliers are external senders) -->
+        <field name="alias_contact">everyone</field>
+    </record>
+
+</odoo>

@@ -2,7 +2,7 @@
 
 import re
 import logging
-from odoo import fields,models,api
+from odoo import models,api
 from odoo.http import request 
 from odoo.fields import Domain
 
@@ -40,42 +40,6 @@ def _parse_numeric(value, cast=float):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-
-      
-    valid_offers_count = fields.Integer(
-        string='Valid Offers',
-        store=True,
-        readonly=True,
-        help='Number of valid offers from SBS data'
-    )
-    
-    expired_offers_count = fields.Integer(
-        string='Expired Offers',
-        store=True,
-        readonly=True,
-        help='Number of expired offers from SBS data'
-    )
-   
-
-    @api.model
-    def _update_all_offers_count(self):
-        """Called by cron - bulk update using SQL"""
-        self.env.cr.execute("""
-            UPDATE product_template pt
-            SET 
-                valid_offers_count = COALESCE((
-                    SELECT COUNT(*) FROM sbs_data sd 
-                    WHERE sd.product_id = pt.id AND sd.is_expired = false
-                ), 0),
-                expired_offers_count = COALESCE((
-                    SELECT COUNT(*) FROM sbs_data sd 
-                    WHERE sd.product_id = pt.id AND sd.is_expired = true
-                ), 0)
-        """)
-        self.invalidate_cache(['valid_offers_count', 'expired_offers_count'])
-        return True
-
-
     def get_marketplace_offers(self):
         self.ensure_one()
 
@@ -94,7 +58,9 @@ class ProductTemplate(models.Model):
                     sd.moq::text                                        AS moq_raw,
                     COALESCE(sd.lead_time,   '')                        AS lead_time,
                     COALESCE(sd.incoterms,   '')                        AS incoterms,
-                    COALESCE(sd.t1_t2,       '')                        AS t1_t2,
+                    COALESCE(sd.t1,       '')                           AS t1,
+                    COALESCE(sd.t2,       '')                           AS t2, 
+                    COALESCE(sd.euro1,       '')                        AS euro1,
                     sd.rank,
                     COALESCE(sd.case_size, 1)                           AS case_size,
                     sd.uom_id,
@@ -105,13 +71,13 @@ class ProductTemplate(models.Model):
                 LEFT JOIN uom_uom u ON u.id = sd.uom_id
                 WHERE sd.ean           = %s
                 AND sd.selling_price > 0
-               /* AND (
+                AND (
                     sd.is_expired = FALSE
                     OR (
                         sd.is_expired = TRUE
-                        AND sd.end_date >= (CURRENT_DATE - INTERVAL '24 months')
+                        AND sd.end_date >= (CURRENT_DATE - INTERVAL '3 months')
                     )
-                )*/
+                )
                 ORDER BY
                     import_number,
                     sd.is_expired   ASC,
@@ -305,23 +271,3 @@ class ProductTemplate(models.Model):
 
         return result
 
-    @api.model
-    def get_price_history(self):
-        """Return price history from sbs_data offers"""
-        sbs_data = self.env['sbs.data'].search([
-            ('ean', '=', self.barcode),
-            ('selling_price', '>', 0)
-        ], order='import_date asc')
-        
-        history = []
-        for record in sbs_data:
-            history.append({
-                'date': record.import_date.strftime('%Y-%m-%d'),
-                'price': record.selling_price,
-                'import_number': record.import_number
-            })
-        
-        #print ("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-        #print (history)
-
-        return history

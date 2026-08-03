@@ -1,0 +1,516 @@
+{
+  "072226_First_Aid_Beauty_OFFER.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "MOV cell is '5KUSD' - the k glued to the currency word. Under the old \\b rule this parsed as 5 and the export showed 1,000.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW HONGKONG",
+      "lead_time": "3 Weeks",
+      "moq_raw": null,
+      "mov_amount": 5000.0,
+      "payment_term": "30% T/T in advance (deposit)",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "E",
+      "brand_col": "B",
+      "ean_col": "C",
+      "header_row": 10,
+      "price_col": "F",
+      "product_name_col": "D"
+    }
+  },
+  "072826_Biologique_Recherche_OFFER.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW HONGKONG",
+      "lead_time": "8 Weeks",
+      "moq_raw": null,
+      "mov_amount": 20000.0,
+      "payment_term": "20% T/T in advance (deposit)",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "B",
+      "ean_col": "E",
+      "header_row": 10,
+      "price_col": "G",
+      "product_name_col": "F"
+    }
+  },
+  "ALB_Wholesale_Limited_Offer_Sheet_-_27-07-2026.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "no MOQ/MOV stated in the file",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "2 Weeks",
+      "moq_raw": null,
+      "mov_amount": null,
+      "payment_term": "30% advance and 70% before laoding.",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "case_price_col": "E",
+      "case_size_col": "J",
+      "ean_col": "B",
+      "header_row": 6,
+      "pallet_col": "H",
+      "price_col": "F",
+      "product_name_col": "C"
+    }
+  },
+  "Alfa_Global-Aug-1_-_EXW_USD_PCS.xlsx": {
+    "_mapping_source": "from the real Export Mapping (JSON)",
+    "_note": "'Incoterm: EXW USD PCS' names the price column, not a place - the currency and unit words are stripped so the result is a bare EXW rather than 'EXW: USD PCS'. The real place is in H3, 'EXW: Turkey'.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW USD PCS",
+      "lead_time": "2 Weeks",
+      "moq_raw": "30 boxes of each",
+      "mov_amount": null,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "E",
+      "case_size_col": "F",
+      "ean_col": "B",
+      "header_row": 1,
+      "price_col": "G",
+      "product_name_col": "D"
+    }
+  },
+  "Argon_Trading-Aug-1.xlsx": {
+    "_mapping_source": "from the real Export Mapping (JSON)",
+    "_note": "Conditions sit in column G, which the template ALSO maps as payment_terms_col. Mapped columns used to be table data unconditionally, hiding EXW / lead time / MOQ entirely. 'MOQ 7 K Euro' is monetary so it becomes the MOV.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Dortmund Germany",
+      "lead_time": "3 Weeks",
+      "moq_raw": null,
+      "mov_amount": 7000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "C",
+      "case_size_col": "D",
+      "ean_col": "A",
+      "header_row": 1,
+      "payment_terms_col": "G",
+      "price_col": "E",
+      "product_name_col": "B"
+    }
+  },
+  "Beauty_Care_Global-Jul-28.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW – Warsaw Poland",
+      "lead_time": "2 Weeks",
+      "moq_raw": null,
+      "mov_amount": null,
+      "payment_term": null,
+      "t1": null,
+      "t2": "yes"
+    },
+    "mapping": {
+      "available_qty_col": "E",
+      "brand_col": "C",
+      "ean_col": "A",
+      "header_row": 11,
+      "price_col": "F",
+      "product_name_col": "D"
+    }
+  },
+  "Beauty_Care_Global-Jul-31.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "Only condition in the file is 'All goods are fresh' in I2. No MOV, MOQ, lead time or incoterm is stated - the defaults firing is correct, not a parse failure.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": null,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "E",
+      "brand_col": "C",
+      "ean_col": "A",
+      "header_row": 1,
+      "price_col": "F",
+      "product_name_col": "D"
+    }
+  },
+  "Beautynet_Limited-Jul-28-1.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "lead_time 'Stock' has no number - pending a decision on what it should mean | A monetary MOQ is the minimum order VALUE and is stored as MOV, not MOQ. The previous expectation recorded the raw pre-resolution extraction, which is not what reaches sbs.data.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "Ex Works / Herkenbosch NL",
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": 5000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": "yes"
+    },
+    "mapping": {
+      "brand_col": "B",
+      "ean_col": "A",
+      "header_row": 12,
+      "price_col": "F",
+      "product_name_col": "C"
+    }
+  },
+  "Divine_Premier-Jul-28.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "1 Week",
+      "moq_raw": null,
+      "mov_amount": 3000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "F",
+      "ean_col": "D",
+      "header_row": 4,
+      "price_col": "G",
+      "product_name_col": "E"
+    }
+  },
+  "Dr_lamy-Aug-1-3.xlsx": {
+    "_mapping_source": "from the real Export Mapping (JSON)",
+    "_note": "A1 packs two statements onto one line separated by wide spacing: 'Trade Terms:  EXW HK        MOA:  5,000 USD'. Both must be read; before the split the incoterm swallowed the MOA label and the amount was lost.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW HK",
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": 5000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "F",
+      "brand_col": "A",
+      "ean_col": "B",
+      "header_row": 2,
+      "note_col": "H",
+      "price_col": "G",
+      "product_name_col": "D",
+      "supplier_code_col": "C"
+    }
+  },
+  "Drogeriestore24-Jul-31_-_Price.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "Sidebar in column I BELOW the header row and with no header of its own. MOQ is 'TAKE ALL'; before the fix the MOQ label adopted the payment-terms line below it.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "2 Weeks",
+      "moq_raw": "TAKE ALL",
+      "mov_amount": null,
+      "payment_term": "20% deposit",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "H",
+      "case_size_col": "E",
+      "ean_col": "C",
+      "header_row": 1,
+      "pallet_col": "F",
+      "price_col": "B",
+      "product_name_col": "A"
+    }
+  },
+  "GBS_Gillete_Stock_Offers_CC_July_26.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "lead time is a per-ROW column here; the offer-level value is derived later from the rows",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": 5000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "J",
+      "case_price_col": "E",
+      "case_size_col": "D",
+      "ean_col": "B",
+      "header_row": 7,
+      "lead_time_col": "I",
+      "pallet_col": "G",
+      "price_col": "F",
+      "product_name_col": "C"
+    }
+  },
+  "MOLTON_BROWN_1117_250528.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "'T1 - EXW NL / T2 - EXW Spain' offers BOTH statuses, so t1 and t2 are both yes. 'Orders in full boxes only' belongs in the note. | A monetary MOQ is the minimum order VALUE and is stored as MOV, not MOQ. The previous expectation recorded the raw pre-resolution extraction, which is not what reaches sbs.data.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "12 Weeks",
+      "moq_raw": null,
+      "mov_amount": 50000.0,
+      "payment_term": null,
+      "t1": "yes",
+      "t2": "yes"
+    },
+    "mapping": {
+      "case_size_col": "C",
+      "ean_col": "A",
+      "header_row": 8,
+      "price_col": "D",
+      "product_name_col": "B"
+    }
+  },
+  "MinMaxDeals-Jul-28-1.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Italy",
+      "lead_time": "6 Weeks",
+      "moq_raw": "5000 units",
+      "mov_amount": null,
+      "payment_term": "20%",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "ean_col": "A",
+      "header_row": 2,
+      "price_col": "D",
+      "product_name_col": "B",
+      "size_col": "C"
+    }
+  },
+  "MinMaxDeals-Jul-28-2.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Poland",
+      "lead_time": "5 Weeks",
+      "moq_raw": "5000 units",
+      "mov_amount": null,
+      "payment_term": "20%",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "case_size_col": "D",
+      "ean_col": "A",
+      "header_row": 2,
+      "price_col": "E",
+      "product_name_col": "C"
+    }
+  },
+  "Min_Max_Deals-Jul-29-3.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW New York",
+      "lead_time": "3 Weeks",
+      "moq_raw": "5000 units",
+      "mov_amount": null,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "case_size_col": "D",
+      "ean_col": "A",
+      "header_row": 2,
+      "price_col": "E",
+      "product_name_col": "B",
+      "size_col": "C"
+    }
+  },
+  "OF_920_VARIETY_ST_-_EU___CLEAN_29_07_2026.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "'MIN 15 K' is an MOV in shorthand; 'ETA 4/5 VIL' is a bare week range; 'EU + CLEAN' is EU Clean with a plus sign.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "5 Weeks",
+      "moq_raw": null,
+      "mov_amount": 15000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": "yes"
+    },
+    "mapping": {
+      "available_qty_col": "C",
+      "ean_col": "A",
+      "header_row": 9,
+      "price_col": "D",
+      "product_name_col": "B"
+    }
+  },
+  "PIXI_1241_270719_1_14.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "A monetary MOQ is the minimum order VALUE and is stored as MOV, not MOQ. The previous expectation recorded the raw pre-resolution extraction, which is not what reaches sbs.data.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "lead_time": "8 Weeks",
+      "moq_raw": null,
+      "mov_amount": 20000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "B2",
+      "ean_col": "A",
+      "header_row": 6,
+      "price_col": "D",
+      "product_name_col": "B"
+    }
+  },
+  "PSM_Vision_Limited-Jul-30.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "lead time not stated in the file",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Quoted Ex works UK",
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": 3000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "B",
+      "ean_col": "A",
+      "header_row": 10,
+      "price_col": "D",
+      "product_name_col": "C"
+    }
+  },
+  "Ready_Stock_2026_07_27.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "no lead time in the file; template lead_time_fixed should supply '3 Weeks' | A monetary MOQ is the minimum order VALUE and is stored as MOV, not MOQ. The previous expectation recorded the raw pre-resolution extraction, which is not what reaches sbs.data.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Our warehouse Hong Kong",
+      "lead_time": null,
+      "moq_raw": null,
+      "mov_amount": 6500.0,
+      "payment_term": "Full payment before shipment",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "D",
+      "ean_col": "A",
+      "header_row": 10,
+      "price_col": "F",
+      "product_name_col": "B"
+    }
+  },
+  "Rhode_take_all_20260727.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "MOQ is 'Take all'. The old expectation here was 'Leadtime: 2 weeks' - the MOQ label had adopted the line BELOW it because 'Take all' failed the numeric MOQ pattern. Fixed by _labels_another_field + a take-all pattern.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW Prices ExW New York, USA",
+      "lead_time": "2 Weeks",
+      "moq_raw": "Take all",
+      "mov_amount": null,
+      "payment_term": "30% deposit / balance payment before pickup",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "available_qty_col": "E",
+      "brand_col": "A",
+      "ean_col": "B",
+      "header_row": 2,
+      "price_col": "F",
+      "product_name_col": "C"
+    }
+  },
+  "Shiseido_XMAS_SETS_1017_130717.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "_note": "Brand cell C2 is 'SHISEIDO XMAS SETS' (a title, not a bare brand). Lead time is a MONTH, 'Delivery: October', measured to the end of that month; this expectation therefore MOVES with the calendar - see _weeks_until_month. | A monetary MOQ is the minimum order VALUE and is stored as MOV, not MOQ. The previous expectation recorded the raw pre-resolution extraction, which is not what reaches sbs.data.",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": null,
+      "moq_raw": null,
+      "mov_amount": 10000.0,
+      "payment_term": null,
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "C2",
+      "ean_col": "B",
+      "header_row": 6,
+      "price_col": "D",
+      "product_name_col": "C"
+    }
+  },
+  "Supernova_Trading_Limited-Jul-28-1.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW HONGKONG",
+      "lead_time": "6 Weeks",
+      "moq_raw": null,
+      "mov_amount": 20000.0,
+      "payment_term": "20% T/T in advance (deposit)",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "B",
+      "ean_col": "C",
+      "header_row": 10,
+      "price_col": "E",
+      "product_name_col": "D"
+    }
+  },
+  "Supernova_Trading_Limited-Jul-28-2.xlsx": {
+    "_mapping_source": "INFERRED - replace with the real export",
+    "expect": {
+      "euro1": null,
+      "incoterm_raw": "EXW HONGKONG",
+      "lead_time": "6 Weeks",
+      "moq_raw": null,
+      "mov_amount": 20000.0,
+      "payment_term": "20% T/T in advance (deposit)",
+      "t1": null,
+      "t2": null
+    },
+    "mapping": {
+      "brand_col": "B",
+      "ean_col": "C",
+      "header_row": 10,
+      "price_col": "E",
+      "product_name_col": "D"
+    }
+  }
+}

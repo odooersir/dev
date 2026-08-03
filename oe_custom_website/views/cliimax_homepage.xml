@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-lg-6 mt-4 mt-lg-0">
                                 <img class="clx-hero-img"
-                                     src="https://plus.unsplash.com/premium_vector-1721490840083-80c5678b6074?q=80&amp;w=800&amp;auto=format&amp;fit=crop"
+                                     src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&amp;q=80&amp;fit=crop"
                                      alt="Wholesale marketplace"/>
                             </div>
                         </div>
@@ -78,41 +78,41 @@
                             <p class="clx-section-sub">Over 1,000 trusted global brands</p>
                         </div>
                         <div class="clx-grid-brands">
-                            <a href="/shop/brand/loreal-13" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&amp;q=80&amp;fit=crop" alt="L'Oréal"/>
                                 <div class="clx-card-body"><h4>L'Oréal</h4></div>
                             </a>
-                            <a href="/shop/brand/nivea-35" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&amp;q=80&amp;fit=crop" alt="Nivea"/>
                                 <div class="clx-card-body"><h4>Nivea</h4></div>
                             </a>
-                            <a href="/shop/brand/dove-36" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1607006344380-b6775a0824a7?w=600&amp;q=80&amp;fit=crop" alt="Dove"/>
                                 <div class="clx-card-body"><h4>Dove</h4></div>
                             </a>
-                            <a href="/shop/brand/garnier-34" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&amp;q=80&amp;fit=crop" alt="Garnier"/>
                                 <div class="clx-card-body"><h4>Garnier</h4></div>
                             </a>
-                            <a href="/shop/brand/maybelline-2" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&amp;q=80&amp;fit=crop" alt="Maybelline"/>
                                 <div class="clx-card-body"><h4>Maybelline</h4></div>
                             </a>
-                            <a href="/shop/brand/estee-lauder-86" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&amp;q=80&amp;fit=crop" alt="Estée Lauder"/>
                                 <div class="clx-card-body"><h4>Estée Lauder</h4></div>
                             </a>
-                            <a href="/shop/brand/clinique-8" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&amp;q=80&amp;fit=crop" alt="Clinique"/>
                                 <div class="clx-card-body"><h4>Clinique</h4></div>
                             </a>
-                            <a href="/shop/brand/mac-137" class="clx-card clx-card-brand">
+                            <a href="#" class="clx-card clx-card-brand">
                                 <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&amp;q=80&amp;fit=crop" alt="MAC"/>
                                 <div class="clx-card-body"><h4>MAC</h4></div>
                             </a>
                         </div>
                         <div class="text-center mt-5">
-                            <a href="/shop/brands" class="clx-btn clx-btn-brands">
+                            <a href="/shop/brands" class="clx-btn clx-btn-outline">
                                 <i class="fa fa-th-large"></i> View All Brands
                             </a>
                         </div>
@@ -127,33 +127,33 @@
                             <p class="clx-section-sub">Explore our most sought-after product categories</p>
                         </div>
                         <div class="clx-grid-cats">
-                            <a href="/shop/category/health-skin-hair-nails-1097" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/skincare_popular.jpg" alt="Skincare"/>
+                            <a href="/shop?category=skincare" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&amp;q=80&amp;fit=crop" alt="Skincare"/>
                                 <div class="clx-card-body"><h3>Skincare</h3><p>150K+ products</p></div>
                             </a>
-                            <a href="/shop/category/none-category-fragrance-1402" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/fragrance_popular.jpg" alt="Fragrance"/>
+                            <a href="/shop?category=fragrance" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1541643600914-78b084683702?w=400&amp;q=80&amp;fit=crop" alt="Fragrance"/>
                                 <div class="clx-card-body"><h3>Fragrance</h3><p>80K+ products</p></div>
                             </a>
-                            <a href="/shop/category/hair-1068" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/haircare_popular.jpg" alt="Haircare"/>
+                            <a href="/shop?category=haircare" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1527799820374-87591a0919c4?w=400&amp;q=80&amp;fit=crop" alt="Haircare"/>
                                 <div class="clx-card-body"><h3>Haircare</h3><p>120K+ products</p></div>
                             </a>
-                            <a href="/shop/category/makeup-1060" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/makeup_catagory.jpg" alt="Makeup"/>
+                            <a href="/shop?category=makeup" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&amp;q=80&amp;fit=crop" alt="Makeup"/>
                                 <div class="clx-card-body"><h3>Makeup</h3><p>100K+ products</p></div>
                             </a>
-                            <a href="/shop/category/health-diet-lifestyle-wellness-1095" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/wellness_popular.jpg" alt="Wellness"/>
+                            <a href="/shop?category=wellness" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&amp;q=80&amp;fit=crop" alt="Wellness"/>
                                 <div class="clx-card-body"><h3>Wellness</h3><p>60K+ products</p></div>
                             </a>
-                            <a href="/shop/category/health-supplements-vitamins-1096" class="clx-card clx-card-cat">
-                                <img src="/oe_custom_website/static/src/img/suplement_popular.jpg" alt="Supplements"/>
+                            <a href="/shop?category=supplements" class="clx-card clx-card-cat">
+                                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&amp;q=80&amp;fit=crop" alt="Supplements"/>
                                 <div class="clx-card-body"><h3>Supplements</h3><p>90K+ products</p></div>
                             </a>
                         </div>
                         <div class="text-center mt-5">
-                            <a href="/shop/categories" class="clx-btn clx-btn-primary">
+                            <a href="/shop" class="clx-btn clx-btn-primary">
                                 <i class="fa fa-th"></i> View All Categories
                             </a>
                         </div>

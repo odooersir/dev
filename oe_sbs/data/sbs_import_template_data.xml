@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         
         <record id="sbs_default_import_template_itsme" model="sbs.import.template">
             <field name="name">Default Mapping</field>
@@ -25,7 +25,7 @@
             <field name="moq_col">M2</field>
             <field name="mov_col">N2</field>
             <field name="available_qty_col">O2</field>
-            <field name="t1_t2_col">Q2</field>
+            <field name="batch_code_col">Q2</field>
 
             <!-- فیلدهای اختیاری -->
             <field name="case_size_col">E2</field>

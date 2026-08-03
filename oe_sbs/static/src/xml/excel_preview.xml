@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="oe_sbs.ExcelPreviewField">
+        <div class="o_excel_preview" t-att-class="{ o_fullscreen: state.fullscreen }">
+            <div class="o_excel_toolbar mb-2 d-flex align-items-center gap-2">
+                <label class="btn btn-primary btn-sm mb-0">
+                    <i class="fa fa-file-excel-o me-1"/> Choose Excel file
+                    <input type="file" accept=".xlsx,.xls"
+                           class="d-none" t-on-change="onFileChange"/>
+                </label>
+                <button class="btn btn-secondary btn-sm" t-on-click="autoMap">
+                    <i class="fa fa-magic me-1"/> Auto-map
+                </button>
+                <span class="text-muted" style="font-size:12px;">
+                    Click a column letter (A, B, C…) to map it.
+                </span>
+                <button class="btn btn-light btn-sm ms-auto" t-on-click="toggleFullscreen">
+                    <i class="fa" t-att-class="state.fullscreen ? 'fa-compress' : 'fa-expand'"/>
+                </button>
+            </div>
+
+            <div t-if="state.error" class="alert alert-danger" t-esc="state.error"/>
+
+            <div t-if="state.sheets.length > 1" class="o_xlsx_tabs">
+                <t t-foreach="state.sheets" t-as="sheet" t-key="sheet_index">
+                    <span class="o_xlsx_tab"
+                          t-att-class="{ active: sheet_index === state.active }"
+                          t-on-click="() => this.selectSheet(sheet_index)"
+                          t-esc="sheet"/>
+                </t>
+            </div>
+
+            <div class="o_xlsx_scroll">
+                <div t-ref="grid"/>
+            </div>
+
+            <t t-if="state.menu">
+                <div class="o_xlsx_backdrop" t-on-click="closeMenu"/>
+                <div class="o_xlsx_menu"
+                     t-att-style="'left:' + state.menu.x + 'px; top:' + state.menu.y + 'px;'">
+                    <div class="o_xlsx_menu_head">
+                        Column <b t-esc="state.menu.letter"/> → map to:
+                    </div>
+                    <t t-foreach="fields" t-as="f" t-key="f.col">
+                        <div class="o_xlsx_menu_item"
+                             t-on-click="() => this.assignField(f)" t-esc="f.label"/>
+                    </t>
+                    <div class="o_xlsx_menu_item o_xlsx_clear"
+                         t-on-click="clearColumn">✕ Clear this column</div>
+                    <div class="o_xlsx_menu_item o_xlsx_cancel"
+                         t-on-click="closeMenu">Cancel</div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

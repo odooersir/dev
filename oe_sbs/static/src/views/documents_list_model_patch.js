@@ -152,5 +152,33 @@ patch(DocumentsListModel.prototype, {
                 await this._notifyChange();
             }
         },
+    
+        async onCreateTemplate() {
+            const records = this.targetRecords.filter((r) => r.data.active);
+            if (records.length !== 1) {
+                this.env.services.notification.add(
+                    _t("Please select exactly one document to create a template from."),
+                    { type: "warning" }
+                );
+                return;
+            }
+            try {
+                const action = await this.env.services.orm.call(
+                    "documents.document",
+                    "action_create_sbs_template",
+                    [[records[0].data.id]]
+                );
+                await this.env.services.action.doAction(action);
+            } catch (error) {
+                const detail = error?.data?.message || error?.message || _t("Unknown error");
+                this.env.services.notification.add(_t("Could not create template: ") + detail, {
+                    type: "danger",
+                    sticky: true,
+                });
+                console.error("Create template error:", error);
+            }
+        },
+    
+    
     }
 );

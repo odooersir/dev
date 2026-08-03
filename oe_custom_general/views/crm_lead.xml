@@ -34,5 +34,21 @@
             </field>
     </record>
 
+<!--
+     <record id="action_crm_lead_pool" model="ir.actions.act_window">
+            <field name="name">Lead Pool</field>
+            <field name="res_model">crm.lead</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <menuitem id="menu_crm_lead_pool"
+                  name="Lead Pool"
+                  parent="crm.crm_menu_leads"
+                  action="action_crm_lead_pool"
+                  sequence="99"/>
+
+        -->          
+
 
 </odoo>

@@ -10,6 +10,7 @@ from . import  product_product
 from . import  base_import
 from . import  product_brand
 from . import  crm_lead
+from . import  res_country
 
 def _post_init_assign_partner_codes(cr, registry):
     from odoo.api import Environment

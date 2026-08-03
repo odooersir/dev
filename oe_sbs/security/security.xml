@@ -22,4 +22,9 @@
 
 
 
+    <record id="group_synonym_editor" model="res.groups">
+        <field name="name">SBS Synonym Editor</field>
+        <field name="comment">Can review and approve auto-map synonym suggestions.</field>
+    </record>
+
 </odoo>

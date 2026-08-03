@@ -1,62 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="cliimax_footer" name="Cliimax Footer" inherit_id="website.layout">
+    <template id="cliimax_footer" name="Cliimax Footer"  inherit_id="website.layout">
         <xpath expr="//div[@id='footer']" position="replace">
             <div id="footer" class="cliimax-footer">
                 <div class="container">
-                    <div class="row pt-5 pb-0">
-
-                        <!-- Brand: col-lg-3 (was col-lg-4) -->
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <h3 class="footer-brand">Cliimax</h3>
+                    <div class="row py-5"><div class="col-lg-4 col-md-6 mb-4">
+                            <h3 class="footer-brand">Cliimax.ai</h3>
                             <p class="footer-description">
                                 The wholesale marketplace connecting verified suppliers with trusted buyers across health &amp; beauty.
                             </p>
                             <div class="footer-social mt-4">
-                                <a href="https://www.linkedin.com/company/cliimax" class="social-link"><i class="fa fa-linkedin"></i></a>
-                                <a href="https://www.instagram.com/cliimaxstar" class="social-link"><i class="fa fa-instagram"></i></a>
+                                <a href="#" class="social-link"><i class="fa fa-linkedin"></i></a>
+                                <a href="#" class="social-link"><i class="fa fa-twitter"></i></a>
+                                <a href="#" class="social-link"><i class="fa fa-instagram"></i></a>
                             </div>
                         </div>
 
-                        <!-- Platform: col-lg-2 (unchanged) -->
                         <div class="col-lg-2 col-md-6 mb-4">
                             <h4 class="footer-heading">Platform</h4>
                             <ul class="footer-links">
                                 <li><a href="/shop">Browse Products</a></li>
-                               <!-- <li><a href="/suppliers">Find Suppliers</a></li>
+                                <li><a href="/suppliers">Find Suppliers</a></li>
                                 <li><a href="/pricing">Pricing</a></li>
-                                <li><a href="/how-it-works">How It Works</a></li>-->
+                                <li><a href="/how-it-works">How It Works</a></li>
                             </ul>
                         </div>
 
-                        <!-- Company: col-lg-2 (unchanged) -->
                         <div class="col-lg-2 col-md-6 mb-4">
                             <h4 class="footer-heading">Company</h4>
                             <ul class="footer-links">
                                 <li><a href="/aboutus">About Us</a></li>
                                 <li><a href="/contactus">Contact</a></li>
-                             <!--   <li><a href="/careers">Careers</a></li> -->
+                                <li><a href="/careers">Careers</a></li>
                                 <li><a href="/blog">Blog</a></li>
                             </ul>
                         </div>
 
-                        <!-- Support: col-lg-2 (unchanged) -->
                         <div class="col-lg-2 col-md-6 mb-4">
                             <h4 class="footer-heading">Support</h4>
                             <ul class="footer-links">
-                               <!-- <li><a href="/help">Help Center</a></li> -->
+                                <li><a href="/help">Help Center</a></li>
                                 <li><a href="/terms">Terms of Service</a></li>
-                              <!--  <li><a href="/privacy">Privacy Policy</a></li>
-                                <li><a href="/faq">FAQ</a></li> -->
+                                <li><a href="/privacy">Privacy Policy</a></li>
+                                <li><a href="/faq">FAQ</a></li>
                             </ul>
                         </div>
 
-                        <!-- Contact: col-lg-3 (was col-lg-2) -->
-                        <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="col-lg-2 col-md-6 mb-4">
                             <h4 class="footer-heading">Contact</h4>
                             <ul class="footer-contact">
                                 <li><i class="fa fa-envelope"></i> info@cliimax.ai</li>
-                                <li><i class="fa fa-phone"></i> +971503001370</li>
+                                <li><i class="fa fa-phone"></i>+971503001370</li>
                             </ul>
                         </div>
 
@@ -66,7 +60,7 @@
                     <div class="footer-bottom py-4">
                         <div class="row align-items-center">
                             <div class="col-md-6 text-center text-md-start">
-                                <p class="mb-0">&copy; 2026 Cliimax.ai. All rights reserved.</p>
+                                <p class="mb-0">© 2026 Cliimax.ai. All rights reserved.</p>
                             </div>
                             <div class="col-md-6 text-center text-md-end">
                                 <p class="mb-0">Built for wholesale excellence</p>

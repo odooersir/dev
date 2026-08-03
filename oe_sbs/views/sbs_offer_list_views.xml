@@ -71,7 +71,9 @@
                             <field name="moq"/>
                             <field name="mov"/>
                             <field name="incoterms"/>
-                            <field name="t1_t2"/>
+                            <field name="t1"/>
+                            <field name="t2"/>
+                            <field name="euro1"/>
                             <field name="payment_term"/>
                             <field name="lead_time"/>
                         </group>

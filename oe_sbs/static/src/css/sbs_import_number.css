@@ -1,0 +1,24 @@
+/* ------------------------------------------------------------------
+   Import Number colouring (widget="import_number_color")
+   8 colours, all dark enough to stay readable on the white list
+   background and on the row-hover/selected shades.
+   ------------------------------------------------------------------ */
+.o_sbs_in {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.o_sbs_in_0 { color: #1565c0; }   /* blue    */
+.o_sbs_in_1 { color: #c62828; }   /* red     */
+.o_sbs_in_2 { color: #2e7d32; }   /* green   */
+.o_sbs_in_3 { color: #6a1b9a; }   /* purple  */
+.o_sbs_in_4 { color: #ef6c00; }   /* orange  */
+.o_sbs_in_5 { color: #00838f; }   /* teal    */
+.o_sbs_in_6 { color: #ad1457; }   /* magenta */
+.o_sbs_in_7 { color: #4e342e; }   /* brown   */
+
+/* keep the expired-row decoration readable: Odoo paints the whole row red,
+   so soften the import number rather than fighting it */
+.o_data_row.text-danger .o_sbs_in {
+    opacity: 0.85;
+}

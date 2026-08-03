@@ -1,0 +1,142 @@
+.o_excel_preview .o_xlsx_scroll {
+    height: 60vh; min-height: 320px; resize: vertical;
+    overflow: auto; border: 1px solid #b7b7b7; background: #fff;
+}
+.o_excel_preview.o_fullscreen {
+    position: fixed; inset: 0; z-index: 1055;
+    background: #fff; padding: 12px; margin: 0;
+    display: flex; flex-direction: column;
+}
+.o_excel_preview.o_fullscreen .o_xlsx_scroll {
+    height: auto; flex: 1 1 auto; resize: none;
+}
+.o_xlsx_grid {
+    border-collapse: collapse; font-size: 12px;
+    font-family: Calibri, "Segoe UI", sans-serif; table-layout: fixed;
+}
+.o_xlsx_grid th, .o_xlsx_grid td {
+    border: 1px solid #d4d4d4; padding: 2px 6px;
+    min-width: 90px; max-width: 280px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    vertical-align: middle;
+}
+.o_xlsx_colhead {
+    position: sticky; top: 0; z-index: 2;
+    background: #f2f2f2; color: #444; text-align: center; font-weight: 600;
+    cursor: pointer;
+}
+.o_xlsx_colhead:hover { background: #e2efda; }
+.o_xlsx_rowhead {
+    position: sticky; left: 0; z-index: 1;
+    min-width: 38px; max-width: 38px;
+    background: #f2f2f2; color: #444; text-align: center; font-weight: 600;
+}
+.o_xlsx_corner {
+    position: sticky; top: 0; left: 0; z-index: 3;
+    min-width: 38px; max-width: 38px; background: #e0e0e0;
+}
+.o_xlsx_num { text-align: right; font-variant-numeric: tabular-nums; }
+.o_xlsx_header_row td { background: #fff3cd; font-weight: 600; }
+.o_xlsx_badge {
+    font-size: 10px; font-weight: 600; color: #fff; background: #217346;
+    border-radius: 3px; padding: 0 4px; margin-top: 2px; white-space: nowrap;
+}
+.o_xlsx_tabs { display: flex; gap: 2px; margin-top: 4px; }
+.o_xlsx_tab {
+    padding: 2px 12px; cursor: pointer; font-size: 12px;
+    background: #f2f2f2; border: 1px solid #b7b7b7;
+    border-top: 2px solid transparent; border-radius: 0 0 4px 4px;
+}
+.o_xlsx_tab.active { background: #fff; font-weight: 600; border-top: 2px solid #217346; }
+.o_xlsx_backdrop { position: fixed; inset: 0; z-index: 1060; }
+.o_xlsx_menu {
+    position: fixed; z-index: 1061;
+    background: #fff; border: 1px solid #b7b7b7; border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    max-height: 320px; overflow: auto; min-width: 190px;
+}
+.o_xlsx_menu_head {
+    padding: 6px 10px; font-size: 12px;
+    background: #f2f2f2; border-bottom: 1px solid #ddd;
+}
+.o_xlsx_menu_item { padding: 5px 10px; font-size: 13px; cursor: pointer; }
+.o_xlsx_menu_item:hover { background: #e2efda; }
+.o_xlsx_clear { color: #b00020; border-top: 1px solid #eee; }
+.o_xlsx_cancel { color: #888; }
+
+
+/* Fixed height a bit shorter than the screen, so the bottom (horizontal)
+   scrollbar stays visible without scrolling the page */
+.o_excel_preview .o_xlsx_scroll {
+    height: calc(100vh - 400px);
+    min-height: 320px;
+    resize: vertical;        /* drag the bottom edge to fine-tune */
+    overflow: auto;
+    border: 1px solid #b7b7b7;
+    background: #fff;
+}
+
+/* Keep horizontal scrolling INSIDE the Excel box, so the top fields
+   never slide sideways with it. */
+.o_form_sheet [name='preview_file'],
+.o_excel_preview {
+    min-width: 0;
+    max-width: 100%;
+}
+.o_excel_preview .o_xlsx_scroll {
+    max-width: 100%;
+    overflow: auto;     /* both horizontal and vertical scroll live here */
+}
+
+
+
+ .o_form_sheet_bg { max-width: 100% !important ; }
+
+
+
+/* ------------------------------------------------------------------
+   Read-only Excel viewer (documents preview dialog)
+   Reuses the .o_xlsx_* grid styling; only the non-clickable column
+   header and the dialog sizing differ.
+   ------------------------------------------------------------------ */
+.o_xlsx_colhead_plain {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f2f2f2;
+    border: 1px solid #d0d0d0;
+    padding: 2px 6px;
+    font-weight: 600;
+    text-align: center;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* give the viewer room inside the dialog */
+.o_excel_viewer .o_xlsx_scroll {
+    max-height: 70vh;
+}
+.o_excel_viewer.o_fullscreen .o_xlsx_scroll {
+    max-height: calc(100vh - 90px);
+}
+
+/* multi-sheet stacked rendering: every sheet is drawn, one after another */
+.o_excel_viewer .o_xlsx_sheet + .o_xlsx_sheet {
+    margin-top: 18px;
+}
+.o_excel_viewer .o_xlsx_sheet_title {
+    position: sticky;
+    left: 0;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    background: #217346;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 3px 3px 0 0;
+    display: inline-block;
+}
+.o_excel_viewer .o_xlsx_more {
+    font-weight: 400;
+    opacity: 0.85;
+    font-size: 11px;
+}

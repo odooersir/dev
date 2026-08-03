@@ -3,289 +3,295 @@
 
 
         
-<record id="sbs_import_template_view_form" model="ir.ui.view">
-    <field name="name">sbs.import.template.view.form</field>
-    <field name="model">sbs.import.template</field>
-    <field name="arch" type="xml">
-        <form string="Import Template">
-            <sheet>
-                <div class="row">
-                    <!-- ستون سمت چپ: فرم اطلاعات -->
-                    <div class="col-md-6">
-                
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only"/>
-                            <h1>
-                                <field name="name" placeholder="e.g. Vendor A Template"/>
-                            </h1>
-                        </div>
+ <record id="sbs_import_template_view_form" model="ir.ui.view">
+        <field name="name">sbs.import.template.view.form</field>
+        <field name="model">sbs.import.template</field>
+        <field name="arch" type="xml">
+            <form string="Import Template">
+                <header>
+                    <button name="action_confirm" type="object"
+                            string="Confirm &amp; Learn" class="btn-primary"
+                            invisible="confirm"
+                            help="Confirm the mapping and save its headers to the dictionary. If a header conflicts with another field, a wizard lets you resolve it."/>
+                    <button name="action_reject" type="object"
+                            string="Reject" class="btn-secondary"
+                            invisible="not confirm"
+                            help="Unconfirm this template and remove its headers from the dictionary."/>
+                    <button name="action_export_mapping_json" type="object"
+                            string="Export Mapping (JSON)" class="btn-secondary"
+                            help="Download this mapping as JSON: which column and header
+                                  feeds each field, plus every fixed value. Attach it
+                                  alongside the .xlsx when reporting an import problem -
+                                  the same file parses differently under a different mapping."/>
+                </header>
+                <sheet>
 
+                    <!-- Title: serial name (read-only) -->
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>    
                         <group>
-                            <field name="active" widget="boolean_toggle"/>
-                            <field name="supplier_id" domain="[('is_company','=',True)]"/>
-                            <field name="sheet_name" placeholder="Leave empty for active sheet"/>
+                            <group>
+                              <!--  <field name="active" widget="boolean_toggle"/> -->
+                                <field name="supplier_id" domain="[('is_company','=',True)]"/>
+                                <field name="document_id"/>
+                                                                <field name="header_row"/>
+                                <field name="confirm" widget="boolean_toggle" readonly="1"
+                                       help="Confirmed status. Use 'Confirm &amp; Learn' to confirm (reviews conflicts) and 'Reject' to unconfirm and remove headers from the dictionary."/>
 
-                            <field name="header_row"/>
-                                                                
-                            <field name="currency_fixed_id" placeholder="Fixed Currency"/>
+                               
+                            </group>
+                            <group>
+                                <!--<field name="sheet_name" placeholder="Leave empty for active sheet"/>-->
+                           <!--     <field name="currency_fixed_id" placeholder="Fixed Currency" readonly="1"/> -->
 
-                            <field name="offer_validity_fixed"  placeholder="Fixed Days"/>
+                                <field name="offer_validity_fixed" placeholder="Fixed Days"/>
+                                <field name="mov_fixed" placeholder="Fixed MOV"/>
 
+                            </group>
                         </group>
 
-                        <!--  <group string="Template Signature">
-                            <field name="signature_cell" placeholder="e.g. A1"/>
-                            <field name="signature_text" placeholder="e.g. Order Form"/>
-                        </group> -->
+                        <group>
+                            <group>
+                                <field name="lead_time_fixed" placeholder="Fixed Lead Time"/>
+                                <label for="payment_terms_fixed"/>
+                                <!-- Field + a compact ICON button on one line.
+                                     A full-width text button wrapped onto the
+                                     next row on narrow screens and landed under
+                                     the Incoterms column; an icon button is
+                                     narrow enough to stay beside the box.
+                                     o_row is Odoo's own inline-field wrapper. -->
+                                <div class="o_row">
+                                    <field name="payment_terms_fixed" nolabel="1"
+                                           placeholder="e.g. 30% Deposit..."
+                                           class="oe_inline"/>
+                                    <button name="action_set_default_payment_term"
+                                            type="object" icon="fa-magic"
+                                            title="Use the default payment term"
+                                            aria-label="Use the default payment term"
+                                            class="btn btn-link p-0 ms-1"/>
+                                </div>
+                            </group>
+                            <group>
+                                <!-- Fixed Incoterms: moved up here to sit beside the
+                                     other fixes (MOV / Lead Time / Payment). The table's
+                                     Incoterms row keeps only its column/header mapping. -->
+                                <field name="incoterm_id" placeholder="Fixed Incoterm (e.g. EXW)"/>
+                                <field name="incoterm_country_id" placeholder="Incoterm Country"/>
+                                <field name="incoterm_city" placeholder="Incoterm City"/>
+                            </group>
+                        </group>
+                    </group>
 
-                        <notebook>
-                            <page string="Columns Mapping">
-                                <table class="table table-sm table-borderless" style="width: 100%;">
-                                    <thead>
-                                        <tr style="border-bottom: 2px solid #ccc;">
-                                            <th style="width: 20%;">SBS Fields</th>
-                                            <th style="width: 20%;">Column (e.g. A)</th>
-                                            <th style="width: 20%;">Expected Header</th>
-                                            <!-- <th style="width: 20%;">Type</th> -->
-                                            <th style="width: 20%;">Fixed Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Core Fields -->
-                                        <tr class="bg-light" style="border-bottom: 1px solid #eee;">
-                                            <td colspan="5" class="pt-3 pb-2"><strong>Core Fields</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Barcode</td>
-                                            <td><field name="ean_col" nolabel="1" placeholder="e.g. A" required="1"  /></td>
-                                            <td><field name="ean_header" nolabel="1" placeholder="e.g. Barcode"/></td>
-                                            <!-- <td><field name="ean_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        
-                                        <tr>
-                                            <td class="o_form_label">HS Code(Tariff)</td>
-                                            <td><field name="hs_code_col" nolabel="1" placeholder="e.g. H"/></td>
-                                            <td><field name="hs_code_header" nolabel="1" placeholder="e.g. HS Code"/></td>
-                                        </tr>
+                    <!-- ===== Section 2: full-width Excel mapping ===== -->
+                    <separator string="Excel Mapping"/>
+                    <field name="preview_file" widget="excel_preview" nolabel="1"/>
 
-                                        <tr>
-                                            <td class="o_form_label">Product Name</td>
-                                            <td><field name="product_name_col" nolabel="1" placeholder="e.g. B" required="1" /></td>
-                                            <td><field name="product_name_header" nolabel="1" placeholder="e.g. Description"/></td>
-                                            <!-- <td><field name="product_name_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Price</td>
-                                            <td><field name="price_col" nolabel="1" placeholder="e.g. C"/></td>
-                                            <td><field name="price_header" nolabel="1" placeholder="e.g. Price"/></td>
-                                            <!-- <td><field name="price_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Supplier Code</td>
-                                            <td><field name="supplier_code_col" nolabel="1" placeholder="e.g. D"/></td>
-                                            <td><field name="supplier_code_header" nolabel="1" placeholder="e.g. Vendor Code"/></td>
-                                            <!-- <td><field name="supplier_code_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Brand</td>
-                                            <td><field name="brand_col" nolabel="1" placeholder="e.g. E"/></td>
-                                            <td><field name="brand_header" nolabel="1" placeholder="e.g. Brand"/></td>
-                                            <!-- <td><field name="brand_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Size</td>
-                                            <td><field name="size_col" nolabel="1" placeholder="e.g. F"/></td>
-                                            <td><field name="size_header" nolabel="1" placeholder="e.g. Size"/></td>
-                                            <!-- <td><field name="size_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
+                    
+                    <!-- ===== Section 3: per-column mapping table ===== -->
+                    <notebook>
+                        <page string="Column Mapping">
+                            <table class="table table-sm table-borderless" style="width: 100%;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #ccc;">
+                                        <th style="width: 20%;">SBS Fields</th>
+                                        <th style="width: 20%;">Column (e.g. A)</th>
+                                        <th style="width: 20%;">Expected Header</th>
+                                        <th style="width: 20%;">Fixed Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                        <!-- Logistics -->
-                                        <tr class="bg-light" style="border-bottom: 1px solid #eee;">
-                                            <td colspan="5" class="pt-3 pb-2"><strong>Logistics</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Case Size</td>
-                                            <td><field name="case_size_col" nolabel="1" placeholder="e.g. G"/></td>
-                                            <td><field name="case_size_header" nolabel="1" placeholder="e.g. Case Pack"/></td>
-                                            <!-- <td><field name="case_size_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Layer</td>
-                                            <td><field name="layer_col" nolabel="1" placeholder="e.g. H"/></td>
-                                            <td><field name="layer_header" nolabel="1" placeholder="e.g. Ti"/></td>
-                                            <!-- <td><field name="layer_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Pallet</td>
-                                            <td><field name="pallet_col" nolabel="1" placeholder="e.g. I"/></td>
-                                            <td><field name="pallet_header" nolabel="1" placeholder="e.g. Hi"/></td>
-                                            <!-- <td><field name="pallet_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Available Qty</td>
-                                            <td><field name="available_qty_col" nolabel="1" placeholder="e.g. J"/></td>
-                                            <td><field name="available_qty_header" nolabel="1" placeholder="e.g. Stock"/></td>
-                                            <!-- <td><field name="available_qty_type" nolabel="1"/></td> -->
-                                            <td></td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td class="o_form_label">Unit/Layer</td>
-                                            <td><field name="unit_per_layer_col" nolabel="1" placeholder="e.g. F"/></td>
-                                            <td><field name="unit_per_layer_header" nolabel="1" placeholder="e.g. Unit/Layer"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Unit/Pallet</td>
-                                            <td><field name="unit_per_pallet_col" nolabel="1" placeholder="e.g. G"/></td>
-                                            <td><field name="unit_per_pallet_header" nolabel="1" placeholder="e.g. Unit/Pallet"/></td>
-                                        </tr>
-                                    
-
-                                        <!-- Commercial Terms -->
-                                        <tr class="bg-light" style="border-bottom: 1px solid #eee;">
-                                            <td colspan="5" class="pt-3 pb-2"><strong>Commercial Terms</strong></td>
-                                        </tr>
-                                        
-                                    <!-- <tr>
-                                            <td class="o_form_label">Currency</td>
-                                            <td><field name="currency_col" nolabel="1" placeholder="e.g. K"/></td>
-                                            <td><field name="currency_header" nolabel="1" placeholder="e.g. Currency"/></td>
-                                            <td><field name="currency_fixed_id" nolabel="1" placeholder="Fixed Currency"/></td>
-                                        </tr> -->
-
-                                        <tr>
-                                            <td class="o_form_label">MOQ</td>
-                                            <td><field name="moq_col" nolabel="1" placeholder="e.g. L"/></td>
-                                            <td><field name="moq_header" nolabel="1" placeholder="e.g. MOQ"/></td>
-                                            <!-- <td><field name="moq_type" nolabel="1"/></td> -->
-                                            <td><field name="moq_fixed" nolabel="1" placeholder="Fixed MOQ"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">MOV</td>
-                                            <td><field name="mov_col" nolabel="1" placeholder="e.g. M"  required="not mov_fixed" /></td>
-                                            <td><field name="mov_header" nolabel="1" placeholder="e.g. MOV"/></td>
-                                            <!-- <td><field name="mov_type" nolabel="1"/></td> -->
-                                            <td><field name="mov_fixed" nolabel="1" placeholder="Fixed MOV" required="not mov_col" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Payment Terms</td>
-                                            <td><field name="payment_terms_col" nolabel="1" placeholder="e.g. N" required="1" /></td>
-                                            <td><field name="payment_terms_header" nolabel="1" placeholder="e.g. Payment"/></td>
-                                            <!-- <td><field name="payment_terms_type" nolabel="1"/></td> -->
-                                            <!--<td><field name="payment_terms_fixed" nolabel="1" placeholder="Fixed Terms"/></td>-->
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <field name="payment_terms_fixed" placeholder="e.g. 30% Deposite..." class="oe_inline mr-2"/>
-                                                    <button name="action_set_default_payment_term" type="object" string="Default" class="btn btn-sm btn-secondary"/>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Incoterms</td>
-                                            <td><field name="incoterms_col" nolabel="1" placeholder="e.g. O"/></td>
-                                            <td><field name="incoterms_header" nolabel="1" placeholder="e.g. Incoterms"/></td>
-                                            <!-- <td><field name="incoterms_type" nolabel="1"/></td> -->
-                                            <!--<td><field name="incoterms_fixed" nolabel="1" placeholder="Fixed Incoterms"/></td>-->
-                                            <td>
-                                                <div class="d-flex flex-column">
-                                                    <field name="incoterm_id" placeholder="Incoterm (e.g. EXW)"/>
-                                                    <field name="incoterm_country_id" placeholder="Country" class="mt-1"/>
-                                                    <field name="incoterm_city" placeholder="City" class="mt-1"/>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">T1 / T2</td>
-                                            <td><field name="t1_t2_col" nolabel="1" placeholder="e.g. P"/></td>
-                                            <td><field name="t1_t2_header" nolabel="1" placeholder="e.g. Status"/></td>
-                                            <!-- <td><field name="t1_t2_type" nolabel="1"/></td> -->
-                                            <td><field name="t1_t2_fixed" nolabel="1" placeholder="Fixed T1/T2"/></td>
-                                        </tr>
-
-
-                                        <!-- Dates -->
-                                    <!--  
-                                        <tr class="bg-light" style="border-bottom: 1px solid #eee;">
-                                            <td colspan="5" class="pt-3 pb-2"><strong>Dates</strong></td>
-                                        </tr>
+                                    <!-- Core Fields -->
+                                    <tr class="bg-light" style="border-bottom: 1px solid #eee;">
+                                        <td colspan="5" class="pt-3 pb-2"><strong>Core Fields</strong></td>
+                                    </tr>
                                     <tr>
-                                            <td class="o_form_label">Import Date</td>
-                                            <td><field name="import_date_col" nolabel="1" placeholder="e.g. Q"/></td>
-                                            <td><field name="import_date_header" nolabel="1" placeholder="e.g. Date"/></td>
-                                            <td><field name="import_date_type" nolabel="1"/></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Offer Validity</td>
-                                            <td><field name="offer_validity_col" nolabel="1" placeholder="e.g. R"/></td>
-                                            <td><field name="offer_validity_header" nolabel="1" placeholder="e.g. Valid Till"/></td>
-                                            <td><field name="offer_validity_type" nolabel="1"/></td>
-                                            <td><field name="offer_validity_fixed" nolabel="1" placeholder="Fixed Days"/></td>
-                                        </tr>
-                                
-                                        
-                                        -->
+                                        <td class="o_form_label">Barcode</td>
+                                        <td><field name="ean_col" nolabel="1" placeholder="e.g. A" required="1"/></td>
+                                        <td><field name="ean_header" nolabel="1" placeholder="e.g. Barcode"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">HS Code(Tariff)</td>
+                                        <td><field name="hs_code_col" nolabel="1" placeholder="e.g. H"/></td>
+                                        <td><field name="hs_code_header" nolabel="1" placeholder="e.g. HS Code"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Language</td>
+                                        <td><field name="cover_language_col" nolabel="1" placeholder="e.g. L"/></td>
+                                        <td><field name="cover_language_header" nolabel="1" placeholder="e.g. Language"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Product Name</td>
+                                        <td><field name="product_name_col" nolabel="1" placeholder="e.g. B" required="1"/></td>
+                                        <td><field name="product_name_header" nolabel="1" placeholder="e.g. Description"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Unit Price</td>
+                                        <td><field name="price_col" nolabel="1" placeholder="e.g. C"/></td>
+                                        <td><field name="price_header" nolabel="1" placeholder="e.g. Price"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Case Price</td>
+                                        <td><field name="case_price_col" nolabel="1" placeholder="e.g. E"/></td>
+                                        <td><field name="case_price_header" nolabel="1" placeholder="e.g. Case Price"/></td>
+                                        <td><span class="text-muted">unit price = case price / Unit-per-Case</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Supplier Code</td>
+                                        <td><field name="supplier_code_col" nolabel="1" placeholder="e.g. D"/></td>
+                                        <td><field name="supplier_code_header" nolabel="1" placeholder="e.g. Vendor Code"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Brand</td>
+                                        <td><field name="brand_col" nolabel="1" placeholder="e.g. E"/></td>
+                                        <td><field name="brand_header" nolabel="1" placeholder="e.g. Brand"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Size</td>
+                                        <td><field name="size_col" nolabel="1" placeholder="e.g. F"/></td>
+                                        <td><field name="size_header" nolabel="1" placeholder="e.g. Size"/></td>
+                                        <td></td>
+                                    </tr>
 
+                                    <!-- Logistics -->
+                                    <tr class="bg-light" style="border-bottom: 1px solid #eee;">
+                                        <td colspan="5" class="pt-3 pb-2"><strong>Logistics</strong></td>
+                                    </tr>
+                                    
+                                  
+                                    <tr>
+                                        <td class="o_form_label">Unit/Case</td>
+                                        <td><field name="case_size_col" nolabel="1" placeholder="e.g. G"/></td>
+                                        <td><field name="case_size_header" nolabel="1" placeholder="e.g. Case Pack"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Case/Layer</td>
+                                        <td><field name="layer_col" nolabel="1" placeholder="e.g. H"/></td>
+                                        <td><field name="layer_header" nolabel="1" placeholder="e.g. Ti"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Case/Pallet</td>
+                                        <td><field name="pallet_col" nolabel="1" placeholder="e.g. I"/></td>
+                                        <td><field name="pallet_header" nolabel="1" placeholder="e.g. Hi"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Available Unit</td>
+                                        <td><field name="available_qty_col" nolabel="1" placeholder="e.g. J"/></td>
+                                        <td><field name="available_qty_header" nolabel="1" placeholder="e.g. Stock"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Available Case</td>
+                                        <td><field name="available_case_col" nolabel="1" placeholder="e.g. K"/></td>
+                                        <td><field name="available_case_header" nolabel="1" placeholder="e.g. Available Cases"/></td>
+                                        <td><span class="text-muted">Available Unit = Available Case × Unit/Case</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Available Pallet</td>
+                                        <td><field name="available_pallet_col" nolabel="1" placeholder="e.g. L"/></td>
+                                        <td><field name="available_pallet_header" nolabel="1" placeholder="e.g. Available Pallets"/></td>
+                                        <td><span class="text-muted">Available Unit = Available Pallet × Unit/Pallet</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Unit/Layer</td>
+                                        <td><field name="unit_per_layer_col" nolabel="1" placeholder="e.g. F"/></td>
+                                        <td><field name="unit_per_layer_header" nolabel="1" placeholder="e.g. Unit/Layer"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Unit/Pallet</td>
+                                        <td><field name="unit_per_pallet_col" nolabel="1" placeholder="e.g. G"/></td>
+                                        <td><field name="unit_per_pallet_header" nolabel="1" placeholder="e.g. Unit/Pallet"/></td>
+                                        <td></td>
+                                    </tr>
 
-                                        <!-- Other Fields -->
-                                        <tr class="bg-light" style="border-bottom: 1px solid #eee;">
-                                            <td colspan="5" class="pt-3 pb-2"><strong>Other Fields</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">COO</td>
-                                            <td><field name="coo_col" nolabel="1" placeholder="e.g. T"/></td>
-                                            <td><field name="coo_header" nolabel="1" placeholder="e.g. Origin"/></td>
-                                            <!-- <td><field name="coo_type" nolabel="1"/></td> -->
-                                            <td><field name="coo_fixed" nolabel="1" placeholder="Fixed COO"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Lead Time</td>
-                                            <td><field name="lead_time_col" nolabel="1" placeholder="e.g. U"/></td>
-                                            <td><field name="lead_time_header" nolabel="1" placeholder="e.g. Lead Time"/></td>
-                                            <!-- <td><field name="lead_time_type" nolabel="1"/></td> -->
-                                            <td><field name="lead_time_fixed" nolabel="1" placeholder="Fixed Lead Time"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="o_form_label">Note</td>
-                                            <td><field name="note_col" nolabel="1" placeholder="e.g. V"/></td>
-                                            <td><field name="note_header" nolabel="1" placeholder="e.g. Remarks"/></td>
-                                            <!-- <td><field name="note_type" nolabel="1"/></td> -->
-                                            <td><field name="note_fixed" nolabel="1" placeholder="Fixed Note"/></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </page>
-                        </notebook>
-                    </div>
-           
-                          <!-- ستون سمت راست: فضای پیش‌نمایش فایل اکسل -->
-                    <div class="col-md-6" style="border-left: 1px solid #ddd; padding-left: 20px;">
-                        <h3 class="text-muted">Excel Preview / Data</h3>
-                        <!-- در اینجا ویجت Odoo Spreadsheet یا یک iframe برای نمایش فایل قرار می‌گیرد -->
-                        <div class="alert alert-info text-center mt-4">
-                            <p>Excell Preview</p>
-                            <p class="small"></p>
-                        </div>
-                    </div>
-                
-                </div>
-      
-            </sheet>
-       
-       
-        </form>
-    </field>
-</record>
+                                    <!-- Commercial Terms -->
+                                    <tr class="bg-light" style="border-bottom: 1px solid #eee;">
+                                        <td colspan="5" class="pt-3 pb-2"><strong>Commercial Terms</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">MOQ</td>
+                                        <td><field name="moq_col" nolabel="1" placeholder="e.g. L"/></td>
+                                        <td><field name="moq_header" nolabel="1" placeholder="e.g. MOQ"/></td>
+                                        <td><field name="moq_fixed" nolabel="1" placeholder="Fixed MOQ"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">MOV</td>
+                                        <td><field name="mov_col" nolabel="1" placeholder="e.g. M"/></td>
+                                        <td><field name="mov_header" nolabel="1" placeholder="e.g. MOV"/></td>
+                                        <td></td><!-- mov_fixed moved to 'Offer Defaults' -->
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Payment Terms</td>
+                                        <td><field name="payment_terms_col" nolabel="1" placeholder="e.g. N"/></td>
+                                        <td><field name="payment_terms_header" nolabel="1" placeholder="e.g. Payment"/></td>
+                                        <td></td><!-- payment_terms_fixed moved to 'Offer Defaults' -->
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Incoterms</td>
+                                        <td><field name="incoterms_col" nolabel="1" placeholder="e.g. O"/></td>
+                                        <td><field name="incoterms_header" nolabel="1" placeholder="e.g. Incoterms"/></td>
+                                        <td></td><!-- incoterm_id/country/city moved to 'Offer Defaults' -->
+
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">T1 / T2</td>
+                                        <td><field name="batch_code_col" nolabel="1" placeholder="e.g. D"/></td>
+                                        <td><field name="batch_code_header" nolabel="1" placeholder="e.g. Batch"/></td>
+                                        <td/>
+                                    </tr>
+
+                                    <!-- Other Fields -->
+                                    <tr class="bg-light" style="border-bottom: 1px solid #eee;">
+                                        <td colspan="5" class="pt-3 pb-2"><strong>Other Fields</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">COO</td>
+                                        <td><field name="coo_col" nolabel="1" placeholder="e.g. T"/></td>
+                                        <td><field name="coo_header" nolabel="1" placeholder="e.g. Origin"/></td>
+                                        <td><field name="coo_fixed" nolabel="1" placeholder="Fixed COO"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Lead Time</td>
+                                        <td><field name="lead_time_col" nolabel="1" placeholder="e.g. U"/></td>
+                                        <td><field name="lead_time_header" nolabel="1" placeholder="e.g. Lead Time"/></td>
+                                        <td></td><!-- lead_time_fixed moved to 'Offer Defaults' -->
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Product Expiry</td>
+                                        <td><field name="product_expiry_col" nolabel="1" placeholder="e.g. V"/></td>
+                                        <td><field name="product_expiry_header" nolabel="1" placeholder="e.g. Expiry Date"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="o_form_label">Note</td>
+                                        <td><field name="note_col" nolabel="1" placeholder="e.g. V"/></td>
+                                        <td><field name="note_header" nolabel="1" placeholder="e.g. Remarks"/></td>
+                                        <td><field name="note_fixed" nolabel="1" placeholder="Fixed Note"/></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 
     <!-- Tree/List View -->
@@ -294,10 +300,15 @@
         <field name="model">sbs.import.template</field>
         <field name="arch" type="xml">
             <list string="Import Templates">
-                <field name="name"/>
+                <header>
+                    <button name="action_export_mapping_json" type="object"
+                            string="Export Mapping (JSON)" class="btn-secondary"
+                            display="always"/>
+                </header>
                
-                <field name="ean_col"/>
-                <field name="product_name_col"/>
+                <field name="name"/>
+                <field name="supplier_id"/>
+
             </list>
         </field>
     </record>

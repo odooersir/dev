@@ -59,6 +59,12 @@
                         Import Number: <field name="import_number" readonly="1"/><br/>
                     </div>
 
+                    <div class="alert alert-warning" invisible="unstated_note == ''">
+                        <strong>Not stated in the file — confirm with the supplier:</strong>
+                        <field name="unstated_note" readonly="1" widget="text" nolabel="1"
+                               style="white-space: pre-wrap; margin-top: 6px;"/>
+                    </div>
+
                     <div class="alert alert-danger" invisible="result_error == ''">
                         <strong>Errors:</strong>
                         <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; background: #fefefe; padding: 8px; margin-top: 8px;">

@@ -8,6 +8,16 @@
             <xpath expr="//form" position="inside">
                 <app data-string="SBS" string="Smart Buying System" name="oe_sbs" groups="base.group_user">
                     <block title="Profit Margins" id="sbs_profit_margins">
+                        <setting string="Auto-import Start Date"
+                                 help="Auto-send imports only files created on or after this date. Empty = auto-import paused."
+                                 id="sbs_auto_import_start_date">
+                            <field name="sbs_auto_import_start_date"/>
+                        </setting>
+                        <setting string="Email Intake Start Date"
+                                 help="Emails sent before this date create no document. Empty = accept all."
+                                 id="sbs_email_intake_start_date">
+                            <field name="sbs_email_intake_start_date"/>
+                        </setting>
                         <setting string="Default Profit Margin (%)" 
                                  help="Applied to Selling Price (8% by default)"
                                  id="sbs_default_profit_margin">
@@ -88,6 +98,62 @@
                             <i class="fa fa-info-circle"/> 
                             Old lists from the same supplier will be automatically deleted if barcode overlap exceeds the threshold.
                             All deletions are logged in Cleanup Logs menu.
+                        </div>
+                    </block>
+
+                    <block title="Import - Metadata Scan" id="sbs_metadata_scan">
+                        <setting string="Metadata Scan Mode"
+                                 help="Which cells are read as metadata (MOV/MOQ/EXW ...). 'Outside table only' is the safe default; 'Full sheet' also scans inside the product table.">
+                            <field name="sbs_metadata_scan_mode"/>
+                        </setting>
+                    </block>
+
+                    <block title="AI Assist" id="sbs_ai_settings">
+                        <setting string="Enable AI Assist"
+                                 help="Use a local (Ollama) or cloud model to help extract hard fields. When off, import uses the regex rules only."
+                                 id="sbs_ai_enabled">
+                            <field name="sbs_ai_enabled"/>
+                        </setting>
+                        <setting string="AI Base URL"
+                                 help="Ollama endpoint (default http://localhost:11434) or a cloud API base URL."
+                                 id="sbs_ai_base_url"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_base_url"/>
+                        </setting>
+                        <setting string="AI Model"
+                                 help="e.g. qwen2.5:3b for Ollama"
+                                 id="sbs_ai_model"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_model"/>
+                        </setting>
+                        <setting string="AI API Key"
+                                 help="For Ollama any value (e.g. 'ollama'); for cloud, the real key."
+                                 id="sbs_ai_api_key"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_api_key" password="True"/>
+                        </setting>
+                        <setting string="AI Timeout (seconds)"
+                                 help="Fall back to regex if the model is slower than this."
+                                 id="sbs_ai_timeout"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_timeout" class="oe_inline"/>
+                            <span> seconds</span>
+                        </setting>
+                        <setting string="AI for Metadata Extraction"
+                                 help="Read hard free-text metadata (MOV/MOQ/EXW) the regex missed."
+                                 id="sbs_ai_for_metadata"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_for_metadata"/>
+                        </setting>
+                        <setting string="AI for Mapping Suggestion"
+                                 help="Suggest a column mapping for a new file's headers."
+                                 id="sbs_ai_for_mapping"
+                                 invisible="sbs_ai_enabled == False">
+                            <field name="sbs_ai_for_mapping"/>
+                        </setting>
+                        <div class="text-muted" invisible="sbs_ai_enabled == False">
+                            <i class="fa fa-info-circle"/>
+                            The regex rules always run first; the model is only asked when they can't parse a field, and its answer is validated against the file before use.
                         </div>
                     </block>
 

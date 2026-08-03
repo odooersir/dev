@@ -10,30 +10,25 @@
     'category': 'Customizations',
     'version': '19.0.1.0.0',
     'depends': ['website_sale','oe_sbs'],
-   
-
-    'assets': {
-        'web.assets_frontend': [
-            'oe_custom_website/static/src/js/chart.umd.min.js',
-            'oe_custom_website/static/src/js/marketplace_offers.js',
-            'oe_custom_website/static/src/css/style.css',
-            'oe_custom_website/static/src/css/cliimax_homepage.css',
-            'oe_custom_website/static/src/css/brands.css'
-        ],
-    },
-
- 'data': [
+    'data': [
         
-        'data/ir_cron.xml',
         'views/templates.xml',
         'views/product_details_templates.xml',
         'views/cliimax_homepage.xml',
         'views/cliimax_footer.xml',
         'views/cliimax_footer.xml',
-        'views/brand_templates.xml',
-        'views/category_templates.xml'
+        'views/brand_templates.xml'
 
     ],
+
+    'assets': {
+        'web.assets_frontend': [
+            'oe_custom_website/static/src/js/marketplace_offers.js',
+            'oe_custom_website/static/src/css/style.css',
+            'oe_custom_website/static/src/css/cliimax_homepage.css',
+            'oe_custom_website/static/src/css/brands.css'
+        ],
+}
 
   
 

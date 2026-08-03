@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class SbsOfferList(models.Model):
@@ -18,7 +22,10 @@ class SbsOfferList(models.Model):
     moq = fields.Char(string='MOQ')
     mov = fields.Char(string='MOV')
     incoterms = fields.Char(string='Incoterms')
-    t1_t2 = fields.Char(string='T1/T2')
+    t1 = fields.Selection([('yes', 'Yes'), ('no', 'No')], string='T1')
+    t2 = fields.Selection([('yes', 'Yes'), ('no', 'No'),
+                           ('available', 'Available')], string='T2 (EU Clean)')
+    euro1 = fields.Selection([('yes', 'Yes'), ('no', 'No')], string='EUR.1')
     payment_term = fields.Char(string='Payment Terms')
     lead_time = fields.Char(string='Lead Time')
 
@@ -89,9 +96,14 @@ class SbsOfferList(models.Model):
                 'document_id': first.document_id.id,
                 'items_count': len(items),
                 'moq': first.moq,
-                'mov': first.mov,
+                # sbs.data.mov is Monetary (a float) while this summary keeps it
+                # as text, so a raw copy showed up as '50000.0'. Format it with
+                # the offer's own currency symbol instead.
+                'mov': self._format_mov(first),
                 'incoterms': first.incoterms,
-                't1_t2': first.t1_t2,
+                't1': first.t1,
+                't2': first.t2,
+                'euro1': first.euro1,
                 'payment_term': first.payment_term,
                 'lead_time': first.lead_time,
             }
@@ -100,3 +112,26 @@ class SbsOfferList(models.Model):
                 existing.write(vals)
             else:
                 self.create(vals)
+
+        # Drop summaries whose offer no longer has ANY sbs.data row (the import
+        # was deleted or cleaned up). Summaries whose rows merely EXPIRED are
+        # deliberately kept - an expired offer is still history.
+        if not records:
+            live = SBSData.search([('import_number', '=', import_number)], limit=1)
+            if not live:
+                orphans = self.search([('import_number', '=', import_number)])
+                if orphans:
+                    _logger.info(
+                        "[SBS] removing %s orphaned offer list(s) for import %s.",
+                        len(orphans), import_number)
+                    orphans.unlink()
+        return True
+
+    @api.model
+    def _format_mov(self, record):
+        """MOV as readable text: '50,000 $'. Returns '' when there is no MOV."""
+        amount = record.mov or 0
+        if not amount:
+            return ''
+        symbol = record.currency_id.symbol if record.currency_id else ''
+        return ("%s %s" % ('{:,.0f}'.format(amount), symbol)).strip()

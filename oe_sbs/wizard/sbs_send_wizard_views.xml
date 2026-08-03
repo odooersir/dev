@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sbs_send_wizard_form" model="ir.ui.view">
+        <field name="name">sbs.send.wizard.form</field>
+        <field name="model">sbs.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send to SBS">
+                <group>
+                    <field name="document_id" readonly="1"/>
+                    <field name="supplier_name" readonly="1"/>
+                    <field name="allowed_template_ids" invisible="1"/>
+                    <field name="template_id"
+                           options="{'no_create': True, 'no_open': True}"
+                           domain="[('id', 'in', allowed_template_ids)]"/>
+                </group>
+                <group string="Matching mappings, best first">
+                    <field name="candidate_summary" nolabel="1" readonly="1"
+                           style="white-space: pre-wrap;"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Send"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Manual send for ONE document. Multi-select and the cron keep the fully
+         automatic path: a dialog per file would be worse than today's behaviour,
+         and the unattended cron has nobody to answer it. -->
+    <record id="action_sbs_send_with_mapping" model="ir.actions.server">
+        <field name="name">Send to SBS (choose mapping)</field>
+        <field name="model_id" ref="documents.model_documents_document"/>
+        <field name="binding_model_id" ref="documents.model_documents_document"/>
+        <field name="binding_view_types">list,form</field>
+        <!-- Same access as the existing "Send to SBS" button, which the
+             controller gates on group_sbs_send. Two entry points to the same
+             operation should not have two different permissions. -->
+        <field name="group_ids" eval="[(4, ref('oe_sbs.group_sbs_send'))]"/>
+        <field name="state">code</field>
+        <field name="sequence">20</field>
+        <field name="code">
+# One file -> let the user pick the mapping (the action reports its own errors).
+# Several files -> the automatic path, then one summary notification: opening a
+# dialog per file would be worse than the behaviour this replaces.
+if len(records) == 1:
+    action = records.action_sbs_send_with_mapping()
+else:
+    done, failed = [], []
+    for doc in records:
+        result = doc._sbs_send_one() or {}
+        (done if result.get('status') == 'ok' else failed).append(
+            "%s: %s" % (doc.name, result.get('result_error') or result.get('status')))
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': "Send to SBS",
+            'message': "\n".join(["%s imported" % len(done)] + failed),
+            'type': 'danger' if failed else 'success',
+            'sticky': bool(failed),
+        },
+    }
+        </field>
+    </record>
+
+</odoo>

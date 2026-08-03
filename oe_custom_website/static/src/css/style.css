@@ -1,9 +1,5 @@
 /* oe_custom_website/static/src/css/style.css */
 
-
-.o_wsale_product_details_content_section_attributes  {
-     display: none !important;
-}
 .o_wsale_product_page_variants {
      display: none !important;
 }

@@ -5,7 +5,7 @@ class ProductBrand(models.Model):
     _name = 'product.brand'
     _description = 'Product Brand'
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(required=True)
     description = fields.Text()
     logo = fields.Binary()
     active = fields.Boolean(default=True)

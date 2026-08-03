@@ -2,112 +2,124 @@
 <odoo>
     <!-- Page template for displaying Brands -->
     <template id="product_brands" name="Product Brands">
-    <t t-call="website.layout">
-        <div id="wrap">
-            <div class="container py-5">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container py-5">
 
-                <!-- ─── Search ─── -->
-                <form method="get" class="mb-4 d-flex gap-2">
-                    <input type="text"
-                        name="search"
-                        class="form-control"
-                        placeholder="Search brands..."
-                        t-att-value="search or ''"/>
-                    <button class="btn btn-primary px-4" type="submit">
-                        Search
-                    </button>
-                </form>
+                    <!-- ─── Search ─── -->
+                    <form method="get" class="mb-4 d-flex gap-2">
+                        <input type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search brands..."
+                            t-att-value="search or ''"/>
+                        <button class="btn btn-primary px-4" type="submit">
+                            Search
+                        </button>
+                    </form>
 
-                <!-- ─── نوار الفبا sticky ─── -->
-                <nav id="brand-alpha-nav">
-                    <ul>
-                        <li>
-                            <a t-att-class="'brand-letter-btn' + (' active' if current_letter == '0-9' else '') + (' disabled-letter' if '0-9' not in active_letters else '')"
-                            t-att-aria-disabled="'true' if '0-9' not in active_letters else None"
-                            href="#0-9">0-9</a>
-                        </li>
-                        <t t-foreach="alphabet" t-as="ltr">
+                    <!-- ─── نوار الفبا sticky ─── -->
+                    <nav id="brand-alpha-nav">
+                        <ul>
                             <li>
-                                <a t-att-class="'brand-letter-btn' + (' active' if current_letter == ltr else '') + (' disabled-letter' if ltr not in active_letters else '')"
-                                t-att-aria-disabled="'true' if ltr not in active_letters else None"
-                                t-att-href="'#' + ltr">
-                                    <t t-esc="ltr"/>
-                                </a>
+                                <a t-att-class="'brand-letter-btn' + (' active' if current_letter == '0-9' else '') + (' disabled-letter' if '0-9' not in active_letters else '')"
+                                t-att-aria-disabled="'true' if '0-9' not in active_letters else None"
+                                href="#0-9">0-9</a>
                             </li>
-                        </t>
-                    </ul>
-                </nav>
-
-                <!-- ─── بخش 0-9 ─── -->
-                <t t-if="'0-9' in brands_by_letter">
-                    <section id="0-9" class="brand-section">
-                        <h4 class="brand-section-title">0-9</h4>
-                        <div class="brand-grid">
-                            <t t-foreach="brands_by_letter['0-9']" t-as="brand">
-                                <div class="brands-card">
-                                    <!-- ─── نام برند (بدون لینک) ─── -->
-                                    <span class="brand-name">
-                                        <t t-esc="brand.name"/>
-                                    </span>
-
-                                    <div class="brand-meta">
-                                        <span class="brand-meta-text">
-                                            <a t-attf-href="/shop/brand/#{brand.id}" class="brand-meta-link">
-                                                <t t-esc="brand_product_count.get(brand.id, 0)"/> products
-                                            </a>
-                                                <span style="color:#6b7280;font-size:0.75rem"> in </span>
-                                                
-                                            <a t-attf-href="/shop/brand/#{brand.id}/offers" class="brand-meta-link">
-                                                <t t-esc="brand_offer_count.get(brand.id, 0)"/> offers
-                                            </a>
-                                        </span>
-                                    </div>
-                                </div>
+                            <t t-foreach="alphabet" t-as="ltr">
+                                <li>
+                                    <a t-att-class="'brand-letter-btn' + (' active' if current_letter == ltr else '') + (' disabled-letter' if ltr not in active_letters else '')"
+                                    t-att-aria-disabled="'true' if ltr not in active_letters else None"
+                                    t-att-href="'#' + ltr">
+                                        <t t-esc="ltr"/>
+                                    </a>
+                                </li>
                             </t>
-                        </div>
-                    </section>
-                </t>
+                        </ul>
+                    </nav>
 
-                <!-- ─── بخش‌های A-Z ─── -->
-                <t t-foreach="alphabet" t-as="ltr">
-                    <t t-if="ltr in brands_by_letter">
-                        <section t-att-id="ltr" class="brand-section">
-                            <h4 class="brand-section-title">
-                                <t t-esc="ltr"/>
-                            </h4>
+                    <!-- ─── بخش‌های A-Z ─── -->
+                    <t t-foreach="alphabet" t-as="ltr">
+                        <t t-if="ltr in brands_by_letter">
+                            <section t-att-id="ltr" class="brand-section">
+                                <h4 class="brand-section-title">
+                                    <t t-esc="ltr"/>
+                                </h4>
+                                <div class="brand-grid">
+                                    <t t-foreach="brands_by_letter[ltr]" t-as="brand">
+                                        <div class="brands-card">
+
+                                            <!-- ─── لینک برند ─── -->
+                                            <span class="brand-name">
+                                                <t t-esc="brand.name"/>
+                                            </span>
+
+                                            <div class="brand-meta">
+                                                <!-- ─── لینک محصولات ─── -->
+                                                <a t-attf-href="/shop/brand/#{brand.id}"
+                                                class="brand-meta-link">
+                                                    <t t-esc="brand_product_count.get(brand.id, 0)"/>
+                                                    products
+                                                </a>
+                                                <!-- ─── لینک آفرها ─── -->
+                                                <a t-attf-href="/shop/brand/#{brand.id}/offers"
+                                                class="brand-meta-link">
+                                                    <t t-esc="brand_offer_count.get(brand.id, 0)"/>
+                                                    offers
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </t>
+                                </div>
+                            </section>
+                        </t>
+                    </t>
+
+                    <!-- ─── بخش 0-9 ─── -->
+                    <t t-if="'0-9' in brands_by_letter">
+                        <section id="0-9" class="brand-section">
+                            <h4 class="brand-section-title">0-9</h4>
                             <div class="brand-grid">
-                                <t t-foreach="brands_by_letter[ltr]" t-as="brand">
+                                <t t-foreach="brands_by_letter['0-9']" t-as="brand">
                                     <div class="brands-card">
-                                        <!-- ─── نام برند (بدون لینک) ─── -->
+
+                                        <!-- ─── لینک برند ─── -->
                                         <span class="brand-name">
                                             <t t-esc="brand.name"/>
                                         </span>
 
                                         <div class="brand-meta">
-                                            <span class="brand-meta-text">
-                                                <a t-attf-href="/shop/brand/#{brand.id}" class="brand-meta-link">
-                                                    <t t-esc="brand_product_count.get(brand.id, 0)"/> products
-                                                </a>
-                                                <span style="color:#6b7280;font-size:0.75rem"> in </span>
-                                                <a t-attf-href="/shop/brand/#{brand.id}/offers" class="brand-meta-link">
-                                                    <t t-esc="brand_offer_count.get(brand.id, 0)"/> offers
-                                                </a>
-                                            </span>
+                                            <!-- ─── لینک محصولات ─── -->
+                                            <a t-attf-href="/shop/brand/#{brand.id}"
+                                            class="brand-meta-link">
+                                                <t t-esc="brand_product_count.get(brand.id, 0)"/>
+                                                products
+                                            </a>
+                                            <!-- ─── لینک آفرها ─── -->
+                                            <a t-attf-href="/shop/brand/#{brand.id}/offers"
+                                            class="brand-meta-link">
+                                                <t t-esc="brand_offer_count.get(brand.id, 0)"/>
+                                                offers
+                                            </a>
                                         </div>
+
                                     </div>
                                 </t>
                             </div>
                         </section>
                     </t>
-                </t>
 
+                </div>
             </div>
-        </div>
 
-       
-    </t>
-</template>
+            <!-- ─── CSS ─── -->
+            <style>
+                
+            </style>
 
+        </t>
+    </template>
 
 
     <template id="brand_offers" name="Brand Offers">
@@ -117,7 +129,7 @@
 
                     <!-- Breadcrumb -->
                     <nav class="mb-4" style="font-size:0.85rem; color:#6b7280;">
-                        <a href="/shop/brands" style="color:#6b7280; text-decoration:none;">Brands</a>
+                        <a href="/page/product_brands" style="color:#6b7280; text-decoration:none;">Brands</a>
                         <span class="mx-2">›</span>
                         <a t-attf-href="/shop/brand/#{brand.id}"
                         style="color:#6b7280; text-decoration:none;">

@@ -23,6 +23,7 @@
                 </xpath>
 
                  <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="cover_language"/>
                     <field name="hs_code"/>
                     <field name="country_origin"/>
                     <field name="brand_id"/>
@@ -48,6 +49,7 @@
                 </xpath>
 
                  <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="cover_language"/>
                     <field name="hs_code"/>
                     <field name="country_origin"/>
                     <field name="brand_id"/>
